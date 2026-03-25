@@ -899,7 +899,7 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, get, update, push, onValue, off, serverTimestamp, query, orderByChild, equalTo, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, update, push, onValue, off, query, orderByChild, equalTo, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
@@ -1104,23 +1104,29 @@ function updateProfileUI(){
   if(document.getElementById('dashName')) document.getElementById('dashName').textContent = p.name;
 }
 
-// HELPER ONLINE LISTENERS
+// HELPER ONLINE LISTENERS — pakai full scan + filter client side
+// (tidak butuh .indexOn di rules, lebih reliable)
 function listenOnlineHelpers(){
-  const r = query(ref(db,'users'), orderByChild('online'), equalTo(true));
-  onValue(r, snap => {
+  const usersRef = ref(db,'users');
+  onValue(usersRef, snap => {
     const list = document.getElementById('helperOnlineList');
     const helpers = [];
     if(snap.exists()){
       snap.forEach(child => {
         const u = child.val();
-        if(u.role==='helper') helpers.push(u);
+        // tampilkan semua helper yg online=true, termasuk diri sendiri jika helper
+        if(u.role === 'helper' && u.online === true){
+          helpers.push(u);
+        }
       });
     }
-    if(helpers.length===0){
+    if(helpers.length === 0){
       list.innerHTML = '<div class="empty-state"><div class="empty-icon">👀</div><div class="empty-title">Belum ada helper online</div><div class="empty-sub">Helper akan muncul saat mereka aktif</div></div>';
     } else {
       list.innerHTML = helpers.map(h => renderHelperCard(h)).join('');
     }
+  }, err => {
+    console.error('listenOnlineHelpers error:', err);
   });
 }
 
