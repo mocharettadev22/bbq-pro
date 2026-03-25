@@ -1,91 +1,2124 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Auth BBQ PRO</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FF6B35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>BBQ PRO</title>
+<link rel="manifest" href="data:application/json,{}">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap');
+
+  :root {
+    --primary: #FF6B35;
+    --primary-dark: #e85a28;
+    --secondary: #1A1A2E;
+    --accent: #FFD700;
+    --bg: #F5F5F5;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --text-muted: #888;
+    --border: #E0E0E0;
+    --success: #4CAF50;
+    --danger: #F44336;
+    --warning: #FF9800;
+    --info: #2196F3;
+    --nav-h: 65px;
+    --radius: 16px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .dark {
+    --bg: #0F0F1A;
+    --card: #1A1A2E;
+    --text: #F0F0F0;
+    --text-muted: #999;
+    --border: #2A2A3E;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* SCREENS */
+  .screen { display: none; height: 100vh; flex-direction: column; overflow: hidden; }
+  .screen.active { display: flex; }
+
+  /* REGISTER SCREEN */
+  #screen-register {
+    background: linear-gradient(160deg, #FF6B35 0%, #e85a28 40%, #1A1A2E 100%);
+    overflow-y: auto;
+  }
+  .reg-header {
+    padding: 50px 24px 20px;
+    text-align: center;
+    color: white;
+  }
+  .reg-logo { font-family: 'Nunito', sans-serif; font-size: 42px; font-weight: 900; letter-spacing: -1px; }
+  .reg-logo span { color: var(--accent); }
+  .reg-subtitle { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .reg-card {
+    background: var(--card);
+    border-radius: 28px 28px 0 0;
+    padding: 28px 24px 40px;
+    flex: 1;
+    min-height: 0;
+  }
+  .reg-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+
+  /* FORM */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input {
+    width: 100%; padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--primary); }
+  select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  textarea.form-input { resize: none; height: 80px; }
+
+  .photo-upload {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 3px dashed var(--primary);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; margin: 0 auto 20px;
+    background: var(--bg);
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .photo-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .photo-upload-icon { font-size: 28px; }
+  .photo-upload-text { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+  .role-select { display: flex; gap: 10px; }
+  .role-btn {
+    flex: 1; padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--text-muted);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; text-align: center;
+    transition: all 0.2s;
+  }
+  .role-btn.selected { border-color: var(--primary); background: var(--primary); color: white; }
+  .role-btn .role-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  .btn-primary {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none;
+    border-radius: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.97); box-shadow: 0 3px 10px rgba(255,107,53,0.3); }
+
+  /* MAIN APP */
+  #screen-app { background: var(--bg); position: relative; }
+  .app-content { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--nav-h) + 10px); }
+
+  /* TOP BAR */
+  .top-bar {
+    background: var(--card);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .top-bar-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--primary); }
+  .top-bar-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    color: var(--text);
+  }
+
+  /* ONLINE STATUS BAR */
+  .online-bar {
+    background: linear-gradient(135deg, var(--success), #388E3C);
+    color: white; padding: 8px 20px;
+    font-size: 12px; font-weight: 600;
+    display: none; align-items: center; gap: 8px;
+  }
+  .online-bar.show { display: flex; }
+  .pulse-dot {
+    width: 8px; height: 8px;
+    background: white; border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  /* PAGE SECTIONS */
+  .page { display: none; flex: 1; }
+  .page.active { display: block; }
+
+  /* HOME PAGE */
+  .welcome-card {
+    margin: 16px;
+    background: linear-gradient(135deg, var(--primary), #e85a28);
+    border-radius: var(--radius);
+    padding: 20px;
+    color: white;
+  }
+  .welcome-greeting { font-size: 13px; opacity: 0.85; }
+  .welcome-name { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; margin: 2px 0 8px; }
+  .welcome-datetime { font-size: 12px; opacity: 0.8; }
+
+  .section-header {
+    padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; margin-top: 20px;
+  }
+  .section-title { font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; color: var(--text); }
+  .section-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* CATEGORIES */
+  .categories-scroll { overflow-x: auto; padding: 0 16px; scrollbar-width: none; }
+  .categories-scroll::-webkit-scrollbar { display: none; }
+  .categories-grid { display: flex; gap: 10px; padding-bottom: 4px; }
+  .category-item {
+    flex-shrink: 0;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 12px 10px;
+    width: 80px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s;
+    border: 2px solid transparent;
+  }
+  .category-item:active { transform: scale(0.94); }
+  .category-item.selected { border-color: var(--primary); background: rgba(255,107,53,0.08); }
+  .cat-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+  .cat-name { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.2; }
+
+  /* HELPER CARDS */
+  .helpers-list { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+  .helper-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    display: flex; gap: 12px;
+    align-items: flex-start;
+  }
+  .helper-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 3px solid var(--primary);
+  }
+  .helper-avatar-placeholder {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #e85a28);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800; color: white;
+    flex-shrink: 0;
+    border: 3px solid var(--primary);
+  }
+  .helper-info { flex: 1; min-width: 0; }
+  .helper-name { font-weight: 700; font-size: 15px; color: var(--text); }
+  .helper-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .helper-bio { font-size: 12px; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .helper-rating { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+  .badge-online { display: inline-block; background: var(--success); color: white; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-role { display: inline-block; background: var(--primary); color: white; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: 4px; }
+  .badge-premium { background: var(--accent); color: var(--secondary); }
+  .badge-pro { background: linear-gradient(135deg, #9B59B6, #8E44AD); }
+  .order-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; border: none;
+    border-radius: 10px; padding: 8px 14px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+    font-family: 'Poppins', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    height: var(--nav-h);
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; cursor: pointer; border: none;
+    background: transparent; color: var(--text-muted);
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-btn.active { color: var(--primary); }
+  .nav-icon { font-size: 20px; transition: transform 0.2s; }
+  .nav-btn.active .nav-icon { transform: scale(1.15); }
+  .nav-badge {
+    position: absolute; top: 6px; right: calc(50% - 16px);
+    background: var(--danger);
+    color: white; border-radius: 20px;
+    font-size: 9px; font-weight: 800;
+    padding: 1px 5px; min-width: 16px; text-align: center;
+  }
+
+  /* HELPER DASHBOARD */
+  .dashboard-card {
+    margin: 16px;
+    background: linear-gradient(135deg, #1A1A2E, #16213E);
+    border-radius: var(--radius);
+    padding: 20px;
+    color: white;
+    position: relative; overflow: hidden;
+  }
+  .dashboard-card::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,107,53,0.2);
+    border-radius: 50%;
+  }
+  .dash-greeting { font-size: 12px; opacity: 0.7; }
+  .dash-name { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; margin: 2px 0; }
+  .dash-avatar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .dash-avatar { width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
+  .dash-avatar-ph { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: white; flex-shrink: 0; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 16px 16px; }
+  .stat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  .stat-value { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text); margin-top: 4px; }
+  .stat-value.green { color: var(--success); }
+  .stat-value.orange { color: var(--primary); }
+
+  /* TOGGLE SWITCH */
+  .toggle-card {
+    margin: 0 16px 16px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .toggle-info .toggle-title { font-weight: 700; font-size: 15px; color: var(--text); }
+  .toggle-info .toggle-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .toggle-switch { position: relative; width: 52px; height: 28px; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 28px;
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 22px; height: 22px;
+    left: 3px; top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--success); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
+  .toggle-switch input:disabled + .toggle-slider { opacity: 0.5; cursor: not-allowed; }
+
+  /* ORDER CARDS */
+  .order-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+  }
+  .order-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .order-user { font-weight: 700; font-size: 14px; color: var(--text); }
+  .order-category { font-size: 11px; color: var(--primary); font-weight: 600; background: rgba(255,107,53,0.1); padding: 3px 8px; border-radius: 20px; }
+  .order-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
+  .order-price { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; color: var(--success); margin-bottom: 10px; }
+  .order-actions { display: flex; gap: 8px; }
+  .btn-accept { flex: 1; padding: 10px; background: var(--success); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .btn-reject { flex: 1; padding: 10px; background: var(--danger); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .btn-chat-order { flex: 1; padding: 10px; background: var(--info); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
+
+  /* CHAT */
+  .chat-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+  .chat-item {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; gap: 12px; align-items: center;
+    cursor: pointer; box-shadow: var(--shadow);
+  }
+  .chat-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .chat-avatar-ph { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: white; flex-shrink: 0; }
+  .chat-info { flex: 1; min-width: 0; }
+  .chat-name { font-weight: 700; font-size: 14px; color: var(--text); }
+  .chat-last { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-time { font-size: 10px; color: var(--text-muted); }
+  .chat-unread { background: var(--primary); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+
+  /* CHAT WINDOW */
+  #screen-chat {
+    background: var(--bg);
+  }
+  .chat-window-header {
+    background: var(--card);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .chat-back { font-size: 22px; cursor: pointer; color: var(--primary); }
+  .chat-window-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  .chat-window-avatar-ph { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; }
+  .chat-window-name { font-weight: 700; font-size: 15px; color: var(--text); }
+  .chat-window-status { font-size: 11px; color: var(--success); }
+  .messages-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .msg { max-width: 75%; }
+  .msg-bubble { padding: 10px 14px; border-radius: 18px; font-size: 13px; line-height: 1.4; word-break: break-word; }
+  .msg.sent { align-self: flex-end; }
+  .msg.sent .msg-bubble { background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+  .msg.received { align-self: flex-start; }
+  .msg.received .msg-bubble { background: var(--card); color: var(--text); border-bottom-left-radius: 4px; box-shadow: var(--shadow); }
+  .msg-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; text-align: right; }
+  .msg.received .msg-time { text-align: left; }
+  .chat-input-bar {
+    background: var(--card);
+    padding: 10px 16px;
+    display: flex; gap: 8px; align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .chat-input {
+    flex: 1; padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+  .chat-send {
+    width: 44px; height: 44px;
+    background: var(--primary);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; color: white;
+    flex-shrink: 0;
+  }
+
+  /* HISTORY */
+  .tab-bar {
+    display: flex; padding: 0 16px; gap: 8px; margin-bottom: 12px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0; padding: 8px 16px;
+    border-radius: 20px; border: 2px solid var(--border);
+    background: var(--bg); color: var(--text-muted);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: 'Poppins', sans-serif;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .history-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+  }
+  .history-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .history-user { font-weight: 700; font-size: 14px; color: var(--text); }
+  .status-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .status-proses { background: rgba(33,150,243,0.15); color: var(--info); }
+  .status-selesai { background: rgba(76,175,80,0.15); color: var(--success); }
+  .status-ditolak { background: rgba(244,67,54,0.15); color: var(--danger); }
+  .btn-done { width: 100%; padding: 10px; background: var(--success); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; margin-top: 8px; }
+  .btn-rate { width: 100%; padding: 10px; background: var(--accent); color: var(--secondary); border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; margin-top: 8px; }
+
+  /* PROFILE */
+  .profile-header {
+    background: linear-gradient(160deg, var(--primary), #e85a28);
+    padding: 30px 24px 50px;
+    text-align: center; color: white;
+  }
+  .profile-photo-wrap { position: relative; width: 90px; margin: 0 auto 12px; }
+  .profile-photo { width: 90px; height: 90px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.5); object-fit: cover; }
+  .profile-photo-ph { width: 90px; height: 90px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; }
+  .profile-name { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; }
+  .profile-badges { display: flex; gap: 6px; justify-content: center; margin-top: 6px; flex-wrap: wrap; }
+  .profile-body { background: var(--card); border-radius: 24px 24px 0 0; margin-top: -24px; padding: 24px 0; min-height: 100%; }
+  .menu-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .menu-item:active { background: var(--bg); }
+  .menu-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .menu-icon.orange { background: rgba(255,107,53,0.12); }
+  .menu-icon.gold { background: rgba(255,215,0,0.15); }
+  .menu-icon.purple { background: rgba(155,89,182,0.15); }
+  .menu-icon.blue { background: rgba(33,150,243,0.12); }
+  .menu-icon.red { background: rgba(244,67,54,0.12); }
+  .menu-icon.green { background: rgba(76,175,80,0.12); }
+  .menu-icon.gray { background: rgba(150,150,150,0.12); }
+  .menu-text { flex: 1; }
+  .menu-title { font-weight: 600; font-size: 14px; color: var(--text); }
+  .menu-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .menu-arrow { color: var(--text-muted); font-size: 16px; }
+
+  /* MODALS */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none; align-items: flex-end; justify-content: center;
+    z-index: 1000; backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-overlay.center { align-items: center; }
+  .modal-sheet {
+    background: var(--card);
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  .modal-box {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 24px;
+    width: calc(100% - 48px);
+    max-width: 380px;
+    animation: zoomIn 0.2s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+
+  /* STARS */
+  .stars { display: flex; gap: 6px; margin-bottom: 16px; }
+  .star { font-size: 32px; cursor: pointer; transition: transform 0.15s; }
+  .star:active { transform: scale(1.2); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: calc(var(--nav-h) + 16px); left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--secondary); color: white;
+    padding: 12px 20px; border-radius: 24px;
+    font-size: 13px; font-weight: 600;
+    opacity: 0; transition: all 0.3s;
+    z-index: 9999; white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* LOADING */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(160deg, #FF6B35, #1A1A2E);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 9999; color: white;
+  }
+  .loading-logo { font-family: 'Nunito', sans-serif; font-size: 52px; font-weight: 900; letter-spacing: -2px; }
+  .loading-logo span { color: var(--accent); }
+  .loading-text { font-size: 14px; opacity: 0.7; margin-top: 8px; }
+  .loading-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 40px; overflow: hidden; }
+  .loading-progress { height: 100%; background: white; border-radius: 2px; animation: loading 1.5s ease forwards; }
+  @keyframes loading { from { width: 0; } to { width: 100%; } }
+
+  .empty-state { text-align: center; padding: 40px 20px; }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; color: var(--text-muted); }
+
+  .divider { height: 1px; background: var(--border); margin: 0; }
+  .p-16 { padding: 0 16px; }
+
+  /* NOTIFICATION MODAL */
+  .notif-modal .modal-box { border-left: 4px solid var(--primary); }
+  .notif-badge { background: var(--primary); color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+
+  .form-row { display: flex; gap: 10px; }
+  .form-row .form-group { flex: 1; }
+
+  .about-content { padding: 0 4px; line-height: 1.8; color: var(--text-muted); font-size: 13px; }
+  .warning-content { padding: 0 4px; line-height: 1.8; color: var(--text-muted); font-size: 13px; }
+
+  .saweria-box { background: var(--bg); border-radius: 12px; padding: 16px; text-align: center; margin: 10px 0; }
+  .saweria-link { color: var(--primary); font-weight: 700; word-break: break-all; }
+
+  .scroll-page { overflow-y: auto; flex: 1; }
+
+  /* Upgrade form */
+  .upgrade-photo-upload {
+    width: 100%; height: 120px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; background: var(--bg);
+    position: relative; overflow: hidden;
+  }
+  .upgrade-photo-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+
+  .helper-page-top { padding: 16px 16px 8px; }
+
+  /* safe area */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-nav { padding-bottom: env(safe-area-inset-bottom); height: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+  }
+</style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md text-center">
-        <h1 class="text-2xl font-bold text-indigo-600 mb-2">Auth Tester</h1>
-        <p class="text-gray-500 text-sm mb-6">Uji Client ID & Secret Firebase</p>
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">BBQ<span>PRO</span></div>
+  <div class="loading-text">Bantuan di Genggamanmu</div>
+  <div class="loading-bar"><div class="loading-progress"></div></div>
+</div>
 
-        <div id="status-box" class="mb-6 p-4 rounded-xl bg-gray-50 text-sm font-mono break-all">
-            Status: Menunggu klik tombol...
-        </div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-        <button id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2">
-            <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35 11.1h-9.17v2.73h6.51c-.33 1.56-1.56 2.73-3.21 2.73c-2.02 0-3.65-1.63-3.65-3.65s1.63-3.65 3.65-3.65c.95 0 1.81.37 2.45 1.01l2.12-2.12C18.71 6.91 16.99 6 15 6c-3.87 0-7 3.13-7 7s3.13 7 7 7c4.04 0 7-2.97 7-7c0-.46-.04-.9-.15-1.34Z"/></svg>
-            Login dengan Google
-        </button>
+<!-- REGISTER SCREEN -->
+<div class="screen" id="screen-register" style="overflow-y:auto;">
+  <div class="reg-header">
+    <div class="reg-logo">BBQ<span>PRO</span></div>
+    <div class="reg-subtitle">Daftarkan dirimu sekarang</div>
+  </div>
+  <div class="reg-card">
+    <div class="reg-title">📝 Buat Akun</div>
 
-        <div id="user-info" class="mt-6 hidden text-left border-t pt-4">
-            <p class="text-xs font-bold text-green-600 mb-2 font-mono">✓ KONEKSI BERHASIL</p>
-            <div class="flex items-center gap-3">
-                <img id="user-photo" src="" class="w-12 h-12 rounded-full border">
-                <div>
-                    <p id="user-name" class="font-bold text-sm"></p>
-                    <p id="user-email" class="text-xs text-gray-500"></p>
-                </div>
-            </div>
-        </div>
+    <div class="form-group" style="text-align:center;">
+      <div class="photo-upload" id="photoUploadBtn" onclick="document.getElementById('photoFileInput').click()">
+        <img id="photoPreview" src="" style="display:none;">
+        <span class="photo-upload-icon">📷</span>
+        <span class="photo-upload-text">Foto Profil</span>
+      </div>
+      <input type="file" id="photoFileInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
     </div>
 
-    <script type="module">
-        // Import Firebase SDK v10
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <div class="form-group">
+      <label class="form-label">Nama Lengkap</label>
+      <input class="form-input" type="text" id="regName" placeholder="Nama kamu...">
+    </div>
 
-        // Konfigurasi Project Anda
-        const firebaseConfig = {
-            apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
-            authDomain: "mocharettadev-313db.firebaseapp.com",
-            databaseURL: "https://mocharettadev-313db-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mocharettadev-313db",
-            storageBucket: "mocharettadev-313db.firebasestorage.app",
-            messagingSenderId: "338398624429",
-            appId: "1:338398624429:web:945ac927b840269f976424",
-            measurementId: "G-J1Z9JE6KH6"
-        };
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Gender</label>
+        <select class="form-input" id="regGender">
+          <option value="">Pilih</option>
+          <option value="Laki-laki">Laki-laki</option>
+          <option value="Perempuan">Perempuan</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Umur</label>
+        <input class="form-input" type="number" id="regAge" placeholder="Umur" min="15" max="99">
+      </div>
+    </div>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    <div class="form-group">
+      <label class="form-label">Domisili (Kecamatan)</label>
+      <input class="form-input" type="text" id="regDomisili" placeholder="Nama kecamatan kamu...">
+    </div>
 
-        const btn = document.getElementById('loginBtn');
-        const statusBox = document.getElementById('status-box');
+    <div class="form-group">
+      <label class="form-label">Bio Singkat</label>
+      <textarea class="form-input" id="regBio" placeholder="Ceritakan sedikit tentang dirimu..."></textarea>
+    </div>
 
-        btn.addEventListener('click', () => {
-            statusBox.innerText = "Membuka jendela Google...";
-            statusBox.className = "mb-6 p-4 rounded-xl bg-blue-50 text-blue-700 text-sm font-mono";
+    <div class="form-group">
+      <label class="form-label">Daftar Sebagai</label>
+      <div class="role-select">
+        <div class="role-btn selected" id="roleUser" onclick="selectRole('user')">
+          <span class="role-icon">👤</span>
+          User
+        </div>
+        <div class="role-btn" id="roleHelper" onclick="selectRole('helper')">
+          <span class="role-icon">🦺</span>
+          Helper
+        </div>
+      </div>
+    </div>
 
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    // Berhasil Login
-                    const user = result.user;
-                    statusBox.innerText = "Suksess! Client ID & Secret Valid.";
-                    statusBox.className = "mb-6 p-4 rounded-xl bg-green-50 text-green-700 text-sm font-mono";
-                    
-                    // Tampilkan data user
-                    document.getElementById('user-info').classList.remove('hidden');
-                    document.getElementById('user-name').innerText = user.displayName;
-                    document.getElementById('user-email').innerText = user.email;
-                    document.getElementById('user-photo').src = user.photoURL;
-                })
-                .catch((error) => {
-                    // Gagal Login
-                    console.error(error);
-                    statusBox.innerText = "Gagal: " + error.code + " - " + error.message;
-                    statusBox.className = "mb-6 p-4 rounded-xl bg-red-50 text-red-700 text-sm font-mono";
-                    
-                    if(error.code === "auth/configuration-not-found") {
-                        statusBox.innerText += " (Cek lagi apakah Google Sign-in sudah di-Enable di Firebase Console)";
-                    }
-                });
-        });
-    </script>
+    <button class="btn-primary" id="btnRegister" onclick="register()">🚀 Daftar Sekarang</button>
+  </div>
+</div>
+
+<!-- MAIN APP SCREEN -->
+<div class="screen" id="screen-app">
+  <!-- Online Status Bar -->
+  <div class="online-bar" id="onlineBar">
+    <div class="pulse-dot"></div>
+    <span>Kamu sedang ONLINE sebagai Helper</span>
+  </div>
+
+  <!-- App Content -->
+  <div class="app-content" id="appContent">
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div class="top-bar">
+        <div class="top-bar-title">BBQ<span style="color:var(--accent)">PRO</span></div>
+        <div class="top-bar-actions">
+          <button class="icon-btn" onclick="refreshOnlineHelpers()">🔄</button>
+        </div>
+      </div>
+      <div class="welcome-card">
+        <div class="welcome-greeting">Selamat datang 👋</div>
+        <div class="welcome-name" id="welcomeName">—</div>
+        <div class="welcome-datetime" id="welcomeDateTime">—</div>
+      </div>
+
+      <div class="section-header">
+        <div>
+          <div class="section-title">🛠 Kategori Layanan</div>
+          <div class="section-sub">Bantuan apa yang kamu butuhkan?</div>
+        </div>
+      </div>
+      <div class="categories-scroll">
+        <div class="categories-grid" id="categoriesGrid"></div>
+      </div>
+
+      <div class="section-header" style="margin-top:20px;">
+        <div>
+          <div class="section-title">⚡ Helper Online</div>
+          <div class="section-sub">Siap membantu sekarang</div>
+        </div>
+      </div>
+      <div class="helpers-list" id="helpersList">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-text">Memuat helper online...</div>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- HELPER DASHBOARD PAGE -->
+    <div class="page" id="page-helper">
+      <div class="top-bar">
+        <div class="top-bar-title">Dashboard</div>
+        <div class="top-bar-actions">
+          <button class="icon-btn" onclick="refreshOrders()">🔄</button>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dash-avatar-row">
+          <div class="dash-avatar-ph" id="dashAvatarContainer"></div>
+          <div>
+            <div class="dash-greeting">Halo, Helper!</div>
+            <div class="dash-name" id="dashName">—</div>
+            <div style="font-size:12px;opacity:0.7;" id="dashDateTime">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Pendapatan</div>
+          <div class="stat-value green" id="statTotalIncome">Rp 0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pendapatan Hari Ini</div>
+          <div class="stat-value orange" id="statTodayIncome">Rp 0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Order</div>
+          <div class="stat-value" id="statTotalOrder">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Selesai / Ditolak</div>
+          <div class="stat-value" id="statDoneRejected">0 / 0</div>
+        </div>
+      </div>
+
+      <div class="toggle-card">
+        <div class="toggle-info">
+          <div class="toggle-title">Status Online</div>
+          <div class="toggle-sub" id="toggleSub">Perlu upgrade Premium dulu</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="helperToggle" onchange="toggleHelperOnline(this)" disabled>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="section-header">
+        <div>
+          <div class="section-title">📥 Order Masuk</div>
+          <div class="section-sub">Order dari pengguna</div>
+        </div>
+      </div>
+      <div style="padding:0 16px;" id="orderIncomingList">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-text">Belum ada order masuk</div>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+
+    <!-- CHAT LIST PAGE -->
+    <div class="page" id="page-chat">
+      <div class="top-bar">
+        <div class="top-bar-title">💬 Chat</div>
+      </div>
+      <div style="padding:16px 16px 0;" class="chat-list" id="chatList">
+        <div class="empty-state">
+          <div class="empty-icon">💬</div>
+          <div class="empty-text">Belum ada percakapan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY PAGE -->
+    <div class="page" id="page-history">
+      <div class="top-bar">
+        <div class="top-bar-title">📋 Riwayat</div>
+      </div>
+      <div style="padding:16px 0 0;">
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="filterHistory('semua')">Semua</button>
+          <button class="tab-btn" onclick="filterHistory('proses')">Proses</button>
+          <button class="tab-btn" onclick="filterHistory('selesai')">Selesai</button>
+          <button class="tab-btn" onclick="filterHistory('ditolak')">Ditolak</button>
+        </div>
+        <div style="padding:0 16px;" id="historyList">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">Belum ada riwayat</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div class="page" id="page-profile">
+      <div class="scroll-page">
+        <div class="profile-header">
+          <div class="profile-photo-wrap">
+            <div class="profile-photo-ph" id="profilePhotoContainer">😊</div>
+          </div>
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-badges" id="profileBadges"></div>
+        </div>
+        <div class="profile-body">
+          <div class="menu-item" onclick="openUpgradePremium()">
+            <div class="menu-icon gold">⭐</div>
+            <div class="menu-text">
+              <div class="menu-title">Upgrade Premium</div>
+              <div class="menu-sub">User +5 order • Helper buka toggle online</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="openUpgradePro()">
+            <div class="menu-icon purple">💎</div>
+            <div class="menu-text">
+              <div class="menu-title">Upgrade PRO</div>
+              <div class="menu-sub">Order & terima tanpa batas + auto rating 5</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="openEditProfile()">
+            <div class="menu-icon blue">✏️</div>
+            <div class="menu-text">
+              <div class="menu-title">Edit Profil</div>
+              <div class="menu-sub">Ubah foto, nama, domisili, bio</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="toggleDarkMode()">
+            <div class="menu-icon gray">🌙</div>
+            <div class="menu-text">
+              <div class="menu-title">Mode Gelap/Terang</div>
+              <div class="menu-sub" id="darkModeStatus">Mode Terang aktif</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="openWarning()">
+            <div class="menu-icon orange">⚠️</div>
+            <div class="menu-text">
+              <div class="menu-title">Perhatian Penting</div>
+              <div class="menu-sub">Keamanan & privasi</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="openAbout()">
+            <div class="menu-icon blue">ℹ️</div>
+            <div class="menu-text">
+              <div class="menu-title">Tentang Aplikasi</div>
+              <div class="menu-sub">Versi 1.0.0</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="openReport()">
+            <div class="menu-icon gray">🚩</div>
+            <div class="menu-text">
+              <div class="menu-title">Laporkan</div>
+              <div class="menu-sub">Kirim laporan ke tim kami</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="confirmDeleteAccount()">
+            <div class="menu-icon red">🗑️</div>
+            <div class="menu-text">
+              <div class="menu-title" style="color:var(--danger)">Hapus Akun</div>
+              <div class="menu-sub">Hapus semua data kamu</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+          <div class="menu-item" onclick="logout()">
+            <div class="menu-icon red">🚪</div>
+            <div class="menu-text">
+              <div class="menu-title" style="color:var(--danger)">Keluar</div>
+              <div class="menu-sub">Logout dari akun</div>
+            </div>
+            <div class="menu-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" onclick="switchPage('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="switchPage('helper')" id="nav-helper" style="display:none;">
+      <span class="nav-icon">🦺</span>
+      <span>Helper</span>
+      <span class="nav-badge" id="orderBadge" style="display:none;">0</span>
+    </button>
+    <button class="nav-btn" onclick="switchPage('chat')" id="nav-chat">
+      <span class="nav-icon">💬</span>
+      <span>Chat</span>
+      <span class="nav-badge" id="chatBadge" style="display:none;">0</span>
+    </button>
+    <button class="nav-btn" onclick="switchPage('history')" id="nav-history">
+      <span class="nav-icon">📋</span>
+      <span>History</span>
+    </button>
+    <button class="nav-btn" onclick="switchPage('profile')" id="nav-profile">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- CHAT WINDOW SCREEN -->
+<div class="screen" id="screen-chat">
+  <div class="chat-window-header">
+    <span class="chat-back" onclick="closeChatWindow()">‹</span>
+    <div class="chat-window-avatar-ph" id="chatWindowAvatar">?</div>
+    <div style="flex:1;">
+      <div class="chat-window-name" id="chatWindowName">—</div>
+      <div class="chat-window-status" id="chatWindowStatus">Online</div>
+    </div>
+  </div>
+  <div class="messages-area" id="messagesArea"></div>
+  <div class="chat-input-bar">
+    <input class="chat-input" id="chatInputField" placeholder="Tulis pesan..." onkeypress="handleChatKeypress(event)">
+    <button class="chat-send" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- ORDER MODAL (user -> order helper) -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📦 Buat Order</div>
+    <div class="form-group">
+      <label class="form-label">Helper</label>
+      <input class="form-input" id="orderHelperName" readonly>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategori</label>
+      <select class="form-input" id="orderCategory"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deskripsi Bantuan</label>
+      <textarea class="form-input" id="orderDesc" placeholder="Jelaskan bantuan yang kamu butuhkan..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nominal Bayaran (Rp)</label>
+      <input class="form-input" type="number" id="orderPrice" placeholder="50000">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('orderModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;" onclick="submitOrder()">📤 Kirim Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT ORDER MODAL -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">❌ Tolak Order</div>
+    <div class="form-group">
+      <label class="form-label">Alasan Penolakan</label>
+      <textarea class="form-input" id="rejectReason" placeholder="Tuliskan alasan penolakan..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('rejectModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;background:var(--danger);box-shadow:none;" onclick="confirmReject()">❌ Tolak</button>
+    </div>
+  </div>
+</div>
+
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⭐ Beri Rating</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Bagaimana pengalaman kamu dengan helper ini?</p>
+    <div class="stars" id="starsContainer">
+      <span class="star" onclick="setRating(1)">★</span>
+      <span class="star" onclick="setRating(2)">★</span>
+      <span class="star" onclick="setRating(3)">★</span>
+      <span class="star" onclick="setRating(4)">★</span>
+      <span class="star" onclick="setRating(5)">★</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Komentar (opsional)</label>
+      <textarea class="form-input" id="ratingComment" placeholder="Ceritakan pengalamanmu..."></textarea>
+    </div>
+    <button class="btn-primary" onclick="submitRating()">⭐ Kirim Rating</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION MODAL (for helpers) -->
+<div class="modal-overlay center" id="notifModal">
+  <div class="modal-box notif-modal">
+    <div class="notif-badge">📥 Order Masuk!</div>
+    <div class="modal-title" id="notifTitle">Order Baru</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;" id="notifDesc">—</p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('notifModal')">Tutup</button>
+      <button class="btn-primary" style="flex:2;" onclick="goToHelperPage()">👀 Lihat</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE PREMIUM MODAL -->
+<div class="modal-overlay" id="premiumModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⭐ Upgrade Premium</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Lengkapi data untuk upgrade Premium.</p>
+    <div class="form-group">
+      <label class="form-label">Nomor HP</label>
+      <input class="form-input" type="tel" id="premiumPhone" placeholder="08xxxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Foto KTP</label>
+      <div class="upgrade-photo-upload" id="ktpUploadBtn" onclick="document.getElementById('ktpFileInput').click()">
+        <img id="ktpPreview" src="" style="display:none;">
+        <span style="font-size:28px;">🪪</span>
+        <span style="font-size:12px;color:var(--text-muted);margin-top:6px;">Upload KTP</span>
+      </div>
+      <input type="file" id="ktpFileInput" accept="image/*" style="display:none;" onchange="handleKtpUpload(this)">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('premiumModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;" onclick="submitPremium()">⭐ Kirim</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE PRO MODAL -->
+<div class="modal-overlay center" id="proModal">
+  <div class="modal-box">
+    <div class="modal-title">💎 Upgrade PRO</div>
+    <div class="saweria-box">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Transfer ke Saweria kami:</p>
+      <a class="saweria-link" href="https://saweria.co/bbqpro" target="_blank">saweria.co/bbqpro</a>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Konfirmasi</label>
+      <input class="form-input" type="email" id="proEmail" placeholder="email@kamu.com">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('proModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;" onclick="submitPro()">💎 Kirim</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="editProfileModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✏️ Edit Profil</div>
+    <div class="form-group" style="text-align:center;">
+      <div class="photo-upload" id="editPhotoBtn" onclick="document.getElementById('editPhotoInput').click()">
+        <img id="editPhotoPreview" src="" style="display:none;">
+        <span class="photo-upload-icon">📷</span>
+        <span class="photo-upload-text">Ubah Foto</span>
+      </div>
+      <input type="file" id="editPhotoInput" accept="image/*" style="display:none;" onchange="handleEditPhotoUpload(this)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nama</label>
+      <input class="form-input" id="editName">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Domisili</label>
+      <input class="form-input" id="editDomisili">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Gender</label>
+      <select class="form-input" id="editGender">
+        <option value="Laki-laki">Laki-laki</option>
+        <option value="Perempuan">Perempuan</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bio</label>
+      <textarea class="form-input" id="editBio"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Peran</label>
+      <div class="role-select">
+        <div class="role-btn" id="editRoleUser" onclick="selectEditRole('user')">
+          <span class="role-icon">👤</span>User
+        </div>
+        <div class="role-btn" id="editRoleHelper" onclick="selectEditRole('helper')">
+          <span class="role-icon">🦺</span>Helper
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('editProfileModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;" onclick="saveEditProfile()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- WARNING MODAL -->
+<div class="modal-overlay" id="warningModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚠️ Perhatian Penting</div>
+    <div class="warning-content">
+      <p><strong>🔒 Jaga Privasi:</strong> Jangan pernah membagikan data pribadi seperti nomor KTP, password, atau informasi sensitif kepada orang asing di aplikasi ini.</p><br>
+      <p><strong>⚠️ Waspada Penipuan:</strong> BBQ PRO tidak pernah meminta transfer uang langsung ke rekening pribadi. Semua pembayaran dilakukan di luar aplikasi atas kesepakatan bersama.</p><br>
+      <p><strong>👥 Bertemu Aman:</strong> Saat bertemu dengan helper/user pertama kali, pilih tempat yang ramai dan beritahu orang yang kamu percaya.</p><br>
+      <p><strong>🚨 Darurat:</strong> Jika merasa terancam atau dalam bahaya, segera hubungi pihak berwajib (110/112).</p><br>
+      <p><strong>📸 Foto Profil:</strong> Gunakan foto yang jelas dan asli untuk memudahkan identifikasi.</p>
+    </div>
+    <button class="btn-primary" style="margin-top:20px;" onclick="closeModal('warningModal')">Mengerti</button>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">ℹ️ Tentang BBQ PRO</div>
+    <div class="about-content">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:var(--primary)">BBQ<span style="color:var(--accent)">PRO</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">Versi 1.0.0</div>
+      </div>
+      <p><strong>BBQ PRO</strong> adalah platform layanan bantuan on-demand yang menghubungkan pengguna yang membutuhkan bantuan dengan helper yang siap membantu kapan saja.</p><br>
+      <p>Dari ojek, kencan, teman kondangan, hingga gotong kursi dan bantu lahiran sapi — semua tersedia di BBQ PRO.</p><br>
+      <p><strong>Dikembangkan dengan ❤️ untuk komunitas lokal.</strong></p><br>
+      <p>Untuk pertanyaan dan dukungan: <a href="mailto:support@bbqpro.id" style="color:var(--primary)">support@bbqpro.id</a></p>
+    </div>
+    <button class="btn-primary" style="margin-top:20px;" onclick="closeModal('aboutModal')">Tutup</button>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🚩 Kirim Laporan</div>
+    <div class="form-group">
+      <label class="form-label">Jenis Laporan</label>
+      <select class="form-input" id="reportType">
+        <option>Penipuan</option>
+        <option>Pelecehan</option>
+        <option>Konten tidak pantas</option>
+        <option>Bug Aplikasi</option>
+        <option>Lainnya</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deskripsi</label>
+      <textarea class="form-input" id="reportDesc" placeholder="Jelaskan masalah yang kamu alami..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('reportModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;" onclick="submitReport()">🚩 Kirim</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-overlay center" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-title">🗑️ Hapus Akun</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Yakin ingin menghapus akun kamu? Semua data akan hilang permanen.</p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-primary" style="flex:1;background:var(--text-muted);box-shadow:none;" onclick="closeModal('deleteModal')">Batal</button>
+      <button class="btn-primary" style="flex:2;background:var(--danger);box-shadow:none;" onclick="deleteAccount()">🗑️ Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, push, onValue, update, remove, onChildAdded, serverTimestamp, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
+  authDomain: "mocharettadev-313db.firebaseapp.com",
+  databaseURL: "https://mocharettadev-313db-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "mocharettadev-313db",
+  storageBucket: "mocharettadev-313db.firebasestorage.app",
+  messagingSenderId: "338398624429",
+  appId: "1:338398624429:web:945ac927b840269f976424",
+  measurementId: "G-J1Z9JE6KH6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ====== GLOBAL STATE ======
+let currentUser = null;
+let currentUserId = null;
+let selectedRole = 'user';
+let editSelectedRole = 'user';
+let photoBase64 = null;
+let editPhotoBase64 = null;
+let ktpBase64 = null;
+let currentOrderHelperUid = null;
+let currentRejectOrderId = null;
+let currentRatingOrderId = null;
+let currentRatingHelperId = null;
+let selectedRating = 0;
+let activeOrderListeners = {};
+let chatPartnerUid = null;
+let chatConvId = null;
+let categories = [];
+let currentHistoryFilter = 'semua';
+let darkMode = false;
+let helperOnlineStatus = false;
+let orderNotifShown = {};
+
+// CATEGORIES
+const CATEGORIES = [
+  {icon:'🛵', name:'Ojek'},{icon:'💑', name:'Kencan'},{icon:'👔', name:'Teman Kondangan'},
+  {icon:'🎮', name:'Mabar'},{icon:'🎣', name:'Mancing'},{icon:'📦', name:'Ambil Barang'},
+  {icon:'⏳', name:'Ambil Antrian'},{icon:'🌿', name:'Potong Rumput'},{icon:'🏡', name:'Bersihkan Halaman'},
+  {icon:'🚽', name:'Bersihkan WC'},{icon:'🛒', name:'Belanja Pasar'},{icon:'🐭', name:'Basmi Tikus'},
+  {icon:'🏠', name:'Benerin Genteng'},{icon:'⛽', name:'Kehabisan Bensin'},{icon:'🔧', name:'Kendaraan Mogok'},
+  {icon:'🪑', name:'Gotong Kursi'},{icon:'💪', name:'Kuli Panggul'},{icon:'🐄', name:'Bantu Lahiran Sapi'},
+  {icon:'👷', name:'Bantu Kerjaan'},{icon:'🆘', name:'Bantuan Lainnya'}
+];
+
+// ====== INIT ======
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').style.display = 'none';
+    initApp();
+  }, 1800);
+});
+
+function initApp() {
+  const saved = localStorage.getItem('bbqpro_user');
+  if (saved) {
+    const u = JSON.parse(saved);
+    currentUserId = u.uid;
+    // refresh from DB
+    get(ref(db, 'users/' + currentUserId)).then(snap => {
+      if (snap.exists()) {
+        currentUser = snap.val();
+        localStorage.setItem('bbqpro_user', JSON.stringify({uid: currentUserId, ...currentUser}));
+        launchApp();
+      } else {
+        showScreen('screen-register');
+      }
+    });
+  } else {
+    showScreen('screen-register');
+  }
+}
+
+function launchApp() {
+  renderCategories();
+  renderNav();
+  updateWelcome();
+  updateDashboardAvatar();
+  updateProfileHeader();
+  showScreen('screen-app');
+  switchPage('home');
+  startClock();
+  refreshOnlineHelpers();
+  loadChatList();
+  loadHistory();
+  if (currentUser.role === 'helper') {
+    loadIncomingOrders();
+    loadHelperStats();
+    initHelperToggle();
+    listenNewOrders();
+  }
+  listenChatBadge();
+}
+
+// ====== SCREENS ======
+window.showScreen = function(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+// ====== NAV ======
+function renderNav() {
+  const helperBtn = document.getElementById('nav-helper');
+  if (currentUser.role === 'helper') {
+    helperBtn.style.display = 'flex';
+  } else {
+    helperBtn.style.display = 'none';
+  }
+}
+
+window.switchPage = function(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+
+  if (page === 'history') loadHistory();
+  if (page === 'chat') loadChatList();
+  if (page === 'helper' && currentUser.role === 'helper') { loadIncomingOrders(); loadHelperStats(); }
+};
+
+// ====== CLOCK ======
+function startClock() {
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+function updateClock() {
+  const now = new Date();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const str = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} — ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const el1 = document.getElementById('welcomeDateTime');
+  const el2 = document.getElementById('dashDateTime');
+  if (el1) el1.textContent = str;
+  if (el2) el2.textContent = str;
+}
+function pad(n) { return n < 10 ? '0' + n : n; }
+
+// ====== WELCOME ======
+function updateWelcome() {
+  document.getElementById('welcomeName').textContent = currentUser.name || '—';
+}
+
+function updateDashboardAvatar() {
+  const el = document.getElementById('dashAvatarContainer');
+  const nm = document.getElementById('dashName');
+  if (nm) nm.textContent = currentUser.name || '—';
+  if (!el) return;
+  if (currentUser.photo) {
+    el.innerHTML = `<img src="${currentUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  } else {
+    el.textContent = (currentUser.name || '?')[0].toUpperCase();
+  }
+}
+
+function updateProfileHeader() {
+  document.getElementById('profileName').textContent = currentUser.name || '—';
+  const pc = document.getElementById('profilePhotoContainer');
+  if (currentUser.photo) {
+    pc.innerHTML = `<img src="${currentUser.photo}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,0.5);">`;
+  } else {
+    pc.textContent = (currentUser.name || '?')[0].toUpperCase();
+  }
+  const badges = document.getElementById('profileBadges');
+  badges.innerHTML = '';
+  if (currentUser.role === 'helper') {
+    badges.innerHTML += `<span class="badge-role">Helper</span>`;
+  } else {
+    badges.innerHTML += `<span class="badge-role">User</span>`;
+  }
+  if (currentUser.tier === 'pro') {
+    badges.innerHTML += `<span class="badge-role badge-pro">PRO 💎</span>`;
+  } else if (currentUser.tier === 'premium') {
+    badges.innerHTML += `<span class="badge-role badge-premium">Premium ⭐</span>`;
+  }
+}
+
+// ====== REGISTER ======
+window.selectRole = function(r) {
+  selectedRole = r;
+  document.getElementById('roleUser').classList.toggle('selected', r === 'user');
+  document.getElementById('roleHelper').classList.toggle('selected', r === 'helper');
+};
+
+window.handlePhotoUpload = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoBase64 = e.target.result;
+    const preview = document.getElementById('photoPreview');
+    preview.src = photoBase64;
+    preview.style.display = 'block';
+    document.querySelector('.photo-upload-icon').style.display = 'none';
+    document.querySelector('.photo-upload-text').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.register = async function() {
+  const name = document.getElementById('regName').value.trim();
+  const gender = document.getElementById('regGender').value;
+  const age = document.getElementById('regAge').value;
+  const domisili = document.getElementById('regDomisili').value.trim();
+  const bio = document.getElementById('regBio').value.trim();
+
+  if (!name || !gender || !age || !domisili) {
+    showToast('⚠️ Harap isi semua data!'); return;
+  }
+  const btn = document.getElementById('btnRegister');
+  btn.textContent = '⏳ Mendaftar...'; btn.disabled = true;
+
+  const uid = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+  const userData = {
+    uid, name, gender, age: parseInt(age), domisili, bio,
+    role: selectedRole,
+    photo: photoBase64 || null,
+    tier: 'free',
+    rating: 0,
+    ratingCount: 0,
+    isOnline: false,
+    createdAt: Date.now()
+  };
+
+  try {
+    await set(ref(db, 'users/' + uid), userData);
+    currentUser = userData;
+    currentUserId = uid;
+    localStorage.setItem('bbqpro_user', JSON.stringify({uid, ...userData}));
+    showToast('✅ Pendaftaran berhasil!');
+    setTimeout(() => launchApp(), 800);
+  } catch(e) {
+    showToast('❌ Gagal daftar: ' + e.message);
+    btn.textContent = '🚀 Daftar Sekarang'; btn.disabled = false;
+  }
+};
+
+// ====== CATEGORIES ======
+function renderCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  grid.innerHTML = '';
+  // Populate order modal select
+  const orderCatSelect = document.getElementById('orderCategory');
+  orderCatSelect.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'category-item';
+    el.innerHTML = `<span class="cat-icon">${cat.icon}</span><span class="cat-name">${cat.name}</span>`;
+    el.onclick = () => {
+      document.querySelectorAll('.category-item').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+    grid.appendChild(el);
+
+    const opt = document.createElement('option');
+    opt.value = cat.name;
+    opt.textContent = cat.icon + ' ' + cat.name;
+    orderCatSelect.appendChild(opt);
+  });
+}
+
+// ====== ONLINE HELPERS ======
+window.refreshOnlineHelpers = function() {
+  const list = document.getElementById('helpersList');
+  list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Mencari helper online...</div></div>';
+  const q = query(ref(db, 'users'), orderByChild('isOnline'), equalTo(true));
+  onValue(q, snap => {
+    if (!snap.exists()) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">😴</div><div class="empty-text">Belum ada helper online saat ini</div></div>';
+      return;
+    }
+    const helpers = [];
+    snap.forEach(child => {
+      const u = child.val();
+      if (u.role === 'helper') helpers.push({uid: child.key, ...u});
+    });
+    if (helpers.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">😴</div><div class="empty-text">Belum ada helper online saat ini</div></div>';
+      return;
+    }
+    list.innerHTML = helpers.map(h => renderHelperCard(h)).join('');
+  }, { onlyOnce: false });
+};
+
+function renderHelperCard(h) {
+  const stars = '⭐'.repeat(Math.round(h.rating || 0));
+  const avatarHtml = h.photo
+    ? `<img class="helper-avatar" src="${h.photo}">`
+    : `<div class="helper-avatar-placeholder">${(h.name||'?')[0].toUpperCase()}</div>`;
+  const tierBadge = h.tier === 'pro' ? `<span class="badge-role badge-pro">PRO</span>` : h.tier === 'premium' ? `<span class="badge-role badge-premium">Premium</span>` : '';
+  const canOrder = currentUserId !== h.uid;
+  return `<div class="helper-card">
+    ${avatarHtml}
+    <div class="helper-info">
+      <div class="helper-name">${h.name} ${tierBadge}</div>
+      <div class="helper-meta"><span class="badge-online">Online</span><span class="badge-role">${h.role}</span> · ${h.gender||''} · ${h.age||''}thn · ${h.domisili||''}</div>
+      <div class="helper-bio">${h.bio||''}</div>
+      <div class="helper-rating">${stars||'☆☆☆☆☆'} <span style="color:var(--text-muted);font-weight:400">(${h.ratingCount||0})</span></div>
+    </div>
+    ${canOrder ? `<button class="order-btn" onclick="openOrderModal('${h.uid}','${escHtml(h.name)}')">Order</button>` : ''}
+  </div>`;
+}
+
+function escHtml(s) { return (s||'').replace(/'/g, "\\'"); }
+
+// ====== ORDER (USER -> HELPER) ======
+window.openOrderModal = function(helperUid, helperName) {
+  currentOrderHelperUid = helperUid;
+  document.getElementById('orderHelperName').value = helperName;
+  openModal('orderModal');
+};
+
+window.submitOrder = async function() {
+  const cat = document.getElementById('orderCategory').value;
+  const desc = document.getElementById('orderDesc').value.trim();
+  const price = document.getElementById('orderPrice').value;
+  if (!desc || !price) { showToast('⚠️ Isi deskripsi dan nominal!'); return; }
+
+  const orderData = {
+    userUid: currentUserId,
+    userName: currentUser.name,
+    userPhoto: currentUser.photo || null,
+    helperUid: currentOrderHelperUid,
+    category: cat,
+    desc, price: parseInt(price),
+    status: 'proses',
+    createdAt: Date.now()
+  };
+
+  try {
+    await push(ref(db, 'orders'), orderData);
+    closeModal('orderModal');
+    document.getElementById('orderDesc').value = '';
+    document.getElementById('orderPrice').value = '';
+    showToast('✅ Order terkirim!');
+  } catch(e) {
+    showToast('❌ Gagal kirim order: ' + e.message);
+  }
+};
+
+// ====== HELPER TOGGLE ======
+function initHelperToggle() {
+  const toggle = document.getElementById('helperToggle');
+  const sub = document.getElementById('toggleSub');
+  const hasPremium = currentUser.tier === 'premium' || currentUser.tier === 'pro';
+  if (hasPremium) {
+    toggle.disabled = false;
+    sub.textContent = 'Aktifkan untuk terima order';
+    toggle.checked = currentUser.isOnline || false;
+    helperOnlineStatus = currentUser.isOnline || false;
+    updateOnlineBar(helperOnlineStatus);
+  } else {
+    toggle.disabled = true;
+    sub.textContent = 'Upgrade Premium untuk aktifkan';
+  }
+}
+
+window.toggleHelperOnline = async function(el) {
+  const isOnline = el.checked;
+  helperOnlineStatus = isOnline;
+  try {
+    await update(ref(db, 'users/' + currentUserId), { isOnline });
+    currentUser.isOnline = isOnline;
+    updateLocalUser();
+    updateOnlineBar(isOnline);
+    showToast(isOnline ? '✅ Kamu sekarang ONLINE' : '⏹ Kamu sekarang OFFLINE');
+  } catch(e) {
+    showToast('❌ Gagal update status');
+    el.checked = !isOnline;
+  }
+};
+
+function updateOnlineBar(isOnline) {
+  const bar = document.getElementById('onlineBar');
+  bar.classList.toggle('show', isOnline);
+}
+
+// ====== INCOMING ORDERS ======
+function loadIncomingOrders() {
+  const list = document.getElementById('orderIncomingList');
+  const q = query(ref(db, 'orders'), orderByChild('helperUid'), equalTo(currentUserId));
+  onValue(q, snap => {
+    const orders = [];
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const o = child.val();
+        if (o.status === 'proses') orders.push({id: child.key, ...o});
+      });
+    }
+    if (orders.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Belum ada order masuk</div></div>';
+      const badge = document.getElementById('orderBadge');
+      badge.style.display = 'none';
+      return;
+    }
+    const badge = document.getElementById('orderBadge');
+    badge.textContent = orders.length;
+    badge.style.display = 'flex';
+    list.innerHTML = orders.map(o => renderOrderCard(o)).join('');
+  });
+}
+
+function renderOrderCard(o) {
+  return `<div class="order-card">
+    <div class="order-header">
+      <div class="order-user">👤 ${o.userName}</div>
+      <div class="order-category">${o.category}</div>
+    </div>
+    <div class="order-desc">${o.desc}</div>
+    <div class="order-price">Rp ${(o.price||0).toLocaleString('id')}</div>
+    <div class="order-actions">
+      <button class="btn-accept" onclick="acceptOrder('${o.id}','${o.userUid}')">✅ Terima</button>
+      <button class="btn-reject" onclick="openRejectModal('${o.id}')">❌ Tolak</button>
+      <button class="btn-chat-order" onclick="openChatWith('${o.userUid}','${escHtml(o.userName)}')">💬 Chat</button>
+    </div>
+  </div>`;
+}
+
+window.acceptOrder = async function(orderId, userUid) {
+  try {
+    await update(ref(db, 'orders/' + orderId), { status: 'proses_accepted', acceptedAt: Date.now() });
+    showToast('✅ Order diterima!');
+    loadIncomingOrders();
+    loadHistory();
+  } catch(e) { showToast('❌ Gagal'); }
+};
+
+window.openRejectModal = function(orderId) {
+  currentRejectOrderId = orderId;
+  document.getElementById('rejectReason').value = '';
+  openModal('rejectModal');
+};
+
+window.confirmReject = async function() {
+  const reason = document.getElementById('rejectReason').value.trim();
+  if (!reason) { showToast('⚠️ Tulis alasan dulu!'); return; }
+  try {
+    await update(ref(db, 'orders/' + currentRejectOrderId), { status: 'ditolak', rejectReason: reason, rejectedAt: Date.now() });
+    closeModal('rejectModal');
+    showToast('Order ditolak');
+    loadIncomingOrders();
+    loadHistory();
+  } catch(e) { showToast('❌ Gagal'); }
+};
+
+function listenNewOrders() {
+  const q = query(ref(db, 'orders'), orderByChild('helperUid'), equalTo(currentUserId));
+  onChildAdded(q, snap => {
+    const o = snap.val();
+    if (o.status === 'proses' && !orderNotifShown[snap.key]) {
+      orderNotifShown[snap.key] = true;
+      if (document.getElementById('page-helper').classList.contains('active')) return;
+      document.getElementById('notifTitle').textContent = `Order dari ${o.userName}`;
+      document.getElementById('notifDesc').textContent = `${o.category}: ${o.desc.substring(0,60)}...`;
+      openModal('notifModal');
+    }
+  });
+}
+
+window.goToHelperPage = function() {
+  closeModal('notifModal');
+  switchPage('helper');
+};
+
+// ====== HELPER STATS ======
+function loadHelperStats() {
+  const q = query(ref(db, 'orders'), orderByChild('helperUid'), equalTo(currentUserId));
+  onValue(q, snap => {
+    let total = 0, today = 0, totalOrder = 0, done = 0, rejected = 0;
+    const todayStr = new Date().toDateString();
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const o = child.val();
+        totalOrder++;
+        if (o.status === 'selesai') {
+          done++;
+          total += o.price || 0;
+          if (new Date(o.completedAt || o.createdAt).toDateString() === todayStr) today += o.price || 0;
+        }
+        if (o.status === 'ditolak') rejected++;
+      });
+    }
+    document.getElementById('statTotalIncome').textContent = 'Rp ' + total.toLocaleString('id');
+    document.getElementById('statTodayIncome').textContent = 'Rp ' + today.toLocaleString('id');
+    document.getElementById('statTotalOrder').textContent = totalOrder;
+    document.getElementById('statDoneRejected').textContent = done + ' / ' + rejected;
+  }, { onlyOnce: true });
+}
+
+// ====== CHAT ======
+function getChatConvId(uid1, uid2) {
+  return [uid1, uid2].sort().join('_');
+}
+
+window.openChatWith = function(partnerUid, partnerName) {
+  chatPartnerUid = partnerUid;
+  chatConvId = getChatConvId(currentUserId, partnerUid);
+  document.getElementById('chatWindowName').textContent = partnerName;
+  document.getElementById('chatWindowAvatar').textContent = (partnerName||'?')[0].toUpperCase();
+  document.getElementById('chatWindowStatus').textContent = 'BBQ PRO Chat';
+  document.getElementById('messagesArea').innerHTML = '';
+  showScreen('screen-chat');
+  listenMessages();
+};
+
+window.closeChatWindow = function() {
+  showScreen('screen-app');
+  chatPartnerUid = null;
+  chatConvId = null;
+};
+
+function listenMessages() {
+  const area = document.getElementById('messagesArea');
+  onValue(ref(db, 'chats/' + chatConvId), snap => {
+    area.innerHTML = '';
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const m = child.val();
+        const isSent = m.senderUid === currentUserId;
+        const t = new Date(m.timestamp || 0);
+        const timeStr = pad(t.getHours()) + ':' + pad(t.getMinutes());
+        area.innerHTML += `<div class="msg ${isSent?'sent':'received'}">
+          <div class="msg-bubble">${m.text}</div>
+          <div class="msg-time">${timeStr}</div>
+        </div>`;
+      });
+      area.scrollTop = area.scrollHeight;
+    }
+  });
+}
+
+window.sendMessage = async function() {
+  const input = document.getElementById('chatInputField');
+  const text = input.value.trim();
+  if (!text || !chatConvId) return;
+  input.value = '';
+  const msgData = {
+    senderUid: currentUserId,
+    senderName: currentUser.name,
+    receiverUid: chatPartnerUid,
+    text,
+    timestamp: Date.now()
+  };
+  try {
+    await push(ref(db, 'chats/' + chatConvId), msgData);
+    // also update convlist for both users
+    const convData = { lastMsg: text, lastTime: Date.now(), [currentUserId]: currentUser.name, [chatPartnerUid]: chatPartnerUid };
+    await set(ref(db, 'convlist/' + currentUserId + '/' + chatPartnerUid), {
+      partnerUid: chatPartnerUid,
+      partnerName: chatPartnerUid,
+      lastMsg: text, lastTime: Date.now(), unread: 0
+    });
+    await set(ref(db, 'convlist/' + chatPartnerUid + '/' + currentUserId), {
+      partnerUid: currentUserId,
+      partnerName: currentUser.name,
+      partnerPhoto: currentUser.photo || null,
+      lastMsg: text, lastTime: Date.now(), unread: 1
+    });
+  } catch(e) { showToast('❌ Gagal kirim'); }
+};
+
+window.handleChatKeypress = function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+};
+
+function loadChatList() {
+  const list = document.getElementById('chatList');
+  onValue(ref(db, 'convlist/' + currentUserId), snap => {
+    if (!snap.exists()) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-text">Belum ada percakapan</div></div>';
+      return;
+    }
+    const convs = [];
+    snap.forEach(child => convs.push({key: child.key, ...child.val()}));
+    convs.sort((a,b) => (b.lastTime||0) - (a.lastTime||0));
+    list.innerHTML = convs.map(c => {
+      const avatarHtml = c.partnerPhoto
+        ? `<img class="chat-avatar" src="${c.partnerPhoto}">`
+        : `<div class="chat-avatar-ph">${(c.partnerName||'?')[0].toUpperCase()}</div>`;
+      const t = new Date(c.lastTime||0);
+      const timeStr = pad(t.getHours()) + ':' + pad(t.getMinutes());
+      return `<div class="chat-item" onclick="openChatWith('${c.partnerUid||c.key}','${escHtml(c.partnerName)}')">
+        ${avatarHtml}
+        <div class="chat-info">
+          <div class="chat-name">${c.partnerName||'—'}</div>
+          <div class="chat-last">${c.lastMsg||''}</div>
+        </div>
+        <div>
+          <div class="chat-time">${timeStr}</div>
+          ${(c.unread > 0) ? `<div class="chat-unread">${c.unread}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+function listenChatBadge() {
+  onValue(ref(db, 'convlist/' + currentUserId), snap => {
+    let total = 0;
+    if (snap.exists()) snap.forEach(c => total += c.val().unread || 0);
+    const badge = document.getElementById('chatBadge');
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'flex' : 'none';
+  });
+}
+
+// ====== HISTORY ======
+function loadHistory() {
+  const list = document.getElementById('historyList');
+  const q = currentUser.role === 'helper'
+    ? query(ref(db, 'orders'), orderByChild('helperUid'), equalTo(currentUserId))
+    : query(ref(db, 'orders'), orderByChild('userUid'), equalTo(currentUserId));
+
+  onValue(q, snap => {
+    let orders = [];
+    if (snap.exists()) snap.forEach(child => orders.push({id: child.key, ...child.val()}));
+    orders.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+    if (currentHistoryFilter !== 'semua') {
+      orders = orders.filter(o => {
+        if (currentHistoryFilter === 'proses') return o.status === 'proses' || o.status === 'proses_accepted';
+        return o.status === currentHistoryFilter;
+      });
+    }
+    if (orders.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Belum ada riwayat</div></div>';
+      return;
+    }
+    list.innerHTML = orders.map(o => renderHistoryCard(o)).join('');
+  }, { onlyOnce: true });
+}
+
+function renderHistoryCard(o) {
+  const statusMap = { proses: 'Menunggu', proses_accepted: 'Diproses', selesai: 'Selesai', ditolak: 'Ditolak' };
+  const statusClass = { proses: 'status-proses', proses_accepted: 'status-proses', selesai: 'status-selesai', ditolak: 'status-ditolak' };
+  const t = new Date(o.createdAt||0).toLocaleDateString('id-ID');
+  let extra = '';
+  if (currentUser.role === 'helper' && o.status === 'proses_accepted') {
+    extra = `<button class="btn-done" onclick="markDone('${o.id}')">✅ Tandai Selesai</button>`;
+  }
+  if (currentUser.role === 'user' && o.status === 'selesai' && !o.rated) {
+    extra = `<button class="btn-rate" onclick="openRatingModal('${o.id}','${o.helperUid}')">⭐ Beri Rating</button>`;
+  }
+  const partner = currentUser.role === 'helper' ? o.userName : ('Helper: ' + (o.helperUid||''));
+  return `<div class="history-card">
+    <div class="history-row">
+      <div class="history-user">👤 ${partner}</div>
+      <span class="status-badge ${statusClass[o.status]||'status-proses'}">${statusMap[o.status]||o.status}</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">${o.category} · ${t}</div>
+    <div style="font-size:13px;color:var(--text);">${o.desc}</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--success);margin-top:6px;">Rp ${(o.price||0).toLocaleString('id')}</div>
+    ${o.rejectReason ? `<div style="font-size:12px;color:var(--danger);margin-top:4px;">Alasan: ${o.rejectReason}</div>` : ''}
+    ${extra}
+  </div>`;
+}
+
+window.filterHistory = function(filter) {
+  currentHistoryFilter = filter;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  loadHistory();
+};
+
+window.markDone = async function(orderId) {
+  try {
+    await update(ref(db, 'orders/' + orderId), { status: 'selesai', completedAt: Date.now() });
+    showToast('✅ Order selesai!');
+    loadHistory();
+    loadHelperStats();
+  } catch(e) { showToast('❌ Gagal'); }
+};
+
+// ====== RATING ======
+window.openRatingModal = function(orderId, helperUid) {
+  currentRatingOrderId = orderId;
+  currentRatingHelperId = helperUid;
+  selectedRating = 0;
+  document.getElementById('ratingComment').value = '';
+  document.querySelectorAll('.star').forEach(s => s.style.color = '#ccc');
+  openModal('ratingModal');
+};
+
+window.setRating = function(n) {
+  selectedRating = n;
+  document.querySelectorAll('.star').forEach((s,i) => {
+    s.style.color = i < n ? '#FFD700' : '#ccc';
+  });
+};
+
+window.submitRating = async function() {
+  if (!selectedRating) { showToast('⚠️ Pilih bintang dulu!'); return; }
+  const comment = document.getElementById('ratingComment').value.trim();
+  try {
+    // Update order as rated
+    await update(ref(db, 'orders/' + currentRatingOrderId), { rated: true });
+    // Get current helper rating
+    const helperSnap = await get(ref(db, 'users/' + currentRatingHelperId));
+    if (helperSnap.exists()) {
+      const h = helperSnap.val();
+      const newCount = (h.ratingCount||0) + 1;
+      const newRating = ((h.rating||0) * (h.ratingCount||0) + selectedRating) / newCount;
+      await update(ref(db, 'users/' + currentRatingHelperId), {
+        rating: Math.round(newRating * 10) / 10,
+        ratingCount: newCount
+      });
+    }
+    // Save review
+    await push(ref(db, 'reviews'), {
+      orderId: currentRatingOrderId,
+      helperUid: currentRatingHelperId,
+      userUid: currentUserId,
+      rating: selectedRating,
+      comment,
+      createdAt: Date.now()
+    });
+    closeModal('ratingModal');
+    showToast('⭐ Rating terkirim!');
+    loadHistory();
+  } catch(e) { showToast('❌ Gagal kirim rating'); }
+};
+
+// ====== PROFILE ======
+window.openUpgradePremium = function() { openModal('premiumModal'); };
+window.openUpgradePro = function() { openModal('proModal'); };
+window.openWarning = function() { openModal('warningModal'); };
+window.openAbout = function() { openModal('aboutModal'); };
+window.openReport = function() { openModal('reportModal'); };
+window.confirmDeleteAccount = function() { openModal('deleteModal'); };
+
+window.handleKtpUpload = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    ktpBase64 = e.target.result;
+    const preview = document.getElementById('ktpPreview');
+    preview.src = ktpBase64;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.submitPremium = async function() {
+  const phone = document.getElementById('premiumPhone').value.trim();
+  if (!phone || !ktpBase64) { showToast('⚠️ Lengkapi data!'); return; }
+  try {
+    await update(ref(db, 'users/' + currentUserId), { tier: 'premium', phone, ktpPhoto: ktpBase64 });
+    currentUser.tier = 'premium';
+    updateLocalUser();
+    closeModal('premiumModal');
+    showToast('⭐ Upgrade Premium berhasil!');
+    initHelperToggle();
+    updateProfileHeader();
+  } catch(e) { showToast('❌ Gagal'); }
+};
+
+window.submitPro = async function() {
+  const email = document.getElementById('proEmail').value.trim();
+  if (!email) { showToast('⚠️ Isi email dulu!'); return; }
+  try {
+    await update(ref(db, 'users/' + currentUserId), { tier: 'pro', proEmail: email, rating: 5 });
+    currentUser.tier = 'pro';
+    currentUser.rating = 5;
+    updateLocalUser();
+    closeModal('proModal');
+    showToast('💎 Upgrade PRO berhasil!');
+    initHelperToggle();
+    updateProfileHeader();
+  } catch(e) { showToast('❌ Gagal'); }
+};
+
+window.openEditProfile = function() {
+  document.getElementById('editName').value = currentUser.name || '';
+  document.getElementById('editDomisili').value = currentUser.domisili || '';
+  document.getElementById('editGender').value = currentUser.gender || 'Laki-laki';
+  document.getElementById('editBio').value = currentUser.bio || '';
+  editSelectedRole = currentUser.role || 'user';
+  document.getElementById('editRoleUser').classList.toggle('selected', editSelectedRole === 'user');
+  document.getElementById('editRoleHelper').classList.toggle('selected', editSelectedRole === 'helper');
+  if (currentUser.photo) {
+    document.getElementById('editPhotoPreview').src = currentUser.photo;
+    document.getElementById('editPhotoPreview').style.display = 'block';
+  }
+  editPhotoBase64 = null;
+  openModal('editProfileModal');
+};
+
+window.selectEditRole = function(r) {
+  editSelectedRole = r;
+  document.getElementById('editRoleUser').classList.toggle('selected', r === 'user');
+  document.getElementById('editRoleHelper').classList.toggle('selected', r === 'helper');
+};
+
+window.handleEditPhotoUpload = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    editPhotoBase64 = e.target.result;
+    document.getElementById('editPhotoPreview').src = editPhotoBase64;
+    document.getElementById('editPhotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.saveEditProfile = async function() {
+  const name = document.getElementById('editName').value.trim();
+  const domisili = document.getElementById('editDomisili').value.trim();
+  const gender = document.getElementById('editGender').value;
+  const bio = document.getElementById('editBio').value.trim();
+  if (!name) { showToast('⚠️ Nama tidak boleh kosong!'); return; }
+  const updates = { name, domisili, gender, bio, role: editSelectedRole };
+  if (editPhotoBase64) updates.photo = editPhotoBase64;
+  try {
+    await update(ref(db, 'users/' + currentUserId), updates);
+    Object.assign(currentUser, updates);
+    updateLocalUser();
+    updateWelcome();
+    updateDashboardAvatar();
+    updateProfileHeader();
+    renderNav();
+    closeModal('editProfileModal');
+    showToast('✅ Profil diperbarui!');
+  } catch(e) { showToast('❌ Gagal simpan'); }
+};
+
+window.submitReport = async function() {
+  const type = document.getElementById('reportType').value;
+  const desc = document.getElementById('reportDesc').value.trim();
+  if (!desc) { showToast('⚠️ Isi deskripsi laporan!'); return; }
+  try {
+    await push(ref(db, 'reports'), { userUid: currentUserId, type, desc, createdAt: Date.now() });
+    closeModal('reportModal');
+    showToast('🚩 Laporan terkirim!');
+    document.getElementById('reportDesc').value = '';
+  } catch(e) { showToast('❌ Gagal kirim'); }
+};
+
+window.deleteAccount = async function() {
+  try {
+    await remove(ref(db, 'users/' + currentUserId));
+    localStorage.removeItem('bbqpro_user');
+    closeModal('deleteModal');
+    showToast('✅ Akun dihapus');
+    setTimeout(() => { location.reload(); }, 1000);
+  } catch(e) { showToast('❌ Gagal hapus akun'); }
+};
+
+window.logout = async function() {
+  if (currentUser.isOnline) {
+    await update(ref(db, 'users/' + currentUserId), { isOnline: false }).catch(()=>{});
+  }
+  localStorage.removeItem('bbqpro_user');
+  showToast('👋 Sampai jumpa!');
+  setTimeout(() => location.reload(), 800);
+};
+
+// ====== DARK MODE ======
+window.toggleDarkMode = function() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('dark', darkMode);
+  document.getElementById('darkModeStatus').textContent = darkMode ? 'Mode Gelap aktif' : 'Mode Terang aktif';
+};
+
+// ====== MODAL UTILS ======
+window.openModal = function(id) {
+  document.getElementById(id).classList.add('show');
+};
+window.closeModal = function(id) {
+  document.getElementById(id).classList.remove('show');
+};
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('show');
+  });
+});
+
+// ====== TOAST ======
+window.showToast = function(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+};
+
+// ====== HELPERS ======
+function updateLocalUser() {
+  localStorage.setItem('bbqpro_user', JSON.stringify({uid: currentUserId, ...currentUser}));
+}
+
+</script>
 </body>
 </html>
