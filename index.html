@@ -1316,30 +1316,62 @@ window.toggleHelperOnline = async function(el){
 };
 
 // CHAT
+// Track active conv listeners
+window.activeConvListeners = {};
+window.knownPeerIds = new Set();
+
 function listenChats(){
   const uid = window.currentProfile.uid;
-  const r = ref(db,`chats`);
-  onValue(r, snap => {
-    const convs = [];
+  // Dengarkan orders untuk dapat daftar peer (user maupun helper)
+  const ordersRef = ref(db,'orders');
+  onValue(ordersRef, snap => {
+    const peerIds = new Set();
     if(snap.exists()){
-      snap.forEach(convSnap => {
-        const key = convSnap.key;
-        if(key.includes(uid)){
-          const msgs = convSnap.val();
-          const msgArr = Object.values(msgs).sort((a,b)=>b.createdAt-a.createdAt);
-          const last = msgArr[0];
-          const peerId = key.replace(uid,'').replace('_','');
-          convs.push({key, peerId, last, unread: msgArr.filter(m=>m.to===uid&&!m.read).length});
-        }
+      snap.forEach(ch => {
+        const o = ch.val();
+        if(o.userId === uid && o.helperId) peerIds.add(o.helperId);
+        if(o.helperId === uid && o.userId) peerIds.add(o.userId);
       });
     }
-    renderChatList(convs);
-    // update badge
-    const totalUnread = convs.reduce((s,c)=>s+c.unread,0);
-    const badge = document.getElementById('chatBadge');
-    if(totalUnread>0){ badge.textContent=totalUnread; badge.classList.add('show'); }
-    else badge.classList.remove('show');
+    window.knownPeerIds = peerIds;
+    // Daftarkan listener per convKey agar real-time
+    peerIds.forEach(peerId => {
+      const convKey = getConvKey(uid, peerId);
+      if(window.activeConvListeners[convKey]) return;
+      const convRef = ref(db, `chats/${convKey}`);
+      const unsub = onValue(convRef, () => {
+        rebuildChatList(uid);
+      });
+      window.activeConvListeners[convKey] = unsub;
+    });
+    rebuildChatList(uid);
   });
+}
+
+async function rebuildChatList(uid){
+  const convs = [];
+  for(const peerId of window.knownPeerIds){
+    if(!peerId) continue;
+    const convKey = getConvKey(uid, peerId);
+    try {
+      const snap = await get(ref(db, `chats/${convKey}`));
+      const msgArr = [];
+      if(snap.exists()) snap.forEach(ch => msgArr.push(ch.val()));
+      msgArr.sort((a,b) => b.createdAt - a.createdAt);
+      convs.push({
+        key: convKey,
+        peerId,
+        last: msgArr[0] || null,
+        unread: msgArr.filter(m => m.to === uid && !m.read).length
+      });
+    } catch(e){ /* skip on permission error */ }
+  }
+  convs.sort((a,b) => (b.last?.createdAt||0) - (a.last?.createdAt||0));
+  renderChatList(convs);
+  const totalUnread = convs.reduce((s,c) => s+c.unread, 0);
+  const badge = document.getElementById('chatBadge');
+  if(totalUnread>0){ badge.textContent=totalUnread; badge.classList.add('show'); }
+  else badge.classList.remove('show');
 }
 
 async function renderChatList(convs){
@@ -1383,17 +1415,27 @@ window.openChatWith = function(peerId, peerName, peerPhoto){
 
 window.closeChatRoom = function(){
   document.getElementById('chatRoom').classList.remove('active');
-  // Mark read
+  // Detach message listener
+  const uid = window.currentUser.uid;
   if(window.currentChatPeerId){
-    const convKey = getConvKey(window.currentUser.uid, window.currentChatPeerId);
-    get(ref(db,`chats/${convKey}`)).then(snap=>{
+    const convKey = getConvKey(uid, window.currentChatPeerId);
+    if(window.chatListeners[convKey]){
+      window.chatListeners[convKey]();
+      delete window.chatListeners[convKey];
+    }
+    // Mark semua pesan masuk sebagai read
+    get(ref(db,`chats/${convKey}`)).then(snap => {
       if(snap.exists()){
         const updates = {};
-        snap.forEach(ch=>{ if(ch.val().to===window.currentUser.uid&&!ch.val().read) updates[`chats/${convKey}/${ch.key}/read`]=true; });
+        snap.forEach(ch => {
+          const m = ch.val();
+          if(m.to === uid && !m.read) updates[`chats/${convKey}/${ch.key}/read`] = true;
+        });
         if(Object.keys(updates).length) update(ref(db), updates);
       }
     });
   }
+  window.currentChatPeerId = null;
 };
 
 function getConvKey(uid1, uid2){ return [uid1,uid2].sort().join('_'); }
@@ -1402,26 +1444,33 @@ function loadMessages(peerId){
   const uid = window.currentUser.uid;
   const convKey = getConvKey(uid, peerId);
   const r = ref(db,`chats/${convKey}`);
-  // Remove previous listener
-  if(window.chatListeners[convKey]) off(window.chatListeners[convKey]);
-  window.chatListeners[convKey] = r;
-  onValue(r, snap => {
+  // Detach listener lama jika ada
+  if(window.chatListeners[convKey]){
+    window.chatListeners[convKey](); // unsubscribe — onValue returns unsub fn
+    delete window.chatListeners[convKey];
+  }
+  const unsub = onValue(r, snap => {
     const el = document.getElementById('chatMessages');
+    // Cek apakah chat room ini masih aktif
+    if(window.currentChatPeerId !== peerId) return;
     el.innerHTML = '';
     if(snap.exists()){
       const msgs = [];
-      snap.forEach(ch=>msgs.push(ch.val()));
-      msgs.sort((a,b)=>a.createdAt-b.createdAt);
-      msgs.forEach(m=>{
-        const isOut = m.from===uid;
+      snap.forEach(ch => msgs.push(ch.val()));
+      msgs.sort((a,b) => a.createdAt - b.createdAt);
+      msgs.forEach(m => {
+        const isOut = m.from === uid;
         const div = document.createElement('div');
         div.className = `msg ${isOut?'msg-out':'msg-in'}`;
-        div.innerHTML = `${m.text}<div class="msg-time">${new Date(m.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>`;
+        // Escape HTML untuk keamanan
+        const safeText = m.text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        div.innerHTML = `${safeText}<div class="msg-time">${new Date(m.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>`;
         el.appendChild(div);
       });
       el.scrollTop = el.scrollHeight;
     }
   });
+  window.chatListeners[convKey] = unsub;
 }
 
 window.sendMessage = async function(){
