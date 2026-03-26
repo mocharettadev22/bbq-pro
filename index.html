@@ -3,968 +3,802 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#FF6B00">
+<meta name="theme-color" content="#FF6B35">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>BBQ PRO</title>
-<link rel="manifest" href="#" id="manifest-link">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
 :root {
-  --primary: #FF6B00;
-  --primary-dark: #E55A00;
-  --primary-light: #FF8C33;
-  --secondary: #1A1A2E;
-  --accent: #FFB347;
-  --bg: #F5F5F5;
+  --primary: #FF6B35;
+  --primary-dark: #E85520;
+  --secondary: #2C3E50;
+  --accent: #F7C59F;
+  --bg: #F8F9FA;
   --card: #FFFFFF;
   --text: #1A1A2E;
-  --text-secondary: #666;
-  --border: #E8E8E8;
-  --online: #22C55E;
-  --offline: #EF4444;
-  --shadow: 0 4px 20px rgba(255,107,0,0.15);
+  --text-muted: #8892A4;
+  --border: #E8ECF0;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --warning: #F39C12;
+  --info: #3498DB;
+  --online: #2ECC71;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
   --radius: 16px;
+  --radius-sm: 10px;
   --nav-h: 70px;
+  --header-h: 60px;
+  --font: 'Plus Jakarta Sans', sans-serif;
 }
-.dark {
-  --bg: #0F0F1A;
-  --card: #1A1A2E;
-  --text: #F0F0F0;
-  --text-secondary: #999;
-  --border: #2A2A3E;
-  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+[data-theme="dark"] {
+  --bg: #0F1117;
+  --card: #1A1D2E;
+  --text: #E8ECF0;
+  --text-muted: #6B7280;
+  --border: #2A2D3E;
+  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
 }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
-body { background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);transition:background .3s,color .3s;}
+#app{height:100%;width:100%;position:relative;overflow:hidden;}
 
-/* SPLASH */
-#splash {
-  position: fixed; inset: 0; background: linear-gradient(135deg, #FF6B00 0%, #FF8C33 50%, #FFB347 100%);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
-  transition: opacity 0.5s, transform 0.5s;
-  pointer-events: all;
-}
-#splash .logo { font-size: 64px; margin-bottom: 8px; animation: bounce 1s infinite alternate; }
-#splash h1 { font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: 4px; }
-#splash p { color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 4px; }
-#splash .loader { margin-top: 40px; width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-12px); } }
-@keyframes spin { to { transform: rotate(360deg); } }
-.hide { opacity: 0 !important; pointer-events: none !important; transform: scale(0.95) !important; }
+/* SCREENS */
+.screen{position:absolute;inset:0;background:var(--bg);overflow:hidden;display:none;flex-direction:column;}
+.screen.active{display:flex;}
 
-/* PAGES */
-.page { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; overflow: hidden; }
-.page.active { display: flex; }
+/* LOGIN */
+#loginScreen{background:linear-gradient(145deg,#FF6B35 0%,#E85520 40%,#2C3E50 100%);align-items:center;justify-content:center;padding:40px 24px;}
+.login-logo{text-align:center;margin-bottom:40px;}
+.login-logo .icon{width:90px;height:90px;background:rgba(255,255,255,0.15);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;backdrop-filter:blur(10px);}
+.login-logo .icon i{font-size:42px;color:#fff;}
+.login-logo h1{font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:#fff;letter-spacing:-1px;}
+.login-logo p{color:rgba(255,255,255,0.75);font-size:14px;margin-top:6px;}
+.login-card{background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);border-radius:28px;padding:32px 24px;border:1px solid rgba(255,255,255,0.2);width:100%;max-width:380px;}
+.login-card h2{color:#fff;font-size:22px;font-weight:700;text-align:center;margin-bottom:8px;}
+.login-card p{color:rgba(255,255,255,0.7);font-size:14px;text-align:center;margin-bottom:28px;}
+.btn-google{width:100%;background:#fff;color:#333;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all .2s;font-family:var(--font);}
+.btn-google:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
+.btn-google img{width:22px;}
 
-/* LOGIN PAGE */
-#loginPage { background: linear-gradient(160deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%); align-items: center; justify-content: center; }
-.login-container { width: 100%; max-width: 380px; padding: 32px 24px; text-align: center; }
-.login-logo { font-size: 80px; margin-bottom: 12px; filter: drop-shadow(0 8px 24px rgba(255,107,0,0.5)); }
-.login-title { font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 800; color: #fff; letter-spacing: 3px; margin-bottom: 4px; }
-.login-sub { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 48px; }
-.login-tagline { color: rgba(255,255,255,0.5); font-size: 12px; margin-bottom: 32px; line-height: 1.8; }
-.btn-google {
-  width: 100%; padding: 16px 24px; background: #fff; border: none; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 700; color: #333;
-  cursor: pointer; box-shadow: 0 8px 32px rgba(0,0,0,0.3); transition: all 0.2s;
-}
-.btn-google:active { transform: scale(0.97); }
-.btn-google img { width: 24px; height: 24px; }
+/* REGISTER */
+#registerScreen{background:var(--bg);}
+.reg-header{background:var(--primary);padding:50px 24px 24px;display:flex;align-items:center;gap:12px;}
+.reg-header h2{color:#fff;font-size:20px;font-weight:700;}
+.reg-body{flex:1;overflow-y:auto;padding:24px;}
+.reg-body::-webkit-scrollbar{display:none;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
+.form-input{width:100%;background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;font-size:15px;color:var(--text);font-family:var(--font);outline:none;transition:border .2s;}
+.form-input:focus{border-color:var(--primary);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.avatar-upload{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:24px;}
+.avatar-preview{width:90px;height:90px;border-radius:50%;background:var(--border);overflow:hidden;position:relative;cursor:pointer;border:3px solid var(--primary);}
+.avatar-preview img{width:100%;height:100%;object-fit:cover;}
+.avatar-preview .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;}
+.avatar-preview:hover .overlay{opacity:1;}
+.avatar-preview .overlay i{color:#fff;font-size:20px;}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.role-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;transition:all .2s;}
+.role-card.selected{border-color:var(--primary);background:rgba(255,107,53,.08);}
+.role-card i{font-size:28px;color:var(--text-muted);margin-bottom:8px;}
+.role-card.selected i{color:var(--primary);}
+.role-card h4{font-size:14px;font-weight:700;}
+.role-card p{font-size:11px;color:var(--text-muted);margin-top:4px;}
 
-/* REGISTER PAGE */
-#registerPage { overflow-y: auto; }
-.reg-header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 48px 24px 24px; color: #fff; text-align: center; flex-shrink: 0; }
-.reg-header h2 { font-size: 24px; font-weight: 800; }
-.reg-header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
-.reg-body { flex: 1; overflow-y: auto; padding: 24px 20px 40px; }
-.avatar-upload { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
-.avatar-circle {
-  width: 100px; height: 100px; border-radius: 50%; background: var(--border);
-  border: 3px dashed var(--primary); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; overflow: hidden; position: relative; font-size: 40px; color: var(--primary);
-  transition: all 0.2s;
-}
-.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-.avatar-circle:active { transform: scale(0.97); }
-.avatar-label { font-size: 12px; color: var(--primary); margin-top: 8px; font-weight: 600; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%; padding: 14px 16px; background: var(--card); border: 2px solid var(--border);
-  border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--text);
-  outline: none; transition: border-color 0.2s;
-}
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
-.form-group textarea { resize: none; height: 80px; }
-.role-select { display: flex; gap: 12px; }
-.role-btn {
-  flex: 1; padding: 14px; border: 2px solid var(--border); border-radius: 12px;
-  background: var(--card); cursor: pointer; text-align: center; transition: all 0.2s;
-  font-family: 'Nunito', sans-serif;
-}
-.role-btn.active { border-color: var(--primary); background: rgba(255,107,0,0.1); }
-.role-btn .icon { font-size: 28px; display: block; margin-bottom: 4px; }
-.role-btn .label { font-size: 13px; font-weight: 700; color: var(--text); }
-.btn-primary {
-  width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  border: none; border-radius: 16px; color: #fff; font-family: 'Nunito', sans-serif;
-  font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s;
-  margin-top: 8px;
-}
-.btn-primary:active { transform: scale(0.98); opacity: 0.9; }
-
-/* APP LAYOUT */
-#appPage { display: none; flex-direction: column; }
-#appPage.active { display: flex; }
-.app-content { flex: 1; overflow: hidden; position: relative; }
-.tab-panel { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: calc(var(--nav-h) + 8px); }
-.tab-panel.active { display: block; }
+/* MAIN APP */
+#mainScreen{background:var(--bg);}
+.main-body{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(var(--nav-h) + 8px);}
+.main-body::-webkit-scrollbar{display:none;}
 
 /* BOTTOM NAV */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h);
-  background: var(--card); border-top: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 8px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.nav-item {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 8px 4px; cursor: pointer; position: relative; gap: 3px; transition: all 0.2s;
-  border-radius: 12px; margin: 4px 2px;
-}
-.nav-item .nav-icon { font-size: 22px; color: var(--text-secondary); transition: all 0.2s; }
-.nav-item .nav-label { font-size: 10px; font-weight: 700; color: var(--text-secondary); transition: all 0.2s; }
-.nav-item.active .nav-icon { color: var(--primary); transform: translateY(-2px); }
-.nav-item.active .nav-label { color: var(--primary); }
-.nav-item.active { background: rgba(255,107,0,0.08); }
-.nav-badge {
-  position: absolute; top: 6px; right: calc(50% - 16px);
-  background: var(--offline); color: #fff; font-size: 9px; font-weight: 800;
-  width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  display: none;
-}
-.nav-badge.show { display: flex; }
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--card);border-top:1px solid var(--border);display:flex;align-items:center;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,0.06);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:8px 0;position:relative;transition:color .2s;}
+.nav-item .nav-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:all .25s;}
+.nav-item i{font-size:20px;color:var(--text-muted);transition:.2s;}
+.nav-item span{font-size:10px;font-weight:600;color:var(--text-muted);transition:.2s;}
+.nav-item.active i,.nav-item.active span{color:var(--primary);}
+.nav-item.active .nav-icon{background:rgba(255,107,53,.12);}
+.nav-badge{position:absolute;top:4px;right:50%;transform:translateX(14px);background:var(--danger);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+
+/* TABS / PAGES */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
 
 /* STATUS BAR */
-.online-status-bar {
-  background: linear-gradient(90deg, #22C55E, #16A34A); padding: 8px 16px;
-  display: none; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #fff;
-}
-.online-status-bar.show { display: flex; }
-.status-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.5; transform: scale(1.3); } }
+.online-status-bar{background:linear-gradient(90deg,var(--online),#27AE60);padding:10px 16px;display:flex;align-items:center;gap:8px;margin:8px 16px;border-radius:var(--radius-sm);}
+.online-status-bar i{color:#fff;font-size:14px;animation:pulse 1.5s infinite;}
+.online-status-bar span{color:#fff;font-size:13px;font-weight:600;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
 
-/* HOME TAB */
-.home-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 20px 20px 24px; color: #fff; }
-.home-greeting { font-size: 13px; opacity: 0.85; }
-.home-name { font-size: 22px; font-weight: 800; margin: 2px 0; }
-.home-datetime { font-size: 12px; opacity: 0.75; display: flex; align-items: center; gap: 6px; }
+/* HOME PAGE */
+.home-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:50px 20px 28px;border-radius:0 0 28px 28px;}
+.home-header .greeting{color:rgba(255,255,255,0.85);font-size:14px;margin-bottom:4px;}
+.home-header h2{color:#fff;font-size:22px;font-weight:800;}
+.home-header .datetime{color:rgba(255,255,255,0.75);font-size:12px;margin-top:6px;}
+.search-bar{background:rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-top:16px;}
+.search-bar i{color:rgba(255,255,255,0.7);}
+.search-bar input{background:none;border:none;outline:none;color:#fff;font-size:14px;flex:1;font-family:var(--font);}
+.search-bar input::placeholder{color:rgba(255,255,255,0.6);}
+.section-title{padding:20px 16px 12px;font-size:16px;font-weight:700;}
+.section-title span{color:var(--text-muted);font-size:13px;font-weight:500;}
 
-.section-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 12px; }
-.section-subtitle { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; }
-.section { padding: 20px 16px 8px; }
+/* CATEGORY */
+.categories{padding:0 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.cat-item{background:var(--card);border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;border:1px solid var(--border);}
+.cat-item:active{transform:scale(.95);}
+.cat-item .cat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.cat-item span{font-size:10px;font-weight:600;text-align:center;color:var(--text);line-height:1.3;}
 
-/* CATEGORIES */
-.categories-scroll { overflow-x: auto; padding: 0 16px 16px; display: flex; gap: 12px; scrollbar-width: none; }
-.categories-scroll::-webkit-scrollbar { display: none; }
-.cat-item {
-  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  cursor: pointer; transition: transform 0.2s;
-}
-.cat-item:active { transform: scale(0.93); }
-.cat-icon {
-  width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  display: flex; align-items: center; justify-content: center; font-size: 26px;
-  box-shadow: 0 4px 12px rgba(255,107,0,0.25);
-}
-.cat-label { font-size: 10px; font-weight: 700; color: var(--text); text-align: center; max-width: 64px; line-height: 1.3; }
-
-/* HELPER CARDS */
-.helper-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
-.helper-card {
-  background: var(--card); border-radius: var(--radius); padding: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border);
-  display: flex; gap: 12px; align-items: flex-start;
-}
-.helper-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--primary); background: var(--border); }
-.helper-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.helper-info { flex: 1; min-width: 0; }
-.helper-name { font-size: 15px; font-weight: 800; color: var(--text); }
-.helper-meta { font-size: 11px; color: var(--text-secondary); display: flex; gap: 8px; margin: 3px 0; flex-wrap: wrap; }
-.helper-bio { font-size: 12px; color: var(--text-secondary); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.online-dot { display: inline-block; width: 8px; height: 8px; background: var(--online); border-radius: 50%; margin-right: 4px; }
-.star { color: #FFB347; font-size: 11px; }
-.badge { background: rgba(255,107,0,0.15); color: var(--primary); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-.badge-premium { background: rgba(255,179,71,0.2); color: #D97706; }
-.badge-pro { background: linear-gradient(90deg, #FF6B00, #FFB347); color: #fff; }
-.btn-order {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff;
-  border: none; border-radius: 10px; padding: 8px 16px; font-family: 'Nunito', sans-serif;
-  font-size: 12px; font-weight: 800; cursor: pointer; flex-shrink: 0; align-self: center;
-  transition: all 0.2s;
-}
-.btn-order:active { transform: scale(0.95); }
+/* HELPERS ONLINE */
+.helpers-list{padding:0 16px;display:flex;flex-direction:column;gap:12px;}
+.helper-card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;border:1px solid var(--border);}
+.helper-avatar{position:relative;flex-shrink:0;}
+.helper-avatar img{width:58px;height:58px;border-radius:16px;object-fit:cover;background:var(--border);}
+.online-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;background:var(--online);border-radius:50%;border:2px solid var(--card);}
+.helper-info{flex:1;min-width:0;}
+.helper-name{font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.badge-role{font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(255,107,53,.15);color:var(--primary);}
+.badge-premium{background:rgba(247,197,0,.15);color:#F7C500;}
+.badge-pro{background:rgba(52,152,219,.15);color:var(--info);}
+.helper-meta{font-size:12px;color:var(--text-muted);margin:4px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.star-rating{color:#F7C500;font-size:11px;}
+.helper-bio{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.btn-order{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;white-space:nowrap;}
+.btn-order:active{transform:scale(.95);}
+.helper-action{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;}
 
 /* HELPER DASHBOARD */
-.helper-dash-header { background: linear-gradient(135deg, #1A1A2E, #0F3460); padding: 20px; color: #fff; display: flex; align-items: center; gap: 16px; }
-.dash-avatar { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; background: var(--border); }
-.dash-info { flex: 1; }
-.dash-greeting { font-size: 12px; opacity: 0.7; }
-.dash-name { font-size: 20px; font-weight: 800; }
-.dash-datetime { font-size: 11px; opacity: 0.6; margin-top: 2px; }
-
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
-.stat-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid var(--border); }
-.stat-label { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
-.stat-value { font-size: 24px; font-weight: 900; color: var(--primary); margin-top: 4px; }
-.stat-value.green { color: var(--online); }
-.stat-value.red { color: var(--offline); }
-
-.toggle-section { padding: 16px; }
-.toggle-card { background: var(--card); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.toggle-label h4 { font-size: 15px; font-weight: 800; }
-.toggle-label p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-.toggle-switch { position: relative; width: 52px; height: 28px; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; inset: 0; background: var(--border); border-radius: 28px;
-  cursor: pointer; transition: 0.3s;
-}
-.toggle-slider:before {
-  content: ''; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px;
-  background: #fff; border-radius: 50%; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.toggle-switch input:checked + .toggle-slider { background: var(--online); }
-.toggle-switch input:checked + .toggle-slider:before { transform: translateX(24px); }
-.toggle-switch input:disabled + .toggle-slider { opacity: 0.5; cursor: not-allowed; }
+.helper-dash-header{background:linear-gradient(135deg,#2C3E50,#1A252F);padding:50px 20px 28px;}
+.helper-dash-header .greeting{color:rgba(255,255,255,0.7);font-size:13px;}
+.helper-dash-header h2{color:#fff;font-size:20px;font-weight:800;margin:4px 0;}
+.helper-dash-header .datetime{color:rgba(255,255,255,0.6);font-size:12px;}
+.dash-avatar{width:52px;height:52px;border-radius:14px;object-fit:cover;border:2px solid rgba(255,255,255,0.3);}
+.dash-header-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px;}
+.stat-card{background:var(--card);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow);}
+.stat-card .stat-label{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.stat-card .stat-value{font-size:24px;font-weight:800;color:var(--text);margin-top:4px;}
+.stat-card .stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.online-toggle-wrap{margin:0 16px 16px;background:var(--card);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);}
+.toggle-label h4{font-size:15px;font-weight:700;}
+.toggle-label p{font-size:12px;color:var(--text-muted);}
+.toggle{position:relative;width:52px;height:28px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#ccc;border-radius:14px;cursor:pointer;transition:.3s;}
+.slider::before{content:'';position:absolute;width:22px;height:22px;bottom:3px;left:3px;background:#fff;border-radius:50%;transition:.3s;}
+input:checked+.slider{background:var(--online);}
+input:checked+.slider::before{transform:translateX(24px);}
+.toggle.locked{opacity:.5;pointer-events:none;}
 
 /* ORDER CARDS */
-.order-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
-.order-card { background: var(--card); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-.order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.order-user { display: flex; align-items: center; gap: 10px; }
-.order-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; }
-.order-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.order-username { font-size: 14px; font-weight: 700; }
-.order-time { font-size: 11px; color: var(--text-secondary); }
-.order-cat { background: rgba(255,107,0,0.1); color: var(--primary); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-.order-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
-.order-price { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 12px; }
-.order-actions { display: flex; gap: 8px; }
-.btn-accept { flex: 1; padding: 10px; background: linear-gradient(135deg, var(--online), #16A34A); border: none; border-radius: 10px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
-.btn-reject { flex: 1; padding: 10px; background: var(--card); border: 2px solid var(--offline); border-radius: 10px; color: var(--offline); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
-.btn-chat-user { flex: 1; padding: 10px; background: var(--card); border: 2px solid var(--primary); border-radius: 10px; color: var(--primary); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
-.btn-complete { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--online), #16A34A); border: none; border-radius: 12px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 8px; }
-
-/* STATUS PILLS */
-.status-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-.status-proses { background: rgba(255,107,0,0.15); color: var(--primary); }
-.status-selesai { background: rgba(34,197,94,0.15); color: var(--online); }
-.status-ditolak { background: rgba(239,68,68,0.15); color: var(--offline); }
+.order-card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 16px 12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.order-card .order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.order-user-info{display:flex;align-items:center;gap:10px;}
+.order-user-info img{width:40px;height:40px;border-radius:12px;object-fit:cover;background:var(--border);}
+.order-user-info .name{font-size:14px;font-weight:700;}
+.order-user-info .time{font-size:11px;color:var(--text-muted);}
+.order-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;}
+.status-new{background:rgba(52,152,219,.15);color:var(--info);}
+.status-process{background:rgba(243,156,18,.15);color:var(--warning);}
+.status-done{background:rgba(39,174,96,.15);color:var(--success);}
+.status-reject{background:rgba(231,76,60,.15);color:var(--danger);}
+.order-cat{font-size:12px;color:var(--primary);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.order-desc{font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;}
+.order-price{font-size:18px;font-weight:800;color:var(--text);}
+.order-actions{display:flex;gap:8px;margin-top:12px;}
+.btn-sm{border:none;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-sm:active{transform:scale(.95);}
+.btn-accept{background:var(--success);color:#fff;}
+.btn-reject{background:rgba(231,76,60,.1);color:var(--danger);}
+.btn-chat{background:var(--card);color:var(--info);border:1px solid var(--border);}
+.btn-done{background:var(--primary);color:#fff;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border);}
 
 /* CHAT */
-.chat-list { display: flex; flex-direction: column; }
-.chat-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
-.chat-item:active { background: rgba(255,107,0,0.05); }
-.chat-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden; flex-shrink: 0; }
-.chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.chat-info { flex: 1; min-width: 0; }
-.chat-name { font-size: 15px; font-weight: 700; }
-.chat-preview { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
-.chat-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.chat-time { font-size: 11px; color: var(--text-secondary); }
-.chat-unread { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.chat-list{padding:16px;display:flex;flex-direction:column;gap:4px;}
+.chat-item{background:var(--card);border-radius:var(--radius-sm);padding:14px;display:flex;gap:12px;cursor:pointer;border:1px solid var(--border);transition:background .2s;}
+.chat-item:active{background:var(--border);}
+.chat-item img{width:50px;height:50px;border-radius:14px;object-fit:cover;background:var(--border);}
+.chat-item-info{flex:1;min-width:0;}
+.chat-item-name{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+.chat-item-name span:last-child{font-size:11px;color:var(--text-muted);font-weight:500;}
+.chat-item-msg{font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+.chat-unread{background:var(--primary);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;margin-top:4px;align-self:flex-end;}
 
 /* CHAT ROOM */
-.chat-room { position: fixed; inset: 0; background: var(--bg); z-index: 200; display: none; flex-direction: column; }
-.chat-room.active { display: flex; }
-.chat-room-header { background: var(--card); padding: 12px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); padding-top: calc(12px + env(safe-area-inset-top)); }
-.btn-back { background: none; border: none; font-size: 20px; color: var(--text); cursor: pointer; padding: 4px 8px; }
-.room-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; }
-.room-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.room-name { font-size: 15px; font-weight: 700; flex: 1; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
-.msg-text { display: block; }
-.msg {
-  max-width: 78%;
-  padding: 9px 13px 6px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.55;
-  word-break: break-word;
-  display: inline-flex;
-  flex-direction: column;
-}
-.msg-in {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-  align-self: flex-start;
-  color: var(--text);
-}
-.msg-out {
-  background: linear-gradient(135deg, #FF6B00 0%, #FF8C33 100%);
-  border-bottom-right-radius: 4px;
-  align-self: flex-end;
-  box-shadow: 0 2px 8px rgba(255,107,0,0.3);
-}
-.msg-text {
-  display: block;
-  color: inherit;
-}
-.msg-out .msg-text { color: #ffffff; }
-.msg-in .msg-text  { color: var(--text); }
-.msg-time {
-  display: block;
-  font-size: 10px;
-  margin-top: 3px;
-  text-align: right;
-  align-self: flex-end;
-}
-.msg-out .msg-time { color: rgba(255,255,255,0.75); }
-.msg-in  .msg-time { color: var(--text-secondary); }
-.chat-input-area { background: var(--card); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 10px; align-items: center; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
-.chat-input { flex: 1; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--text); outline: none; }
-.btn-send { width: 44px; height: 44px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border: none; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#chatRoomScreen{background:var(--bg);}
+.chat-room-header{background:var(--card);padding:50px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.chat-room-header .back-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;background:var(--bg);}
+.chat-room-header img{width:40px;height:40px;border-radius:12px;object-fit:cover;background:var(--border);}
+.chat-room-header .user-info h4{font-size:15px;font-weight:700;}
+.chat-room-header .user-info .status{font-size:11px;color:var(--online);}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.chat-messages::-webkit-scrollbar{display:none;}
+.msg-bubble{max-width:78%;display:flex;flex-direction:column;gap:2px;}
+.msg-bubble.sent{align-self:flex-end;align-items:flex-end;}
+.msg-bubble.recv{align-self:flex-start;align-items:flex-start;}
+.msg-text{padding:12px 16px;border-radius:20px;font-size:14px;line-height:1.5;}
+.msg-bubble.sent .msg-text{background:var(--primary);color:#fff;border-bottom-right-radius:6px;}
+.msg-bubble.recv .msg-text{background:var(--card);color:var(--text);border-bottom-left-radius:6px;border:1px solid var(--border);}
+.msg-time{font-size:10px;color:var(--text-muted);padding:0 4px;}
+.chat-input-wrap{background:var(--card);padding:12px 16px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);}
+.chat-input{flex:1;background:var(--bg);border:2px solid var(--border);border-radius:24px;padding:10px 16px;font-size:14px;font-family:var(--font);color:var(--text);outline:none;resize:none;max-height:100px;}
+.chat-input:focus{border-color:var(--primary);}
+.chat-send-btn{width:44px;height:44px;border-radius:50%;background:var(--primary);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.chat-send-btn i{color:#fff;font-size:18px;}
 
-/* HISTORY TABS */
-.history-tabs { display: flex; border-bottom: 2px solid var(--border); background: var(--card); overflow-x: auto; scrollbar-width: none; }
-.history-tabs::-webkit-scrollbar { display: none; }
-.htab { padding: 12px 16px; font-size: 13px; font-weight: 700; color: var(--text-secondary); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-.htab.active { color: var(--primary); border-bottom-color: var(--primary); }
-.history-content { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+/* HISTORY */
+.history-tabs{display:flex;padding:16px 16px 0;gap:8px;overflow-x:auto;}
+.history-tabs::-webkit-scrollbar{display:none;}
+.hist-tab{border:none;background:var(--card);color:var(--text-muted);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;border:1px solid var(--border);}
+.hist-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
 
 /* PROFILE */
-.profile-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 32px 20px 24px; text-align: center; color: #fff; }
-.profile-pic { width: 88px; height: 88px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.5); margin: 0 auto 12px; overflow: hidden; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 36px; }
-.profile-pic img { width: 100%; height: 100%; object-fit: cover; }
-.profile-name { font-size: 22px; font-weight: 800; }
-.profile-role { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-.profile-menu { padding: 8px 0; }
-.menu-section { padding: 16px 16px 4px; }
-.menu-section-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-.menu-item { display: flex; align-items: center; padding: 14px 16px; cursor: pointer; gap: 14px; transition: background 0.15s; }
-.menu-item:active { background: rgba(255,107,0,0.05); }
-.menu-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.menu-icon.orange { background: rgba(255,107,0,0.15); color: var(--primary); }
-.menu-icon.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
-.menu-icon.green { background: rgba(34,197,94,0.15); color: var(--online); }
-.menu-icon.red { background: rgba(239,68,68,0.15); color: var(--offline); }
-.menu-icon.purple { background: rgba(168,85,247,0.15); color: #A855F7; }
-.menu-icon.gray { background: rgba(107,114,128,0.15); color: #6B7280; }
-.menu-text { flex: 1; }
-.menu-text h4 { font-size: 15px; font-weight: 700; }
-.menu-text p { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
-.menu-arrow { color: var(--text-secondary); font-size: 14px; }
-.menu-divider { height: 1px; background: var(--border); margin: 4px 16px; }
+.profile-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:50px 20px 32px;text-align:center;}
+.profile-avatar{width:90px;height:90px;border-radius:50%;border:4px solid rgba(255,255,255,0.5);margin:0 auto 12px;object-fit:cover;background:var(--border);}
+.profile-name{color:#fff;font-size:20px;font-weight:800;}
+.profile-badges{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.profile-menu{padding:16px;}
+.menu-section{background:var(--card);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow);}
+.menu-item{padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .2s;}
+.menu-item:last-child{border-bottom:none;}
+.menu-item:active{background:var(--border);}
+.menu-item .menu-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.menu-item .menu-label{flex:1;font-size:15px;font-weight:600;}
+.menu-item .menu-arrow{color:var(--text-muted);}
+.dark-toggle-wrap{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;}
 
-/* MODALS */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300;
-  display: none; align-items: flex-end; justify-content: center;
-  backdrop-filter: blur(4px);
-}
-.modal-overlay.active { display: flex; }
-.modal-sheet {
-  background: var(--card); border-radius: 24px 24px 0 0; width: 100%;
-  max-height: 90vh; overflow-y: auto; padding: 8px 0 0;
-  animation: slideUp 0.3s ease;
-}
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
-.modal-title { font-size: 18px; font-weight: 800; padding: 0 20px 16px; color: var(--text); }
-.modal-body { padding: 0 20px 40px; }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
+.modal-overlay.active{display:flex;}
+.modal-sheet{background:var(--card);border-radius:24px 24px 0 0;padding:28px 24px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease;}
+.modal-sheet::-webkit-scrollbar{display:none;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:20px;}
+.btn-full{width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;margin-top:8px;}
+.btn-full:active{transform:scale(.98);}
+.btn-full.secondary{background:var(--card);color:var(--text);border:2px solid var(--border);}
+.btn-full.danger{background:var(--danger);}
 
-/* ORDER MODAL */
-.order-modal .modal-body { display: flex; flex-direction: column; gap: 16px; }
+/* NOTIFICATION */
+.notif-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:none;align-items:center;justify-content:center;padding:24px;}
+.notif-overlay.active{display:flex;}
+.notif-card{background:var(--card);border-radius:24px;padding:28px;width:100%;max-width:360px;animation:popIn .3s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes popIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.notif-icon{width:64px;height:64px;border-radius:20px;background:rgba(255,107,53,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.notif-icon i{font-size:28px;color:var(--primary);}
 
-/* NOTIFICATION MODAL */
-.notif-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 400; display: none; align-items: center; justify-content: center; padding: 24px; }
-.notif-modal.active { display: flex; }
-.notif-card { background: var(--card); border-radius: 24px; padding: 24px; width: 100%; max-width: 360px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.notif-icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
-.notif-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 8px; }
-.notif-body { font-size: 14px; color: var(--text-secondary); text-align: center; line-height: 1.6; margin-bottom: 20px; }
-.notif-actions { display: flex; gap: 10px; }
-.btn-notif-view { flex: 1; padding: 13px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border: none; border-radius: 14px; color: #fff; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
-.btn-notif-close { flex: 1; padding: 13px; background: var(--bg); border: 2px solid var(--border); border-radius: 14px; color: var(--text-secondary); font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
-
-/* RATING MODAL */
-.stars-rating { display: flex; justify-content: center; gap: 8px; margin: 16px 0; }
-.star-btn { font-size: 36px; cursor: pointer; transition: transform 0.15s; color: var(--border); }
-.star-btn.active { color: #FFB347; }
-.star-btn:active { transform: scale(1.2); }
+/* RATING */
+.stars-input{display:flex;gap:8px;justify-content:center;margin:12px 0;}
+.stars-input i{font-size:36px;color:var(--border);cursor:pointer;transition:.2s;}
+.stars-input i.active{color:#F7C500;}
 
 /* TOAST */
-.toast {
-  position: fixed; bottom: calc(var(--nav-h) + 16px); left: 50%; transform: translateX(-50%) translateY(20px);
-  background: #1A1A2E; color: #fff; padding: 12px 24px; border-radius: 24px;
-  font-size: 14px; font-weight: 600; z-index: 500; opacity: 0; transition: all 0.3s;
-  white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:700;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* SUCCESS ALERT MODAL */
-.success-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 600; display: none; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); }
-.success-modal.active { display: flex; }
-.success-card { background: var(--card); border-radius: 28px; padding: 32px 24px; width: 100%; max-width: 340px; text-align: center; animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
-.success-icon-wrap { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-.success-icon-wrap.star  { background: linear-gradient(135deg,#FFB347,#FF6B00); }
-.success-icon-wrap.crown { background: linear-gradient(135deg,#FF6B00,#FFB347); }
-.success-icon-wrap.check { background: linear-gradient(135deg,#22C55E,#16A34A); }
-.success-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
-.success-body  { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; }
-.btn-success-close { width: 100%; padding: 14px; background: linear-gradient(135deg,var(--primary),var(--primary-light)); border: none; border-radius: 16px; color: #fff; font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; }
-
-/* LOCKED MENU ITEM */
-.menu-item.locked { opacity: 0.45; pointer-events: none; }
-.menu-item.done-badge::after { content: '✅ Aktif'; font-size: 11px; font-weight: 800; color: var(--online); background: rgba(34,197,94,0.12); padding: 3px 10px; border-radius: 20px; }
-.menu-item.locked-pro::after { content: '🔒 Upgrade Premium dulu'; font-size: 11px; font-weight: 700; color: var(--text-secondary); }
-
-/* LOADING */
-.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 800; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
-.dark .loading-overlay { background: rgba(15,15,26,0.9); }
-.loading-overlay.active { display: flex; }
-.loading-overlay p { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin-top: 4px; }
-.loading-spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-
-/* EMPTY STATE */
-.empty-state { padding: 40px 20px; text-align: center; }
-.empty-icon { font-size: 56px; margin-bottom: 12px; opacity: 0.4; }
-.empty-title { font-size: 16px; font-weight: 700; color: var(--text-secondary); }
-.empty-sub { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-
-/* PAGE HEADER */
-.page-header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px; display: flex; align-items: center; gap: 12px; padding-top: calc(16px + env(safe-area-inset-top)); }
-.page-header h2 { font-size: 18px; font-weight: 800; }
-
-/* PREMIUM PAGE */
-.premium-modal .modal-body { display: flex; flex-direction: column; gap: 16px; }
-.ktp-upload-area { border: 2px dashed var(--primary); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; background: rgba(255,107,0,0.05); }
-.ktp-upload-area img { max-width: 100%; border-radius: 8px; margin-top: 12px; }
-
-/* EDIT PROFILE */
-.edit-profile-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-bottom: 40px; }
-
-/* ABOUT / WARNING */
-.info-page { padding: 20px; line-height: 1.8; font-size: 14px; color: var(--text-secondary); }
-.info-page h3 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; margin-top: 16px; }
-.info-page h3:first-child { margin-top: 0; }
-
-/* SAWERIA */
-.saweria-card { background: linear-gradient(135deg, #FF6B00, #FFB347); border-radius: 20px; padding: 24px; margin: 8px 0; text-align: center; color: #fff; }
-.saweria-card h3 { font-size: 20px; font-weight: 800; }
-.saweria-card p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-.saweria-link { display: block; background: #fff; color: var(--primary); font-weight: 800; font-size: 15px; padding: 14px; border-radius: 14px; text-decoration: none; margin-top: 16px; }
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-/* SAFE AREA */
-.safe-top { padding-top: env(safe-area-inset-top); }
+/* UTILITY */
+.flex{display:flex;}.gap-2{gap:8px;}.gap-3{gap:12px;}.items-center{align-items:center;}.justify-between{justify-content:space-between;}
+.p-4{padding:16px;}.mt-2{margin-top:8px;}.mt-4{margin-top:16px;}.mb-4{margin-bottom:16px;}
+.text-sm{font-size:13px;}.text-xs{font-size:11px;}.font-bold{font-weight:700;}.text-muted{color:var(--text-muted);}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.empty-state{text-align:center;padding:48px 24px;}
+.empty-state i{font-size:52px;color:var(--border);margin-bottom:12px;}
+.empty-state p{color:var(--text-muted);font-size:14px;}
+.loading{display:flex;align-items:center;justify-content:center;padding:32px;}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.chip{display:inline-flex;align-items:center;gap:4px;background:rgba(255,107,53,.1);color:var(--primary);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+textarea.form-input{min-height:90px;resize:none;}
+.ktp-upload{width:100%;height:120px;border:2px dashed var(--border);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:8px;background:var(--bg);}
+.ktp-upload i{font-size:28px;color:var(--text-muted);}
+.ktp-upload span{font-size:13px;color:var(--text-muted);}
+.ktp-upload img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm);}
 </style>
 </head>
 <body>
+<div id="app">
 
-<!-- SPLASH -->
-<div id="splash">
-  <div class="logo">🔥</div>
-  <h1>BBQ PRO</h1>
-  <p>Bantuan Berkualitas untuk Semua</p>
-  <div class="loader"></div>
-</div>
-
-<!-- LOGIN PAGE -->
-<div class="page" id="loginPage">
-  <div class="login-container">
-    <div class="login-logo">🔥</div>
-    <div class="login-title">BBQ PRO</div>
-    <div class="login-sub">Bantuan Berkualitas untuk Semua</div>
-    <div class="login-tagline">Platform terpercaya untuk membantu dan mendapatkan bantuan di sekitar Anda</div>
-    <button class="btn-google" onclick="loginGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+<!-- LOGIN -->
+<div id="loginScreen" class="screen active">
+  <div class="login-logo">
+    <div class="icon"><i class="fas fa-fire-flame-curved"></i></div>
+    <h1>BBQ PRO</h1>
+    <p>Bantuan Cepat Qualified - Profesional</p>
+  </div>
+  <div class="login-card">
+    <h2>Masuk ke BBQ PRO</h2>
+    <p>Temukan helper terpercaya di sekitar kamu</p>
+    <button class="btn-google" id="btnGoogleLogin">
+      <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google">
       Masuk dengan Google
     </button>
   </div>
 </div>
 
-<!-- REGISTER PAGE -->
-<div class="page" id="registerPage">
-  <div class="reg-header safe-top">
-    <h2>Lengkapi Profil</h2>
-    <p>Satu langkah lagi untuk bergabung!</p>
+<!-- REGISTER -->
+<div id="registerScreen" class="screen">
+  <div class="reg-header">
+    <div>
+      <h2>Lengkapi Profil</h2>
+      <div style="color:rgba(255,255,255,0.75);font-size:12px;margin-top:2px;">Isi data diri kamu</div>
+    </div>
   </div>
   <div class="reg-body">
     <div class="avatar-upload">
-      <div class="avatar-circle" onclick="document.getElementById('regPhotoInput').click()">
-        <img id="regAvatarPreview" src="" alt="" style="display:none">
-        <span id="regAvatarIcon">📷</span>
+      <div class="avatar-preview" id="avatarPreview" onclick="document.getElementById('avatarInput').click()">
+        <img id="avatarImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Crect width='90' height='90' fill='%23e8ecf0'/%3E%3Ccircle cx='45' cy='35' r='18' fill='%23c0c8d4'/%3E%3Cellipse cx='45' cy='75' rx='28' ry='18' fill='%23c0c8d4'/%3E%3C/svg%3E" alt="Avatar">
+        <div class="overlay"><i class="fas fa-camera"></i></div>
       </div>
-      <input type="file" id="regPhotoInput" accept="image/*" style="display:none" onchange="previewRegPhoto(this)">
-      <div class="avatar-label">Upload Foto Profil</div>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+      <span style="font-size:12px;color:var(--text-muted)">Upload foto profil</span>
     </div>
     <div class="form-group">
       <label>Nama Lengkap</label>
-      <input type="text" id="regName" placeholder="Nama lengkap kamu">
+      <input type="text" id="regName" class="form-input" placeholder="Nama kamu...">
     </div>
     <div class="form-group">
       <label>Gender</label>
-      <select id="regGender">
-        <option value="">Pilih Gender</option>
-        <option value="Laki-laki">Laki-laki</option>
-        <option value="Perempuan">Perempuan</option>
+      <select id="regGender" class="form-input form-select">
+        <option value="">Pilih gender</option>
+        <option>Laki-laki</option>
+        <option>Perempuan</option>
       </select>
     </div>
     <div class="form-group">
       <label>Umur</label>
-      <input type="number" id="regAge" placeholder="Umur kamu" min="17" max="99">
+      <input type="number" id="regAge" class="form-input" placeholder="Umur kamu...">
     </div>
     <div class="form-group">
-      <label>Domisili (Kecamatan)</label>
-      <input type="text" id="regDomisili" placeholder="Contoh: Kec. Kesambi, Cirebon">
+      <label>Kecamatan / Domisili</label>
+      <input type="text" id="regDomisili" class="form-input" placeholder="Kecamatan domisili...">
     </div>
     <div class="form-group">
       <label>Bio Singkat</label>
-      <textarea id="regBio" placeholder="Ceritakan sedikit tentang dirimu..."></textarea>
+      <textarea id="regBio" class="form-input" placeholder="Ceritakan sedikit tentang dirimu..."></textarea>
     </div>
     <div class="form-group">
-      <label>Daftar Sebagai</label>
+      <label>Pilih Peran</label>
       <div class="role-select">
-        <div class="role-btn active" id="roleUser" onclick="selectRole('user')">
-          <span class="icon">👤</span>
-          <span class="label">User</span>
+        <div class="role-card selected" id="roleUser" onclick="selectRole('user')">
+          <i class="fas fa-user"></i>
+          <h4>User</h4>
+          <p>Saya butuh bantuan</p>
         </div>
-        <div class="role-btn" id="roleHelper" onclick="selectRole('helper')">
-          <span class="icon">🦸</span>
-          <span class="label">Helper</span>
+        <div class="role-card" id="roleHelper" onclick="selectRole('helper')">
+          <i class="fas fa-hands-helping"></i>
+          <h4>Helper</h4>
+          <p>Saya siap bantu</p>
         </div>
       </div>
     </div>
-    <button class="btn-primary" onclick="submitRegister()">🚀 Daftar Sekarang</button>
+    <button class="btn-full" onclick="submitRegister()">
+      <i class="fas fa-check"></i> Daftar Sekarang
+    </button>
   </div>
 </div>
 
-<!-- APP PAGE -->
-<div class="page" id="appPage">
-  <div id="onlineStatusBar" class="online-status-bar">
-    <div class="status-dot"></div>
-    <span>Kamu sedang online sebagai Helper</span>
-  </div>
-  <div class="app-content">
+<!-- MAIN APP -->
+<div id="mainScreen" class="screen">
+  <div class="main-body" id="mainBody">
+
     <!-- HOME TAB -->
-    <div class="tab-panel active" id="tabHome">
-      <div class="home-header">
-        <div class="home-greeting">Selamat datang,</div>
-        <div class="home-name" id="homeWelcomeName">—</div>
-        <div class="home-datetime" id="homeDatetime">—</div>
+    <div id="tabHome" class="tab-content active">
+      <div class="home-header" id="homeHeader">
+        <div class="greeting" id="homeGreeting">Selamat pagi</div>
+        <h2 id="homeWelcome">Halo, User!</h2>
+        <div class="datetime" id="homeDatetime"></div>
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Cari layanan atau helper...">
+        </div>
       </div>
-      <div class="section">
-        <div class="section-title">Bantuan Apa yang Kamu Butuhkan?</div>
+      <div id="onlineStatusBar"></div>
+      <div class="section-title">Kategori Layanan <span>– Bantuan apa yang kamu butuhkan?</span></div>
+      <div class="categories" id="categoriesGrid"></div>
+      <div class="section-title" style="margin-top:8px">Helper Online <span id="onlineCount"></span></div>
+      <div class="helpers-list" id="helpersList">
+        <div class="loading"><div class="spinner"></div></div>
       </div>
-      <div class="categories-scroll" id="categoriesContainer"></div>
-      <div class="section">
-        <div class="section-title">Helper Online</div>
-        <div class="section-subtitle">Helper siap membantu kamu sekarang</div>
-      </div>
-      <div class="helper-cards" id="helperOnlineList">
-        <div class="empty-state"><div class="empty-icon">👀</div><div class="empty-title">Belum ada helper online</div></div>
-      </div>
-      <div style="height:24px"></div>
     </div>
 
     <!-- HELPER TAB -->
-    <div class="tab-panel" id="tabHelper">
+    <div id="tabHelper" class="tab-content">
       <div class="helper-dash-header">
-        <div id="dashAvatar" class="dash-avatar" style="font-size:28px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF6B00,#FFB347);">🦸</div>
-        <div class="dash-info">
-          <div class="dash-greeting">Dashboard Helper</div>
-          <div class="dash-name" id="dashName">—</div>
-          <div class="dash-datetime" id="dashDatetime">—</div>
+        <div class="dash-header-row">
+          <div>
+            <div class="greeting" id="helperGreeting">Selamat pagi</div>
+            <h2 id="helperWelcome">Halo, Helper!</h2>
+            <div class="datetime" id="helperDatetime"></div>
+          </div>
+          <img id="helperDashAvatar" class="dash-avatar" src="" alt="Avatar">
         </div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label">Total Pendapatan</div><div class="stat-value" id="statTotal">Rp 0</div></div>
-        <div class="stat-card"><div class="stat-label">Pendapatan Hari Ini</div><div class="stat-value green" id="statToday">Rp 0</div></div>
-        <div class="stat-card"><div class="stat-label">Total Order</div><div class="stat-value" id="statOrders">0</div></div>
-        <div class="stat-card" style="display:flex;gap:8px">
-          <div><div class="stat-label">Selesai</div><div class="stat-value green" id="statDone">0</div></div>
-          <div><div class="stat-label">Ditolak</div><div class="stat-value red" id="statRejected">0</div></div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(39,174,96,.1)"><i class="fas fa-wallet" style="color:var(--success)"></i></div>
+          <div class="stat-label">Total Pendapatan</div>
+          <div class="stat-value" id="statTotal">Rp 0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(255,107,53,.1)"><i class="fas fa-calendar-day" style="color:var(--primary)"></i></div>
+          <div class="stat-label">Pendapatan Hari Ini</div>
+          <div class="stat-value" id="statToday">Rp 0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(52,152,219,.1)"><i class="fas fa-clipboard-list" style="color:var(--info)"></i></div>
+          <div class="stat-label">Total Order</div>
+          <div class="stat-value" id="statOrders">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:rgba(243,156,18,.1)"><i class="fas fa-chart-pie" style="color:var(--warning)"></i></div>
+          <div class="stat-label">Selesai / Tolak</div>
+          <div class="stat-value" id="statDoneReject">0/0</div>
         </div>
       </div>
-      <div class="toggle-section">
-        <div class="toggle-card">
-          <div class="toggle-label">
-            <h4>🟢 Status Online</h4>
-            <p>Aktifkan untuk terima order masuk</p>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="helperToggle" onchange="toggleHelperOnline(this)">
-            <span class="toggle-slider"></span>
-          </label>
+      <div class="online-toggle-wrap">
+        <div class="toggle-label">
+          <h4>Status Online</h4>
+          <p id="toggleStatus">Kamu sedang offline</p>
         </div>
+        <label class="toggle" id="onlineToggleLabel">
+          <input type="checkbox" id="onlineToggle" onchange="toggleHelperOnline(this.checked)">
+          <span class="slider"></span>
+        </label>
       </div>
-      <div class="section"><div class="section-title">Order Masuk</div></div>
-      <div class="order-cards" id="incomingOrders">
-        <div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Belum ada order masuk</div></div>
+      <div class="section-title">Order Masuk</div>
+      <div id="incomingOrders">
+        <div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada order masuk</p></div>
       </div>
-      <div style="height:24px"></div>
     </div>
 
     <!-- CHAT TAB -->
-    <div class="tab-panel" id="tabChat">
-      <div class="page-header"><h2>💬 Pesan</h2></div>
-      <div class="chat-list" id="chatList">
-        <div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">Belum ada percakapan</div></div>
+    <div id="tabChat" class="tab-content">
+      <div style="padding:50px 16px 12px;font-size:20px;font-weight:800;">Pesan</div>
+      <div id="chatList">
+        <div class="loading"><div class="spinner"></div></div>
       </div>
     </div>
 
     <!-- HISTORY TAB -->
-    <div class="tab-panel" id="tabHistory">
-      <div class="page-header"><h2>📋 Riwayat</h2></div>
+    <div id="tabHistory" class="tab-content">
+      <div style="padding:50px 16px 12px;font-size:20px;font-weight:800;">Riwayat</div>
       <div class="history-tabs">
-        <div class="htab active" onclick="switchHistoryTab('semua',this)">Semua</div>
-        <div class="htab" onclick="switchHistoryTab('proses',this)">Proses</div>
-        <div class="htab" onclick="switchHistoryTab('selesai',this)">Selesai</div>
-        <div class="htab" onclick="switchHistoryTab('ditolak',this)">Ditolak</div>
+        <button class="hist-tab active" onclick="filterHistory('all',this)">Semua</button>
+        <button class="hist-tab" onclick="filterHistory('process',this)">Proses</button>
+        <button class="hist-tab" onclick="filterHistory('done',this)">Selesai</button>
+        <button class="hist-tab" onclick="filterHistory('rejected',this)">Ditolak</button>
       </div>
-      <div class="history-content" id="historyContent">
-        <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Belum ada riwayat</div></div>
-      </div>
+      <div id="historyList" style="padding:16px;display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
     <!-- PROFILE TAB -->
-    <div class="tab-panel" id="tabProfile">
-      <div class="profile-header" style="padding-top:calc(32px + env(safe-area-inset-top))">
-        <div class="profile-pic" id="profilePicContainer">🔥</div>
-        <div class="profile-name" id="profileName">—</div>
-        <div class="profile-role" id="profileRoleLabel">—</div>
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:8px" id="profileBadges"></div>
+    <div id="tabProfile" class="tab-content">
+      <div class="profile-header">
+        <img id="profileAvatar" class="profile-avatar" src="" alt="Avatar">
+        <div class="profile-name" id="profileName">Nama</div>
+        <div class="profile-badges" id="profileBadges"></div>
       </div>
       <div class="profile-menu">
-        <div class="menu-section"><div class="menu-section-title">Akun</div></div>
-        <div class="menu-item" id="menuPremium" onclick="openModal('premiumModal')">
-          <div class="menu-icon orange">⭐</div>
-          <div class="menu-text"><h4>Upgrade Premium</h4><p>User +5x order | Helper buka toggle online</p></div>
-          <div class="menu-arrow">›</div>
+        <div class="menu-section">
+          <div class="menu-item" id="menuUpgradePremium" onclick="openUpgradePremium()">
+            <div class="menu-icon" style="background:rgba(247,197,0,.1)"><i class="fas fa-crown" style="color:#F7C500"></i></div>
+            <div class="menu-label">Upgrade Premium</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" id="menuUpgradePro" onclick="openUpgradePro()">
+            <div class="menu-icon" style="background:rgba(52,152,219,.1)"><i class="fas fa-rocket" style="color:var(--info)"></i></div>
+            <div class="menu-label">Upgrade Pro</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" onclick="openEditProfile()">
+            <div class="menu-icon" style="background:rgba(255,107,53,.1)"><i class="fas fa-user-edit" style="color:var(--primary)"></i></div>
+            <div class="menu-label">Edit Profil</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
         </div>
-        <div class="menu-item locked-pro" id="menuPro" onclick="showToast('Upgrade Premium dulu! ⭐')">
-          <div class="menu-icon" style="background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,179,71,0.2));color:#FF6B00;">👑</div>
-          <div class="menu-text"><h4>Upgrade Pro</h4><p>Order tanpa batas & auto rating 5⭐</p></div>
-          <div class="menu-arrow">›</div>
+        <div class="menu-section">
+          <div class="menu-item" onclick="toggleDarkMode()">
+            <div class="menu-icon" style="background:rgba(44,62,80,.1)"><i class="fas fa-moon" style="color:var(--secondary)"></i></div>
+            <div class="menu-label" id="darkModeLabel">Mode Gelap</div>
+            <label class="toggle" style="pointer-events:none">
+              <input type="checkbox" id="darkModeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
-        <div class="menu-item" onclick="openEditProfile()">
-          <div class="menu-icon blue">✏️</div>
-          <div class="menu-text"><h4>Edit Profil</h4><p>Ubah foto, nama, bio, domisili</p></div>
-          <div class="menu-arrow">›</div>
+        <div class="menu-section">
+          <div class="menu-item" onclick="openModal('modalWarning')">
+            <div class="menu-icon" style="background:rgba(231,76,60,.1)"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i></div>
+            <div class="menu-label">Perhatian Penting</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" onclick="openModal('modalAbout')">
+            <div class="menu-icon" style="background:rgba(52,152,219,.1)"><i class="fas fa-info-circle" style="color:var(--info)"></i></div>
+            <div class="menu-label">Tentang Aplikasi</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" onclick="openModal('modalReport')">
+            <div class="menu-icon" style="background:rgba(243,156,18,.1)"><i class="fas fa-flag" style="color:var(--warning)"></i></div>
+            <div class="menu-label">Laporkan</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" onclick="openModal('modalDeleteAccount')">
+            <div class="menu-icon" style="background:rgba(231,76,60,.1)"><i class="fas fa-trash-alt" style="color:var(--danger)"></i></div>
+            <div class="menu-label" style="color:var(--danger)">Hapus Akun</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
+          <div class="menu-item" onclick="logout()">
+            <div class="menu-icon" style="background:rgba(231,76,60,.1)"><i class="fas fa-sign-out-alt" style="color:var(--danger)"></i></div>
+            <div class="menu-label" style="color:var(--danger)">Keluar</div>
+            <i class="fas fa-chevron-right menu-arrow"></i>
+          </div>
         </div>
-        <div class="menu-divider"></div>
-        <div class="menu-section"><div class="menu-section-title">Pengaturan</div></div>
-        <div class="menu-item" onclick="toggleDarkMode()">
-          <div class="menu-icon gray" id="darkModeIcon">🌙</div>
-          <div class="menu-text"><h4 id="darkModeLabel">Mode Gelap</h4><p>Aktifkan tampilan gelap</p></div>
-          <label class="toggle-switch" style="pointer-events:none">
-            <input type="checkbox" id="darkToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <div class="menu-divider"></div>
-        <div class="menu-section"><div class="menu-section-title">Informasi</div></div>
-        <div class="menu-item" onclick="openInfoPage('warning')">
-          <div class="menu-icon" style="background:rgba(239,68,68,0.15);color:#EF4444;">⚠️</div>
-          <div class="menu-text"><h4>Perhatian Penting</h4><p>Keamanan dan privasi</p></div>
-          <div class="menu-arrow">›</div>
-        </div>
-        <div class="menu-item" onclick="openInfoPage('about')">
-          <div class="menu-icon green">ℹ️</div>
-          <div class="menu-text"><h4>Tentang Aplikasi</h4><p>Versi 1.0.0 • BBQ PRO</p></div>
-          <div class="menu-arrow">›</div>
-        </div>
-        <div class="menu-item" onclick="openReportModal()">
-          <div class="menu-icon purple">🚩</div>
-          <div class="menu-text"><h4>Laporkan</h4><p>Kirim laporan atau masalah</p></div>
-          <div class="menu-arrow">›</div>
-        </div>
-        <div class="menu-divider"></div>
-        <div class="menu-item" onclick="confirmDeleteAccount()">
-          <div class="menu-icon red">🗑️</div>
-          <div class="menu-text"><h4>Hapus Akun</h4><p>Hapus semua data akunmu</p></div>
-          <div class="menu-arrow">›</div>
-        </div>
-        <div class="menu-item" onclick="logout()">
-          <div class="menu-icon red">🚪</div>
-          <div class="menu-text"><h4>Keluar</h4><p>Logout dari BBQ PRO</p></div>
-          <div class="menu-arrow">›</div>
-        </div>
-        <div style="height:40px"></div>
       </div>
     </div>
-  </div>
 
+  </div>
   <!-- BOTTOM NAV -->
-  <nav class="bottom-nav" id="bottomNav">
-    <div class="nav-item active" onclick="switchTab('home',this)" id="navHome">
-      <div class="nav-icon">🏠</div>
-      <div class="nav-label">Home</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('helper',this)" id="navHelper" style="display:none">
-      <div class="nav-icon">🦸</div>
-      <div class="nav-label">Helper</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('chat',this)" id="navChat">
-      <div class="nav-icon">💬</div>
-      <div class="nav-label">Chat</div>
-      <div class="nav-badge" id="chatBadge">0</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('history',this)" id="navHistory">
-      <div class="nav-icon">📋</div>
-      <div class="nav-label">History</div>
-    </div>
-    <div class="nav-item" onclick="switchTab('profile',this)" id="navProfile">
-      <div class="nav-icon">👤</div>
-      <div class="nav-label">Profil</div>
-    </div>
-  </nav>
+  <div class="bottom-nav" id="bottomNav"></div>
 </div>
 
 <!-- CHAT ROOM -->
-<div class="chat-room" id="chatRoom">
+<div id="chatRoomScreen" class="screen">
   <div class="chat-room-header">
-    <button class="btn-back" onclick="closeChatRoom()">‹</button>
-    <div class="room-avatar" id="roomAvatar">👤</div>
-    <div class="room-name" id="roomName">—</div>
+    <div class="back-btn" onclick="closeChatRoom()"><i class="fas fa-arrow-left"></i></div>
+    <img id="chatRoomAvatar" src="" alt="">
+    <div class="user-info">
+      <h4 id="chatRoomName">Nama</h4>
+      <div class="status" id="chatRoomStatus">Online</div>
+    </div>
   </div>
   <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-input-area">
-    <input type="text" class="chat-input" id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter')sendMessage()">
-    <button class="btn-send" onclick="sendMessage()">➤</button>
+  <div class="chat-input-wrap">
+    <textarea class="chat-input" id="chatInput" placeholder="Ketik pesan..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+    <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
   </div>
 </div>
 
-<!-- ORDER MODAL -->
-<div class="modal-overlay" id="orderModal">
-  <div class="modal-sheet order-modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📦 Buat Order</div>
-    <div class="modal-body">
-      <input type="hidden" id="orderHelperId">
-      <div class="form-group">
-        <label>Nama Helper</label>
-        <input type="text" id="orderHelperName" readonly style="background:var(--border)">
-      </div>
-      <div class="form-group">
-        <label>Kategori Bantuan</label>
-        <select id="orderCategory">
-          <option value="">Pilih kategori</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Deskripsikan Kebutuhan</label>
-        <textarea id="orderDesc" placeholder="Jelaskan bantuan yang kamu butuhkan secara detail..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Nominal Bayaran (Rp)</label>
-        <input type="number" id="orderPrice" placeholder="Contoh: 50000">
-      </div>
-      <button class="btn-primary" onclick="submitOrder()">🚀 Kirim Order</button>
-      <button class="btn-primary" style="background:#6B7280;box-shadow:none;margin-top:8px" onclick="closeModal('orderModal')">Batal</button>
-    </div>
-  </div>
-</div>
-
-<!-- REJECT REASON MODAL -->
-<div class="modal-overlay" id="rejectModal">
+<!-- MODALS -->
+<!-- Order Modal -->
+<div class="modal-overlay" id="modalOrder">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">❌ Tolak Order</div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>Alasan Menolak</label>
-        <textarea id="rejectReason" placeholder="Tulis alasan penolakan..."></textarea>
-      </div>
-      <button class="btn-primary" onclick="submitReject()">Kirim</button>
-      <button class="btn-primary" style="background:#6B7280;box-shadow:none;margin-top:8px" onclick="closeModal('rejectModal')">Batal</button>
+    <div class="modal-title">Buat Order</div>
+    <div class="form-group">
+      <label>Pilih Kategori</label>
+      <select id="orderCategory" class="form-input form-select"></select>
     </div>
+    <div class="form-group">
+      <label>Deskripsikan Kebutuhan</label>
+      <textarea id="orderDesc" class="form-input" placeholder="Ceritakan detail bantuan yang kamu butuhkan..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Nominal Bayaran (Rp)</label>
+      <input type="number" id="orderPrice" class="form-input" placeholder="Contoh: 50000">
+    </div>
+    <button class="btn-full" onclick="submitOrder()">Kirim Order</button>
+    <button class="btn-full secondary" onclick="closeModal('modalOrder')">Batal</button>
   </div>
 </div>
 
-<!-- RATING MODAL -->
-<div class="modal-overlay" id="ratingModal">
+<!-- Reject Order Modal -->
+<div class="modal-overlay" id="modalReject">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">⭐ Beri Rating</div>
-    <div class="modal-body" style="text-align:center">
-      <input type="hidden" id="ratingOrderId">
-      <p style="color:var(--text-secondary);font-size:14px">Bagaimana pengalaman kamu dengan helper ini?</p>
-      <div class="stars-rating" id="starsContainer">
-        <span class="star-btn" onclick="setRating(1)">★</span>
-        <span class="star-btn" onclick="setRating(2)">★</span>
-        <span class="star-btn" onclick="setRating(3)">★</span>
-        <span class="star-btn" onclick="setRating(4)">★</span>
-        <span class="star-btn" onclick="setRating(5)">★</span>
-      </div>
-      <button class="btn-primary" onclick="submitRating()">Kirim Rating</button>
+    <div class="modal-title">Tolak Order</div>
+    <div class="form-group">
+      <label>Alasan Penolakan</label>
+      <textarea id="rejectReason" class="form-input" placeholder="Tulis alasan menolak order..."></textarea>
     </div>
+    <button class="btn-full danger" onclick="confirmReject()">Konfirmasi Tolak</button>
+    <button class="btn-full secondary" onclick="closeModal('modalReject')">Batal</button>
   </div>
 </div>
 
-<!-- PREMIUM MODAL -->
-<div class="modal-overlay" id="premiumModal">
-  <div class="modal-sheet premium-modal">
+<!-- Rating Modal -->
+<div class="modal-overlay" id="modalRating">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Beri Rating Helper</div>
+    <p class="text-muted text-sm" style="margin-bottom:16px">Bagaimana pengalaman kamu dengan helper ini?</p>
+    <div class="stars-input" id="starsInput">
+      <i class="fas fa-star" onclick="setRating(1)" data-val="1"></i>
+      <i class="fas fa-star" onclick="setRating(2)" data-val="2"></i>
+      <i class="fas fa-star" onclick="setRating(3)" data-val="3"></i>
+      <i class="fas fa-star" onclick="setRating(4)" data-val="4"></i>
+      <i class="fas fa-star" onclick="setRating(5)" data-val="5"></i>
+    </div>
+    <div class="form-group">
+      <label>Komentar (opsional)</label>
+      <textarea id="ratingComment" class="form-input" placeholder="Ceritakan pengalamanmu..."></textarea>
+    </div>
+    <button class="btn-full" onclick="submitRating()">Kirim Rating</button>
+  </div>
+</div>
+
+<!-- Upgrade Premium Modal -->
+<div class="modal-overlay" id="modalPremium">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">⭐ Upgrade Premium</div>
-    <div class="modal-body">
-      <div style="background:linear-gradient(135deg,rgba(255,107,0,0.1),rgba(255,179,71,0.1));border-radius:16px;padding:16px;margin-bottom:16px">
-        <div style="font-size:13px;color:var(--text-secondary)">✅ User: +5 kali order tambahan</div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-top:6px">✅ Helper: Buka toggle online</div>
-      </div>
-      <div class="form-group">
-        <label>Nomor HP</label>
-        <input type="tel" id="premiumPhone" placeholder="Contoh: 08123456789">
-      </div>
-      <div class="form-group">
-        <label>Upload Foto KTP</label>
-        <div class="ktp-upload-area" onclick="document.getElementById('ktpInput').click()">
-          <div style="font-size:32px">🪪</div>
-          <div style="font-size:13px;color:var(--primary);font-weight:700;margin-top:8px">Tap untuk upload KTP</div>
-          <img id="ktpPreview" src="" alt="" style="display:none;max-width:100%;border-radius:8px;margin-top:12px">
-        </div>
-        <input type="file" id="ktpInput" accept="image/*" style="display:none" onchange="previewKTP(this)">
-      </div>
-      <button class="btn-primary" onclick="submitPremium()">⭐ Ajukan Premium</button>
-      <button class="btn-primary" style="background:#6B7280;box-shadow:none;margin-top:8px" onclick="closeModal('premiumModal')">Batal</button>
+    <div style="background:rgba(247,197,0,.08);border-radius:12px;padding:16px;margin-bottom:16px;">
+      <p class="text-sm" style="color:var(--text)"><b>User:</b> +5 kali order ekstra</p>
+      <p class="text-sm" style="margin-top:6px;color:var(--text)"><b>Helper:</b> Bisa buka toggle online + terima 5 order</p>
     </div>
+    <div class="form-group">
+      <label>Nomor HP</label>
+      <input type="tel" id="premiumPhone" class="form-input" placeholder="08xxxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>Upload Foto KTP</label>
+      <div class="ktp-upload" id="ktpUpload" onclick="document.getElementById('ktpInput').click()">
+        <i class="fas fa-id-card"></i>
+        <span>Klik untuk upload foto KTP</span>
+      </div>
+      <input type="file" id="ktpInput" accept="image/*" style="display:none" onchange="handleKtpUpload(this)">
+    </div>
+    <button class="btn-full" onclick="submitPremium()">Kirim Permintaan</button>
+    <button class="btn-full secondary" onclick="closeModal('modalPremium')">Batal</button>
   </div>
 </div>
 
-<!-- PRO MODAL -->
-<div class="modal-overlay" id="proModal">
+<!-- Upgrade Pro Modal -->
+<div class="modal-overlay" id="modalPro">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">👑 Upgrade Pro</div>
-    <div class="modal-body">
-      <div class="saweria-card">
-        <h3>👑 BBQ PRO</h3>
-        <p>Order tanpa batas & Auto Rating 5⭐ untuk Helper</p>
-      </div>
-      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin:12px 0">
-        Untuk mendapatkan akses Pro, lakukan donasi/pembayaran melalui Saweria kami, kemudian konfirmasi melalui email di bawah.
-      </div>
-      <a href="https://saweria.co/bbqpro" target="_blank" class="saweria-link" style="display:block;background:linear-gradient(135deg,#FF6B00,#FFB347);color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:14px;text-decoration:none;text-align:center">💰 Bayar via Saweria →</a>
-      <div class="form-group" style="margin-top:16px">
-        <label>Email Konfirmasi</label>
-        <input type="email" id="proEmail" placeholder="Email kamu untuk konfirmasi">
-      </div>
-      <button class="btn-primary" onclick="submitPro()">📧 Kirim Konfirmasi</button>
-      <button class="btn-primary" style="background:#6B7280;box-shadow:none;margin-top:8px" onclick="closeModal('proModal')">Batal</button>
+    <div class="modal-title">🚀 Upgrade Pro</div>
+    <div style="background:rgba(52,152,219,.08);border-radius:12px;padding:16px;margin-bottom:16px;">
+      <p class="text-sm" style="color:var(--text)"><b>User:</b> Order tanpa batas</p>
+      <p class="text-sm" style="margin-top:6px;color:var(--text)"><b>Helper:</b> Terima order tanpa batas</p>
     </div>
+    <p class="text-sm text-muted" style="margin-bottom:16px">Konfirmasi pembayaran via Saweria:</p>
+    <a href="https://saweria.co" target="_blank" style="display:block;text-align:center;background:rgba(52,152,219,.1);color:var(--info);padding:14px;border-radius:12px;font-weight:700;text-decoration:none;margin-bottom:16px;">
+      <i class="fas fa-external-link-alt"></i> saweria.co
+    </a>
+    <div class="form-group">
+      <label>Email Konfirmasi</label>
+      <input type="email" id="proEmail" class="form-input" placeholder="email@kamu.com">
+    </div>
+    <button class="btn-full" onclick="submitPro()">Konfirmasi Upgrade Pro</button>
+    <button class="btn-full secondary" onclick="closeModal('modalPro')">Batal</button>
   </div>
 </div>
 
-<!-- EDIT PROFILE PAGE -->
-<div class="page" id="editProfilePage">
-  <div class="page-header" style="padding-top:calc(16px + env(safe-area-inset-top))">
-    <button class="btn-back" style="background:none;border:none;font-size:22px;cursor:pointer" onclick="closeEditProfile()">‹</button>
-    <h2>Edit Profil</h2>
-  </div>
-  <div class="edit-profile-body">
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="modalEditProfile">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit Profil</div>
     <div class="avatar-upload">
-      <div class="avatar-circle" onclick="document.getElementById('editPhotoInput').click()">
-        <img id="editAvatarPreview" src="" alt="" style="display:none">
-        <span id="editAvatarIcon">📷</span>
+      <div class="avatar-preview" onclick="document.getElementById('editAvatarInput').click()">
+        <img id="editAvatarImg" src="" alt="">
+        <div class="overlay"><i class="fas fa-camera"></i></div>
       </div>
-      <input type="file" id="editPhotoInput" accept="image/*" style="display:none" onchange="previewEditPhoto(this)">
-      <div class="avatar-label">Ubah Foto Profil</div>
+      <input type="file" id="editAvatarInput" accept="image/*" style="display:none" onchange="handleEditAvatarUpload(this)">
     </div>
-    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="editName" placeholder="Nama lengkap"></div>
-    <div class="form-group"><label>Domisili</label><input type="text" id="editDomisili" placeholder="Kecamatan domisili"></div>
-    <div class="form-group"><label>Gender</label><select id="editGender"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
-    <div class="form-group"><label>Bio</label><textarea id="editBio" placeholder="Bio singkat..."></textarea></div>
-    <div class="form-group"><label>Daftar Sebagai</label>
-      <div class="role-select">
-        <div class="role-btn active" id="editRoleUser" onclick="selectEditRole('user')"><span class="icon">👤</span><span class="label">User</span></div>
-        <div class="role-btn" id="editRoleHelper" onclick="selectEditRole('helper')"><span class="icon">🦸</span><span class="label">Helper</span></div>
-      </div>
+    <div class="form-group"><label>Nama</label><input type="text" id="editName" class="form-input"></div>
+    <div class="form-group"><label>Domisili</label><input type="text" id="editDomisili" class="form-input"></div>
+    <div class="form-group"><label>Gender</label>
+      <select id="editGender" class="form-input form-select">
+        <option>Laki-laki</option><option>Perempuan</option>
+      </select>
     </div>
-    <button class="btn-primary" onclick="saveEditProfile()">💾 Simpan Perubahan</button>
+    <div class="form-group"><label>Bio</label><textarea id="editBio" class="form-input"></textarea></div>
+    <div class="form-group"><label>Peran</label>
+      <select id="editRole" class="form-input form-select">
+        <option value="user">User</option><option value="helper">Helper</option>
+      </select>
+    </div>
+    <button class="btn-full" onclick="saveEditProfile()">Simpan Perubahan</button>
+    <button class="btn-full secondary" onclick="closeModal('modalEditProfile')">Batal</button>
   </div>
 </div>
 
-<!-- INFO PAGE -->
-<div class="page" id="infoPage">
-  <div class="page-header" style="padding-top:calc(16px + env(safe-area-inset-top))">
-    <button class="btn-back" style="background:none;border:none;font-size:22px;cursor:pointer" onclick="closePage('infoPage')">‹</button>
-    <h2 id="infoPageTitle">Info</h2>
-  </div>
-  <div class="info-page" id="infoPageContent"></div>
-</div>
-
-<!-- REPORT MODAL -->
-<div class="modal-overlay" id="reportModal">
+<!-- Warning Modal -->
+<div class="modal-overlay" id="modalWarning">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🚩 Laporkan</div>
-    <div class="modal-body">
-      <div class="form-group"><label>Jenis Laporan</label>
-        <select id="reportType">
-          <option value="">Pilih jenis laporan</option>
-          <option value="penipuan">Penipuan</option>
-          <option value="pelecehan">Pelecehan/Perundungan</option>
-          <option value="konten_tidak_layak">Konten Tidak Layak</option>
-          <option value="akun_palsu">Akun Palsu</option>
-          <option value="lainnya">Lainnya</option>
-        </select>
+    <div class="modal-title">⚠️ Perhatian Penting</div>
+    <div style="background:rgba(231,76,60,.06);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+      <p class="text-sm">🔒 <b>Jaga Privasi Identitasmu</b> – Jangan bagikan data pribadi seperti NIK, alamat lengkap, atau info keuangan ke orang asing di platform ini.</p>
+      <p class="text-sm">🤝 <b>Bertemu di Tempat Aman</b> – Saat bertemu helper/user, pilihlah lokasi yang ramai dan aman.</p>
+      <p class="text-sm">📸 <b>Foto KTP Rahasia</b> – Data KTP hanya digunakan untuk verifikasi premium dan tidak akan disebarluaskan.</p>
+      <p class="text-sm">🚫 <b>Laporkan Aktivitas Mencurigakan</b> – Jika ada pengguna yang mencurigakan, segera laporkan melalui menu Laporkan.</p>
+      <p class="text-sm">💰 <b>Hati-hati Penipuan</b> – BBQ PRO tidak bertanggung jawab atas transaksi di luar platform.</p>
+    </div>
+    <button class="btn-full" onclick="closeModal('modalWarning')">Mengerti</button>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal-overlay" id="modalAbout">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Tentang BBQ PRO</div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:70px;height:70px;background:rgba(255,107,53,.1);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <i class="fas fa-fire-flame-curved" style="font-size:32px;color:var(--primary)"></i>
       </div>
-      <div class="form-group"><label>Deskripsi</label><textarea id="reportDesc" placeholder="Jelaskan laporan kamu..."></textarea></div>
-      <button class="btn-primary" onclick="submitReport()">🚩 Kirim Laporan</button>
-      <button class="btn-primary" style="background:#6B7280;box-shadow:none;margin-top:8px" onclick="closeModal('reportModal')">Batal</button>
+      <h3 style="font-size:20px;font-weight:800;">BBQ PRO</h3>
+      <p class="text-muted text-sm">Versi 1.0.0</p>
     </div>
+    <p class="text-sm" style="line-height:1.7;color:var(--text-muted)">BBQ PRO (Bantuan Cepat Qualified - Profesional) adalah platform yang menghubungkan pengguna dengan helper terpercaya di sekitar mereka. Dari ojek hingga gotong kursi, kami hadir untuk memudahkan hidupmu.</p>
+    <div class="divider"></div>
+    <p class="text-xs text-muted" style="text-align:center">© 2024 BBQ PRO. All rights reserved.</p>
+    <button class="btn-full" onclick="closeModal('modalAbout')" style="margin-top:12px">Tutup</button>
   </div>
 </div>
 
-<!-- INCOMING ORDER NOTIFICATION -->
-<div class="notif-modal" id="orderNotifModal">
+<!-- Report Modal -->
+<div class="modal-overlay" id="modalReport">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Laporkan Masalah</div>
+    <div class="form-group">
+      <label>Jenis Laporan</label>
+      <select id="reportType" class="form-input form-select">
+        <option>Pengguna mencurigakan</option>
+        <option>Bug/Error aplikasi</option>
+        <option>Penipuan</option>
+        <option>Konten tidak pantas</option>
+        <option>Lainnya</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Detail Laporan</label>
+      <textarea id="reportDetail" class="form-input" placeholder="Jelaskan masalah yang kamu alami..."></textarea>
+    </div>
+    <button class="btn-full" onclick="submitReport()">Kirim Laporan</button>
+    <button class="btn-full secondary" onclick="closeModal('modalReport')">Batal</button>
+  </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal-overlay" id="modalDeleteAccount">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--danger)">Hapus Akun</div>
+    <p class="text-sm text-muted" style="margin-bottom:16px">Aksi ini tidak dapat dibatalkan. Semua data kamu akan dihapus permanen.</p>
+    <button class="btn-full danger" onclick="deleteAccount()">Ya, Hapus Akunmu</button>
+    <button class="btn-full secondary" onclick="closeModal('modalDeleteAccount')">Batal</button>
+  </div>
+</div>
+
+<!-- Notification Overlay -->
+<div class="notif-overlay" id="notifOverlay">
   <div class="notif-card">
-    <div class="notif-icon">📦</div>
-    <div class="notif-title">Order Masuk!</div>
-    <div class="notif-body" id="notifBody">Ada order baru untuk kamu</div>
-    <div class="notif-actions">
-      <button class="btn-notif-view" onclick="viewIncomingOrder()">Lihat</button>
-      <button class="btn-notif-close" onclick="closeModal('orderNotifModal')">Tutup</button>
+    <div class="notif-icon"><i class="fas fa-bell"></i></div>
+    <h3 style="text-align:center;font-size:18px;font-weight:800;margin-bottom:8px;">Order Masuk!</h3>
+    <p class="text-sm text-muted" style="text-align:center;margin-bottom:8px" id="notifOrderUser"></p>
+    <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;">
+      <p class="text-sm" id="notifOrderCat" style="color:var(--primary);font-weight:700;margin-bottom:4px;"></p>
+      <p class="text-sm text-muted" id="notifOrderDesc"></p>
+      <p class="font-bold" id="notifOrderPrice" style="margin-top:8px;font-size:18px;"></p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn-sm btn-reject" style="justify-content:center;padding:14px" onclick="closeNotif()">Tutup</button>
+      <button class="btn-sm btn-accept" style="justify-content:center;padding:14px" onclick="goToHelperTab()">Lihat</button>
     </div>
   </div>
 </div>
 
-<!-- SUCCESS ALERT MODAL -->
-<div class="success-modal" id="successModal">
-  <div class="success-card">
-    <div class="success-icon-wrap" id="successIcon">⭐</div>
-    <div class="success-title" id="successTitle">Berhasil!</div>
-    <div class="success-body"  id="successBody">Terima kasih.</div>
-    <button class="btn-success-close" onclick="closeSuccessModal()">Tutup</button>
-  </div>
-</div>
-
-<!-- TOAST -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- LOADING -->
-<div class="loading-overlay" id="loading">
-  <div class="loading-spinner"></div>
-  <p id="loadingText">Memuat...</p>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, get, update, push, onValue, off, query, orderByChild, equalTo, startAt, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, get, onValue, push, update, remove, serverTimestamp, query, orderByChild, equalTo, onChildAdded, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
@@ -976,1073 +810,735 @@ const firebaseConfig = {
   appId: "1:338398624429:web:945ac927b840269f976424",
   measurementId: "G-J1Z9JE6KH6"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
-// Expose Firebase query helpers untuk digunakan di loadMessages
-window.__fbQueryFns = { query, orderByChild, startAt };
 
-// GLOBAL STATE
-window.currentUser = null;
-window.currentProfile = null;
-window.selectedRole = 'user';
-window.editSelectedRole = 'user';
-window.currentChatPeerId = null;
-window.currentChatPeerName = null;
-window.selectedRating = 0;
-window.currentRejectOrderId = null;
-window.regPhotoBase64 = null;
-window.editPhotoBase64 = null;
-window.ktpBase64 = null;
-window.historyFilter = 'semua';
-window.chatListeners = {};
-window.pendingNotifOrderId = null;
+// ===== STATE =====
+let currentUser = null;
+let currentProfile = null;
+let selectedRole = 'user';
+let currentRating = 0;
+let currentOrderTarget = null; // helper being ordered
+let currentRejectOrderId = null;
+let currentRatingOrderId = null;
+let currentChatUID = null;
+let chatListeners = {};
+let orderListener = null;
+let helpersListener = null;
+let editAvatarBase64 = null;
+let avatarBase64 = null;
+let ktpBase64 = null;
 
 const CATEGORIES = [
-  {icon:'🛵',label:'Ojek'},{icon:'💝',label:'Kencan'},{icon:'👗',label:'Temani ke Undangan'},
-  {icon:'🎮',label:'Mabar'},{icon:'🎣',label:'Mancing'},{icon:'📦',label:'Ambil Barang'},
-  {icon:'🎟️',label:'Ambil Antrian'},{icon:'🌿',label:'Potong Rumput'},{icon:'🏠',label:'Bersihkan Halaman'},
-  {icon:'🚿',label:'Bersihkan WC'},{icon:'🛒',label:'Belanja ke Pasar'},{icon:'🐀',label:'Basmi Tikus'},
-  {icon:'🏚️',label:'Benerin Genteng'},{icon:'⛽',label:'Kehabisan Bensin'},{icon:'🔧',label:'Kendaraan Mogok'},
-  {icon:'🛋️',label:'Gotong Kursi'},{icon:'💼',label:'Kuli Panggul'},{icon:'🐄',label:'Bantu Lahiran Sapi'},
-  {icon:'👷',label:'Bantu Kerjaan'},{icon:'🆘',label:'Bantuan Lainnya'}
+  {icon:'🛵',name:'Ojek',color:'#FF6B35'},{icon:'💑',name:'Kencan',color:'#E91E8C'},
+  {icon:'💃',name:'Temani Undangan',color:'#9C27B0'},{icon:'🎮',name:'Mabar',color:'#3F51B5'},
+  {icon:'🎣',name:'Mancing',color:'#2196F3'},{icon:'📦',name:'Ambil Barang',color:'#00BCD4'},
+  {icon:'🎫',name:'Ambil Antrian',color:'#009688'},{icon:'🌿',name:'Potong Rumput',color:'#4CAF50'},
+  {icon:'🏠',name:'Bersihkan Halaman',color:'#8BC34A'},{icon:'🚽',name:'Bersihkan WC',color:'#CDDC39'},
+  {icon:'🛒',name:'Belanja Pasar',color:'#FFC107'},{icon:'🐀',name:'Basmi Tikus',color:'#FF9800'},
+  {icon:'🏚️',name:'Benerin Genteng',color:'#FF5722'},{icon:'⛽',name:'Kehabisan Bensin',color:'#795548'},
+  {icon:'🚗',name:'Kendaraan Mogok',color:'#9E9E9E'},{icon:'🪑',name:'Gotong Kursi',color:'#607D8B'},
+  {icon:'💪',name:'Kuli Panggul',color:'#E91E63'},{icon:'🐄',name:'Bantu Lahiran Sapi',color:'#8D6E63'},
+  {icon:'🔧',name:'Bantu Kerjaan',color:'#546E7A'},{icon:'✨',name:'Bantuan Lainnya',color:'#9C27B0'}
 ];
 
-// Render categories
-function renderCategories(){
-  const c = document.getElementById('categoriesContainer');
-  // Also populate order category select
-  const sel = document.getElementById('orderCategory');
-  sel.innerHTML = '<option value="">Pilih kategori</option>';
-  CATEGORIES.forEach(cat => {
-    sel.innerHTML += `<option value="${cat.label}">${cat.icon} ${cat.label}</option>`;
-    const item = document.createElement('div');
-    item.className = 'cat-item';
-    item.innerHTML = `<div class="cat-icon" style="background:linear-gradient(135deg,${randomGrad()})">${cat.icon}</div><div class="cat-label">${cat.label}</div>`;
-    item.onclick = () => showOrderModalByCat(cat.label);
-    c.appendChild(item);
-  });
-}
-function randomGrad(){
-  const grads = [
-    '#FF6B00,#FF8C33','#E55A00,#FF6B00','#FF8C33,#FFB347',
-    '#F59E0B,#FBBF24','#EF4444,#F87171','#8B5CF6,#A78BFA',
-    '#3B82F6,#60A5FA','#10B981,#34D399','#EC4899,#F472B6'
-  ];
-  return grads[Math.floor(Math.random()*grads.length)];
-}
-renderCategories();
-
-// Compress gambar sebelum dijadikan base64 — max 400px, quality 0.6
-function compressImage(file, maxSize=400, quality=0.6){
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let w = img.width, h = img.height;
-        if(w > h){ if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;} }
-        else      { if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;} }
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-// AUTH STATE
-onAuthStateChanged(auth, async user => {
-  if(user){
-    window.currentUser = user;
-    showLoading(true, 'Memeriksa akun...');
-    // Timeout 8 detik agar tidak stuck jika koneksi lambat
-    const timeoutId = setTimeout(() => {
-      showLoading(false);
-      document.getElementById('splash').classList.add('hide');
-      showToast('Koneksi lambat, coba lagi...');
-      showPage('loginPage');
-    }, 8000);
-    try {
-      const snap = await get(ref(db,`users/${user.uid}`));
-      clearTimeout(timeoutId);
-      if(snap.exists()){
-        window.currentProfile = snap.val();
-        showLoading(false);
-        showPage('appPage');
-        initApp();
-      } else {
-        showLoading(false);
-        showPage('registerPage');
-      }
-    } catch(e){
-      clearTimeout(timeoutId);
-      showLoading(false);
-      showPage('loginPage');
-      showToast('Gagal memuat data: '+e.message);
-    }
-  } else {
-    showPage('loginPage');
-    showLoading(false);
-  }
-  setTimeout(()=>{ document.getElementById('splash').classList.add('hide'); },800);
-});
-
-window.loginGoogle = async function(){
-  try {
-    showLoading(true);
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-  } catch(e){
-    showLoading(false);
-    showToast('Login gagal: '+e.message);
-  }
-};
-
-window.submitRegister = async function(){
-  const name = document.getElementById('regName').value.trim();
-  const gender = document.getElementById('regGender').value;
-  const age = document.getElementById('regAge').value;
-  const domisili = document.getElementById('regDomisili').value.trim();
-  const bio = document.getElementById('regBio').value.trim();
-  if(!name||!gender||!age||!domisili){showToast('Lengkapi semua field!');return;}
-  showLoading(true, 'Menyimpan profil...');
-  const uid = window.currentUser.uid;
-  const profile = {
-    uid, name, gender, age: parseInt(age), domisili, bio,
-    role: window.selectedRole,
-    photo: window.regPhotoBase64 || '',
-    email: window.currentUser.email,
-    online: false, premium: false, pro: false,
-    rating: 5, ratingCount: 0,
-    createdAt: Date.now()
-  };
-  await set(ref(db,`users/${uid}`), profile);
-  window.currentProfile = profile;
-  showLoading(false);
-  showToast('Pendaftaran berhasil! 🎉');
-  showPage('appPage');
-  initApp();
-};
-
-window.selectRole = function(role){
-  window.selectedRole = role;
-  document.getElementById('roleUser').classList.toggle('active', role==='user');
-  document.getElementById('roleHelper').classList.toggle('active', role==='helper');
-};
-
-window.previewRegPhoto = async function(input){
-  if(input.files&&input.files[0]){
-    const compressed = await compressImage(input.files[0], 400, 0.65);
-    window.regPhotoBase64 = compressed;
-    const img = document.getElementById('regAvatarPreview');
-    img.src = compressed; img.style.display='block';
-    document.getElementById('regAvatarIcon').style.display='none';
-  }
-};
-
-function initApp(){
-  const p = window.currentProfile;
-  // nav
-  document.getElementById('navHelper').style.display = p.role==='helper'?'flex':'none';
-  // profile
-  updateProfileUI();
-  updateHomeHeader();
-  // helper toggle
-  if(p.role==='helper'){
-    const tog = document.getElementById('helperToggle');
-    tog.checked = !!p.online;
-    tog.disabled = !p.premium && !p.pro;
-    document.getElementById('onlineStatusBar').classList.toggle('show', !!p.online);
-    loadHelperDash();
-    listenIncomingOrders();
-  }
-  listenOnlineHelpers();
-  listenChats();
-  listenHistory();
-  updateDatetime();
-  setInterval(updateDatetime, 1000);
-  updateUpgradeMenuState();
-}
-
-function updateDatetime(){
-  const now = new Date();
-  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const str = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} • ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  const el = document.getElementById('homeDatetime');
-  const el2 = document.getElementById('dashDatetime');
-  if(el) el.textContent = str;
-  if(el2) el2.textContent = str;
-}
-function pad(n){return n<10?'0'+n:n;}
-
-function updateHomeHeader(){
-  const p = window.currentProfile;
-  document.getElementById('homeWelcomeName').textContent = p.name;
-}
-
-function updateProfileUI(){
-  const p = window.currentProfile;
-  // Profile pic
-  const picC = document.getElementById('profilePicContainer');
-  if(p.photo){ picC.innerHTML = `<img src="${p.photo}" alt="" style="width:100%;height:100%;object-fit:cover">`; }
-  else { picC.innerHTML = '🔥'; }
-  document.getElementById('profileName').textContent = p.name;
-  document.getElementById('profileRoleLabel').textContent = (p.role==='helper'?'🦸 Helper':'👤 User') + ` • ⭐ ${(p.rating||5).toFixed(1)}`;
-  // badges
-  const bd = document.getElementById('profileBadges');
-  bd.innerHTML = '';
-  if(p.pro) bd.innerHTML += `<span class="badge badge-pro">👑 PRO</span>`;
-  else if(p.premium) bd.innerHTML += `<span class="badge badge-premium">⭐ Premium</span>`;
-  // helper dash avatar
-  const da = document.getElementById('dashAvatar');
-  if(da && p.photo){ da.innerHTML = `<img src="${p.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`; }
-  if(document.getElementById('dashName')) document.getElementById('dashName').textContent = p.name;
-}
-
-// HELPER ONLINE LISTENERS — pakai full scan + filter client side
-// (tidak butuh .indexOn di rules, lebih reliable)
-function listenOnlineHelpers(){
-  const usersRef = ref(db,'users');
-  onValue(usersRef, snap => {
-    const list = document.getElementById('helperOnlineList');
-    const helpers = [];
-    if(snap.exists()){
-      snap.forEach(child => {
-        const u = child.val();
-        // tampilkan semua helper yg online=true, termasuk diri sendiri jika helper
-        if(u.role === 'helper' && u.online === true){
-          helpers.push(u);
-        }
-      });
-    }
-    if(helpers.length === 0){
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">👀</div><div class="empty-title">Belum ada helper online</div><div class="empty-sub">Helper akan muncul saat mereka aktif</div></div>';
-    } else {
-      list.innerHTML = helpers.map(h => renderHelperCard(h)).join('');
-    }
-  }, err => {
-    console.error('listenOnlineHelpers error:', err);
-  });
-}
-
-function renderHelperCard(h){
-  const stars = '★'.repeat(Math.round(h.rating||5));
-  const badge = h.pro?`<span class="badge badge-pro">👑 PRO</span>`:h.premium?`<span class="badge badge-premium">⭐ Premium</span>`:`<span class="badge">Helper</span>`;
-  const photo = h.photo?`<img src="${h.photo}" class="helper-avatar" alt="">`:`<div class="helper-avatar-placeholder">${h.name?h.name[0]:'?'}</div>`;
-  return `<div class="helper-card">
-    ${photo}
-    <div class="helper-info">
-      <div class="helper-name">${h.name} ${badge}</div>
-      <div class="helper-meta">
-        <span><span class="online-dot"></span>Online</span>
-        <span>⚧ ${h.gender||'—'}</span>
-        <span>🎂 ${h.age||'—'}</span>
-        <span>📍 ${h.domisili||'—'}</span>
-      </div>
-      <div style="color:#FFB347;font-size:12px;margin-bottom:4px">${stars} <span style="color:var(--text-secondary)">(${h.ratingCount||0})</span></div>
-      <div class="helper-bio">${h.bio||'Siap membantu kamu!'}</div>
-    </div>
-    <button class="btn-order" onclick="openOrderModal('${h.uid}','${escHtml(h.name)}')">Order</button>
-  </div>`;
-}
-function escHtml(s){ return (s||'').replace(/'/g,"&#39;"); }
-
-// ORDER
-window.openOrderModal = function(uid, name){
-  document.getElementById('orderHelperId').value = uid;
-  document.getElementById('orderHelperName').value = name;
-  document.getElementById('orderDesc').value = '';
-  document.getElementById('orderPrice').value = '';
-  document.getElementById('orderCategory').value = '';
-  openModal('orderModal');
-};
-window.showOrderModalByCat = function(cat){
-  document.getElementById('orderHelperId').value = '';
-  document.getElementById('orderHelperName').value = 'Pilih helper dari daftar online';
-  document.getElementById('orderCategory').value = cat;
-  document.getElementById('orderDesc').value = '';
-  document.getElementById('orderPrice').value = '';
-  openModal('orderModal');
-};
-
-window.submitOrder = async function(){
-  const helperId = document.getElementById('orderHelperId').value;
-  const cat = document.getElementById('orderCategory').value;
-  const desc = document.getElementById('orderDesc').value.trim();
-  const price = document.getElementById('orderPrice').value;
-  if(!helperId){showToast('Pilih helper dari daftar online!');return;}
-  if(!cat||!desc||!price){showToast('Lengkapi semua field order!');return;}
-  showLoading(true);
-  const p = window.currentProfile;
-  const orderData = {
-    userId: p.uid, userName: p.name, userPhoto: p.photo||'',
-    helperId, helperName: document.getElementById('orderHelperName').value,
-    category: cat, description: desc, price: parseInt(price),
-    status: 'proses', createdAt: Date.now()
-  };
-  const newRef = push(ref(db,'orders'));
-  await set(newRef, orderData);
-  // notify helper via separate node
-  await set(ref(db,`notifications/${helperId}/${newRef.key}`),{
-    orderId: newRef.key, type:'new_order', from: p.name, category: cat, price: parseInt(price), createdAt: Date.now()
-  });
-  showLoading(false);
-  closeModal('orderModal');
-  showToast('Order berhasil dikirim! 🎉');
-};
-
-// HELPER INCOMING ORDERS
-function listenIncomingOrders(){
-  const uid = window.currentProfile.uid;
-  const r = query(ref(db,'orders'), orderByChild('helperId'), equalTo(uid));
-  onValue(r, snap => {
-    const incoming = [];
-    if(snap.exists()) snap.forEach(ch => { const o = ch.val(); o.id=ch.key; if(o.status==='proses') incoming.push(o); });
-    renderIncomingOrders(incoming);
-  });
-  // Listen for notification
-  const notifRef = ref(db,`notifications/${uid}`);
-  onChildAdded(notifRef, snap => {
-    const n = snap.val();
-    if(n && n.type==='new_order'){
-      window.pendingNotifOrderId = n.orderId;
-      document.getElementById('notifBody').textContent = `${n.from} membutuhkan bantuan: ${n.category} • Rp ${(n.price||0).toLocaleString('id-ID')}`;
-      document.getElementById('orderNotifModal').classList.add('active');
-    }
-  });
-}
-
-function renderIncomingOrders(orders){
-  const el = document.getElementById('incomingOrders');
-  if(!orders.length){
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Belum ada order masuk</div></div>';
-    return;
-  }
-  el.innerHTML = orders.map(o => `
-    <div class="order-card" id="order-${o.id}">
-      <div class="order-card-header">
-        <div class="order-user">
-          <div class="order-avatar">${o.userPhoto?`<img src="${o.userPhoto}" alt="">`:o.userName[0]}</div>
-          <div><div class="order-username">${o.userName}</div><div class="order-time">${timeAgo(o.createdAt)}</div></div>
-        </div>
-        <span class="order-cat">${o.category}</span>
-      </div>
-      <div class="order-desc">${o.description}</div>
-      <div class="order-price">Rp ${(o.price||0).toLocaleString('id-ID')}</div>
-      <div class="order-actions">
-        <button class="btn-accept" onclick="acceptOrder('${o.id}','${o.userId}','${escHtml(o.userName)}')">✅ Terima</button>
-        <button class="btn-reject" onclick="openRejectModal('${o.id}')">❌ Tolak</button>
-        <button class="btn-chat-user" onclick="openChatWith('${o.userId}','${escHtml(o.userName)}','${o.userPhoto||''}')">💬 Chat</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-window.acceptOrder = async function(orderId, userId, userName){
-  showLoading(true);
-  await update(ref(db,`orders/${orderId}`),{status:'proses',accepted:true, acceptedAt:Date.now()});
-  showLoading(false);
-  showToast('Order diterima! Hubungi user untuk detail.');
-  // open chat
-  openChatWith(userId, userName, '');
-};
-
-window.openRejectModal = function(orderId){
-  window.currentRejectOrderId = orderId;
-  document.getElementById('rejectReason').value = '';
-  openModal('rejectModal');
-};
-window.submitReject = async function(){
-  const reason = document.getElementById('rejectReason').value.trim();
-  if(!reason){showToast('Tulis alasan penolakan!');return;}
-  showLoading(true);
-  await update(ref(db,`orders/${window.currentRejectOrderId}`),{status:'ditolak',rejectReason:reason,rejectedAt:Date.now()});
-  showLoading(false);
-  closeModal('rejectModal');
-  showToast('Order ditolak.');
-};
-
-window.completeOrder = async function(orderId){
-  showLoading(true);
-  await update(ref(db,`orders/${orderId}`),{status:'selesai',completedAt:Date.now()});
-  showLoading(false);
-  showToast('Order selesai! ✅');
-};
-
-window.viewIncomingOrder = function(){
-  closeModal('orderNotifModal');
-  switchTab('helper', document.getElementById('navHelper'));
-};
-
-// HELPER DASHBOARD STATS
-function loadHelperDash(){
-  const uid = window.currentProfile.uid;
-  const r = query(ref(db,'orders'), orderByChild('helperId'), equalTo(uid));
-  onValue(r, snap => {
-    let total=0, today=0, totalOrders=0, done=0, rejected=0;
-    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-    if(snap.exists()) snap.forEach(ch => {
-      const o = ch.val();
-      totalOrders++;
-      if(o.status==='selesai'){ done++; total+=o.price||0; if(o.completedAt>=todayStart.getTime()) today+=o.price||0; }
-      if(o.status==='ditolak') rejected++;
-    });
-    document.getElementById('statTotal').textContent = 'Rp '+total.toLocaleString('id-ID');
-    document.getElementById('statToday').textContent = 'Rp '+today.toLocaleString('id-ID');
-    document.getElementById('statOrders').textContent = totalOrders;
-    document.getElementById('statDone').textContent = done;
-    document.getElementById('statRejected').textContent = rejected;
-  });
-}
-
-// TOGGLE ONLINE
-window.toggleHelperOnline = async function(el){
-  const p = window.currentProfile;
-  if(!p.premium && !p.pro){
-    el.checked = false;
-    showToast('Upgrade Premium dulu untuk online!');
-    return;
-  }
-  const online = el.checked;
-  await update(ref(db,`users/${p.uid}`),{online});
-  window.currentProfile.online = online;
-  document.getElementById('onlineStatusBar').classList.toggle('show', online);
-  showToast(online?'Kamu sekarang Online sebagai Helper 🟢':'Kamu Offline 🔴');
-};
-
-// CHAT
-// Track active conv listeners
-window.activeConvListeners = {};
-window.knownPeerIds = new Set();
-
-function listenChats(){
-  const uid = window.currentProfile.uid;
-  // Dengarkan orders untuk dapat daftar peer (user maupun helper)
-  const ordersRef = ref(db,'orders');
-  onValue(ordersRef, snap => {
-    const peerIds = new Set();
-    if(snap.exists()){
-      snap.forEach(ch => {
-        const o = ch.val();
-        if(o.userId === uid && o.helperId) peerIds.add(o.helperId);
-        if(o.helperId === uid && o.userId) peerIds.add(o.userId);
-      });
-    }
-    window.knownPeerIds = peerIds;
-    // Daftarkan listener per convKey agar real-time
-    peerIds.forEach(peerId => {
-      const convKey = getConvKey(uid, peerId);
-      if(window.activeConvListeners[convKey]) return;
-      const convRef = ref(db, `chats/${convKey}`);
-      const unsub = onValue(convRef, () => {
-        rebuildChatList(uid);
-      });
-      window.activeConvListeners[convKey] = unsub;
-    });
-    rebuildChatList(uid);
-  });
-}
-
-async function rebuildChatList(uid){
-  const convs = [];
-  for(const peerId of window.knownPeerIds){
-    if(!peerId) continue;
-    const convKey = getConvKey(uid, peerId);
-    try {
-      const snap = await get(ref(db, `chats/${convKey}`));
-      const msgArr = [];
-      if(snap.exists()) snap.forEach(ch => msgArr.push(ch.val()));
-      msgArr.sort((a,b) => b.createdAt - a.createdAt);
-      convs.push({
-        key: convKey,
-        peerId,
-        last: msgArr[0] || null,
-        unread: msgArr.filter(m => m.to === uid && !m.read).length
-      });
-    } catch(e){ /* skip on permission error */ }
-  }
-  convs.sort((a,b) => (b.last?.createdAt||0) - (a.last?.createdAt||0));
-  renderChatList(convs);
-  const totalUnread = convs.reduce((s,c) => s+c.unread, 0);
-  const badge = document.getElementById('chatBadge');
-  if(totalUnread>0){ badge.textContent=totalUnread; badge.classList.add('show'); }
-  else badge.classList.remove('show');
-}
-
-async function renderChatList(convs){
-  const el = document.getElementById('chatList');
-  if(!convs.length){
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">Belum ada percakapan</div></div>';
-    return;
-  }
-  // Cache peer data
-  const peerDataMap = {};
-  for(const c of convs){
-    try{
-      const snap = await get(ref(db,`users/${c.peerId}`));
-      peerDataMap[c.peerId] = snap.exists() ? snap.val() : {name:'Unknown', photo:'', uid: c.peerId};
-    } catch(e){
-      peerDataMap[c.peerId] = {name:'Unknown', photo:'', uid: c.peerId};
-    }
-  }
-  el.innerHTML = convs.map(c => {
-    const peer = peerDataMap[c.peerId] || {name:'?', photo:''};
-    const name = peer.name || '?';
-    const initial = name.charAt(0).toUpperCase();
-    const avatarHtml = peer.photo
-      ? `<img src="${peer.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
-      : initial;
-    const preview = c.last ? escHtml(c.last.text) : '<em style="color:var(--text-secondary)">Mulai percakapan...</em>';
-    return `<div class="chat-item"
-        data-peer-id="${c.peerId}"
-        data-peer-name="${escHtml(name)}"
-        data-peer-photo="${peer.photo||''}">
-      <div class="chat-avatar">${avatarHtml}</div>
-      <div class="chat-info">
-        <div class="chat-name">${name}</div>
-        <div class="chat-preview">${preview}</div>
-      </div>
-      <div class="chat-meta">
-        <div class="chat-time">${c.last ? timeAgo(c.last.createdAt) : ''}</div>
-        ${c.unread>0 ? `<div class="chat-unread">${c.unread}</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-  // Event delegation — satu listener di parent
-  el.onclick = function(e){
-    const item = e.target.closest('.chat-item');
-    if(!item) return;
-    const peerId   = item.dataset.peerId;
-    const peerName = item.dataset.peerName;
-    const peerPhoto= item.dataset.peerPhoto;
-    openChatWith(peerId, peerName, peerPhoto);
-  };
-}
-
-window.openChatWith = function(peerId, peerName, peerPhoto){
-  if(!peerId){ showToast('ID pengguna tidak valid'); return; }
-  peerName = peerName || 'Pengguna';
-  peerPhoto = peerPhoto || '';
-  // Tutup listener lama jika masih aktif di room berbeda
-  if(window.currentChatPeerId && window.currentChatPeerId !== peerId){
-    const oldKey = getConvKey(window.currentUser.uid, window.currentChatPeerId);
-    if(window.chatListeners[oldKey]){
-      window.chatListeners[oldKey].forEach(fn => fn());
-      delete window.chatListeners[oldKey];
-    }
-  }
-  window.currentChatPeerId = peerId;
-  window.currentChatPeerName = peerName;
-  const ra = document.getElementById('roomAvatar');
-  if(peerPhoto){
-    ra.innerHTML = `<img src="${peerPhoto}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-  } else {
-    ra.innerHTML = `<span style="font-size:18px;font-weight:800;color:#fff">${peerName.charAt(0).toUpperCase()}</span>`;
-  }
-  document.getElementById('roomName').textContent = peerName;
-  document.getElementById('chatMessages').innerHTML = '';
-  document.getElementById('chatRoom').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  loadMessages(peerId);
-};
-
-window.closeChatRoom = function(){
-  document.getElementById('chatRoom').classList.remove('active');
-  document.body.style.overflow = '';
-  const uid = window.currentUser.uid;
-  if(window.currentChatPeerId){
-    const convKey = getConvKey(uid, window.currentChatPeerId);
-    // chatListeners[convKey] sekarang array of unsub functions
-    if(window.chatListeners[convKey]){
-      window.chatListeners[convKey].forEach(fn => fn());
-      delete window.chatListeners[convKey];
-    }
-    // Mark read
-    get(ref(db,`chats/${convKey}`)).then(snap => {
-      if(snap.exists()){
-        const updates = {};
-        snap.forEach(ch => {
-          const m = ch.val();
-          if(m.to === uid && !m.read) updates[`chats/${convKey}/${ch.key}/read`] = true;
-        });
-        if(Object.keys(updates).length) update(ref(db), updates);
-      }
-    });
-  }
-  window.currentChatPeerId = null;
-};
-
-function getConvKey(uid1, uid2){ return [uid1,uid2].sort().join('_'); }
-
-// Buat satu bubble element dari data pesan
-function makeBubble(m, uid){
-  const isOut = m.from === uid;
-  const div = document.createElement('div');
-  div.className = `msg ${isOut ? 'msg-out' : 'msg-in'}`;
-  const safeText = (m.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-  const timeStr = new Date(m.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  div.innerHTML = `<span class="msg-text">${safeText}</span><span class="msg-time">${timeStr}</span>`;
-  return div;
-}
-
-function loadMessages(peerId){
-  const uid = window.currentUser.uid;
-  const convKey = getConvKey(uid, peerId);
-  const msgEl = document.getElementById('chatMessages');
-
-  // Matikan semua listener lama di conv ini
-  if(window.chatListeners[convKey]){
-    window.chatListeners[convKey].forEach(fn => fn());
-    delete window.chatListeners[convKey];
-  }
-  msgEl.innerHTML = '';
-  window.chatListeners[convKey] = [];
-
-  const convRef = ref(db, `chats/${convKey}`);
-
-  // STEP 1: Load semua pesan lama sekaligus pakai onValue sekali (once)
-  get(convRef).then(snap => {
-    if(window.currentChatPeerId !== peerId) return;
-    msgEl.innerHTML = '';
-    const msgs = [];
-    if(snap.exists()) snap.forEach(ch => msgs.push(ch.val()));
-    msgs.sort((a,b) => a.createdAt - b.createdAt);
-    msgs.forEach(m => msgEl.appendChild(makeBubble(m, uid)));
-    msgEl.scrollTop = msgEl.scrollHeight;
-
-    // STEP 2: Setelah load selesai, pasang onChildAdded hanya untuk pesan BARU
-    // startAt = timestamp sekarang agar tidak double-render pesan lama
-    const { query: fbQuery, orderByChild: obc, startAt } = window.__fbQueryFns;
-    const newMsgsRef = fbQuery(convRef, obc('createdAt'), startAt(Date.now()));
-    
-    const unsubNew = onChildAdded(newMsgsRef, snap => {
-      if(window.currentChatPeerId !== peerId) return;
-      const m = snap.val();
-      // Hindari duplikat — cek apakah bubble dengan timestamp ini sudah ada
-      // Gunakan data-key attribute
-      const existing = msgEl.querySelector(`[data-key="${snap.key}"]`);
-      if(existing) return;
-      const bubble = makeBubble(m, uid);
-      bubble.setAttribute('data-key', snap.key);
-      msgEl.appendChild(bubble);
-      msgEl.scrollTop = msgEl.scrollHeight;
-      // Mark read jika pesan masuk
-      if(m.to === uid && !m.read){
-        update(ref(db, `chats/${convKey}/${snap.key}`), {read: true});
-      }
-    });
-    window.chatListeners[convKey].push(unsubNew);
-  });
-}
-
-window.sendMessage = async function(){
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if(!text || !window.currentChatPeerId) return;
-  input.value = '';
-  input.focus();
-  const uid = window.currentUser.uid;
-  const peerId = window.currentChatPeerId;
-  const convKey = getConvKey(uid, peerId);
-  const msgRef = push(ref(db, `chats/${convKey}`));
-  const msgData = {
-    from: uid,
-    to: peerId,
-    text: text,
-    createdAt: Date.now(),
-    read: false
-  };
-  // Optimistic UI — langsung append bubble tanpa tunggu Firebase
-  const msgEl = document.getElementById('chatMessages');
-  const bubble = makeBubble(msgData, uid);
-  bubble.setAttribute('data-key', msgRef.key);
-  msgEl.appendChild(bubble);
-  msgEl.scrollTop = msgEl.scrollHeight;
-  // Kirim ke Firebase
-  await set(msgRef, msgData);
-};
-
-// HISTORY
-function listenHistory(){
-  const uid = window.currentProfile.uid;
-  const p = window.currentProfile;
-  // Listen as user or helper
-  const fieldQuery = p.role==='helper'
-    ? query(ref(db,'orders'), orderByChild('helperId'), equalTo(uid))
-    : query(ref(db,'orders'), orderByChild('userId'), equalTo(uid));
-  onValue(fieldQuery, snap => {
-    const orders = [];
-    if(snap.exists()) snap.forEach(ch=>{ const o=ch.val(); o.id=ch.key; orders.push(o); });
-    window.allOrders = orders.sort((a,b)=>b.createdAt-a.createdAt);
-    renderHistory(window.historyFilter);
-  });
-}
-
-function renderHistory(filter){
-  const el = document.getElementById('historyContent');
-  let orders = window.allOrders || [];
-  if(filter!=='semua') orders = orders.filter(o=>o.status===filter);
-  if(!orders.length){
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Tidak ada riwayat</div></div>';
-    return;
-  }
-  const p = window.currentProfile;
-  el.innerHTML = orders.map(o => {
-    const statusClass = o.status==='proses'?'status-proses':o.status==='selesai'?'status-selesai':'status-ditolak';
-    const statusLabel = o.status==='proses'?'Proses':o.status==='selesai'?'Selesai':'Ditolak';
-    const isHelper = p.role==='helper';
-    let actions = '';
-    if(o.status==='proses' && isHelper && o.accepted){
-      actions = `<button class="btn-complete" onclick="completeOrder('${o.id}')">✅ Selesaikan</button>`;
-    }
-    if(o.status==='selesai' && !isHelper && !o.rated){
-      actions = `<button class="btn-complete" style="background:linear-gradient(135deg,#FFB347,#F59E0B)" onclick="openRatingModal('${o.id}')">⭐ Beri Rating</button>`;
-    }
-    if(o.status==='ditolak' && o.rejectReason){
-      actions = `<div style="font-size:12px;color:var(--offline);margin-top:8px">Alasan: ${o.rejectReason}</div>`;
-    }
-    return `<div class="order-card">
-      <div class="order-card-header">
-        <div class="order-user">
-          <div class="order-avatar">${o.userName?o.userName[0]:'?'}</div>
-          <div>
-            <div class="order-username">${isHelper?o.userName:o.helperName}</div>
-            <div class="order-time">${timeAgo(o.createdAt)}</div>
-          </div>
-        </div>
-        <span class="order-cat">${o.category}</span>
-      </div>
-      <div class="order-desc">${o.description}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="order-price">Rp ${(o.price||0).toLocaleString('id-ID')}</div>
-        <span class="status-pill ${statusClass}">${statusLabel}</span>
-      </div>
-      ${actions}
-    </div>`;
-  }).join('');
-}
-
-window.switchHistoryTab = function(filter, el){
-  window.historyFilter = filter;
-  document.querySelectorAll('.htab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderHistory(filter);
-};
-
-// RATING
-window.openRatingModal = function(orderId){
-  window.ratingOrderId = orderId;
-  window.selectedRating = 0;
-  document.querySelectorAll('.star-btn').forEach(s=>s.classList.remove('active'));
-  openModal('ratingModal');
-};
-window.setRating = function(n){
-  window.selectedRating = n;
-  document.querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<n));
-};
-window.submitRating = async function(){
-  if(!window.selectedRating){showToast('Pilih rating dulu!');return;}
-  closeModal('ratingModal');
-  // Simpan ke Firebase di background — tidak perlu tunggu
-  const orderId = window.ratingOrderId;
-  const rating  = window.selectedRating;
-  // Tampilkan success modal langsung tanpa loading
-  showSuccessModal(
-    'star', '⭐',
-    'Terima Kasih atas Penilaianmu!',
-    `Kamu memberi <strong>${rating} bintang</strong>. Rating kamu sangat membantu helper kami berkembang lebih baik. 🙏`
-  );
-  // Fire-and-forget ke Firebase
-  get(ref(db,`orders/${orderId}`)).then(snap => {
-    if(!snap.exists()) return;
-    const o = snap.val();
-    update(ref(db,`orders/${orderId}`),{rated:true,ratingValue:rating});
-    get(ref(db,`users/${o.helperId}`)).then(hSnap => {
-      if(!hSnap.exists()) return;
-      const h = hSnap.val();
-      const newCount  = (h.ratingCount||0)+1;
-      const newRating = ((h.rating||5)*(h.ratingCount||0)+rating)/newCount;
-      update(ref(db,`users/${o.helperId}`),{rating:newRating,ratingCount:newCount});
-    });
-  });
-};
-
-// TOGGLE DARK MODE
-window.toggleDarkMode = function(){
-  const isDark = document.body.classList.toggle('dark');
-  document.getElementById('darkToggle').checked = isDark;
-  localStorage.setItem('bbqdark', isDark?'1':'0');
-};
-if(localStorage.getItem('bbqdark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkToggle').checked=true; }
-
-// PREMIUM
-window.previewKTP = async function(input){
-  if(input.files&&input.files[0]){
-    // KTP boleh sedikit lebih besar agar terbaca — max 800px quality 0.7
-    const compressed = await compressImage(input.files[0], 800, 0.7);
-    window.ktpBase64 = compressed;
-    const img = document.getElementById('ktpPreview');
-    img.src = compressed; img.style.display='block';
-  }
-};
-window.submitPremium = async function(){
-  const phone = document.getElementById('premiumPhone').value.trim();
-  if(!phone||!window.ktpBase64){showToast('Lengkapi nomor HP dan foto KTP!');return;}
-  showLoading(true);
-  const uid = window.currentProfile.uid;
-  await update(ref(db,`users/${uid}`),{premium:true, premiumPhone:phone, ktpPhoto:window.ktpBase64, premiumAt:Date.now()});
-  window.currentProfile.premium = true;
-  const tog = document.getElementById('helperToggle');
-  if(tog) tog.disabled = false;
-  showLoading(false);
-  closeModal('premiumModal');
-  updateProfileUI();
-  updateUpgradeMenuState();
-  showSuccessModal(
-    'star','⭐',
-    'Premium Aktif! ⭐',
-    'Selamat! Akun kamu sekarang sudah Premium.
-
-User mendapat +5 kali order.
-Helper dapat mengaktifkan toggle online.'
-  );
-};
-
-window.openProModal = function(){
-  const p = window.currentProfile;
-  if(p.pro){showToast('Kamu sudah PRO! 👑');return;}
-  if(!p.premium){showToast('Upgrade Premium dulu sebelum PRO!');return;}
-  openModal('proModal');
-};
-window.submitPro = async function(){
-  const email = document.getElementById('proEmail').value.trim();
-  if(!email){showToast('Masukkan email konfirmasi!');return;}
-  showLoading(true);
-  const uid = window.currentProfile.uid;
-  await update(ref(db,`users/${uid}`),{pro:true, proEmail:email, proAt:Date.now()});
-  window.currentProfile.pro = true;
-  window.currentProfile.premium = true;
-  const tog = document.getElementById('helperToggle');
-  if(tog) tog.disabled = false;
-  showLoading(false);
-  closeModal('proModal');
-  updateProfileUI();
-  updateUpgradeMenuState();
-  showSuccessModal(
-    'crown','👑',
-    'Selamat, Kamu Kini PRO! 👑',
-    'Akses PRO berhasil diaktifkan!
-
-✅ Order & terima order tanpa batas
-✅ Auto rating 5⭐ untuk helper
-
-Konfirmasi telah dikirim ke email kamu.'
-  );
-};
-
-// EDIT PROFILE
-window.openEditProfile = function(){
-  const p = window.currentProfile;
-  document.getElementById('editName').value = p.name;
-  document.getElementById('editDomisili').value = p.domisili||'';
-  document.getElementById('editGender').value = p.gender||'';
-  document.getElementById('editBio').value = p.bio||'';
-  selectEditRole(p.role||'user');
-  const prev = document.getElementById('editAvatarPreview');
-  if(p.photo){ prev.src=p.photo; prev.style.display='block'; document.getElementById('editAvatarIcon').style.display='none'; }
-  else { prev.style.display='none'; document.getElementById('editAvatarIcon').style.display='block'; }
-  window.editPhotoBase64 = null;
-  showPage('editProfilePage');
-};
-window.closeEditProfile = function(){ closePage('editProfilePage'); };
-window.selectEditRole = function(role){
-  window.editSelectedRole = role;
-  document.getElementById('editRoleUser').classList.toggle('active', role==='user');
-  document.getElementById('editRoleHelper').classList.toggle('active', role==='helper');
-};
-window.previewEditPhoto = async function(input){
-  if(input.files&&input.files[0]){
-    const compressed = await compressImage(input.files[0], 400, 0.65);
-    window.editPhotoBase64 = compressed;
-    const img = document.getElementById('editAvatarPreview');
-    img.src=compressed; img.style.display='block';
-    document.getElementById('editAvatarIcon').style.display='none';
-  }
-};
-window.saveEditProfile = async function(){
-  const name = document.getElementById('editName').value.trim();
-  const domisili = document.getElementById('editDomisili').value.trim();
-  const gender = document.getElementById('editGender').value;
-  const bio = document.getElementById('editBio').value.trim();
-  if(!name){showToast('Nama tidak boleh kosong!');return;}
-  showLoading(true);
-  const uid = window.currentProfile.uid;
-  const updates = { name, domisili, gender, bio, role: window.editSelectedRole };
-  if(window.editPhotoBase64) updates.photo = window.editPhotoBase64;
-  await update(ref(db,`users/${uid}`), updates);
-  Object.assign(window.currentProfile, updates);
-  showLoading(false);
-  showToast('Profil berhasil diperbarui! ✅');
-  closeEditProfile();
-  updateProfileUI();
-  updateHomeHeader();
-  // update nav visibility
-  document.getElementById('navHelper').style.display = window.editSelectedRole==='helper'?'flex':'none';
-};
-
-// INFO PAGES
-window.openInfoPage = function(type){
-  const titles = {warning:'⚠️ Perhatian Penting', about:'ℹ️ Tentang Aplikasi'};
-  const contents = {
-    warning: `<h3>🔒 Jaga Identitas & Privasi</h3>
-      Jangan pernah memberikan informasi pribadi sensitif seperti kata sandi, nomor rekening, atau PIN kepada siapapun termasuk helper.
-      <h3>⚠️ Waspadai Penipuan</h3>
-      BBQ PRO tidak pernah meminta pembayaran di luar aplikasi. Lakukan semua transaksi melalui fitur resmi aplikasi.
-      <h3>👮 Keamanan Bertemu Orang Asing</h3>
-      Jika bertemu dengan helper di tempat umum, pastikan tempat tersebut ramai dan aman. Beritahu orang terdekat tentang rencana pertemuanmu.
-      <h3>📞 Kontak Darurat</h3>
-      Jika mengalami situasi berbahaya, segera hubungi pihak berwajib di nomor 110 (Polisi) atau 119 (Ambulans).
-      <h3>🚩 Laporkan Penyalahgunaan</h3>
-      Jika menemukan akun atau perilaku mencurigakan, segera gunakan fitur Laporkan di profil.`,
-    about: `<h3>🔥 BBQ PRO</h3>
-      Versi 1.0.0 — Platform bantuan lokal terpercaya yang menghubungkan orang yang membutuhkan bantuan dengan helper terdekat.
-      <h3>🎯 Misi Kami</h3>
-      Memudahkan masyarakat mendapatkan bantuan sehari-hari dari helper profesional di sekitar mereka dengan cepat, mudah, dan terpercaya.
-      <h3>👨‍💻 Pengembang</h3>
-      Dikembangkan dengan ❤️ oleh Tim BBQ PRO. Platform ini dibangun di atas teknologi Firebase untuk keandalan real-time.
-      <h3>📱 Teknologi</h3>
-      Progressive Web App (PWA) • Firebase Realtime Database • Google Authentication
-      <h3>📧 Kontak</h3>
-      support@bbqpro.app`
-  };
-  document.getElementById('infoPageTitle').textContent = titles[type];
-  document.getElementById('infoPageContent').innerHTML = contents[type];
-  showPage('infoPage');
-};
-
-// REPORT
-window.openReportModal = function(){ openModal('reportModal'); };
-window.submitReport = async function(){
-  const type = document.getElementById('reportType').value;
-  const desc = document.getElementById('reportDesc').value.trim();
-  if(!type||!desc){showToast('Lengkapi laporan!');return;}
-  showLoading(true);
-  await push(ref(db,'reports'),{
-    from: window.currentProfile.uid, fromName: window.currentProfile.name,
-    type, desc, createdAt: Date.now()
-  });
-  showLoading(false);
-  closeModal('reportModal');
-  showToast('Laporan terkirim! Terima kasih.');
-};
-
-// DELETE & LOGOUT
-window.confirmDeleteAccount = function(){
-  if(confirm('Yakin hapus akun? Semua data akan dihapus permanen!')){
-    deleteAccount();
-  }
-};
-async function deleteAccount(){
-  showLoading(true);
-  const uid = window.currentProfile.uid;
-  await set(ref(db,`users/${uid}`), null);
-  await auth.currentUser.delete();
-  showLoading(false);
-  showToast('Akun berhasil dihapus.');
-}
-window.logout = async function(){
-  if(window.currentProfile?.role==='helper'){
-    await update(ref(db,`users/${window.currentProfile.uid}`),{online:false});
-  }
-  await signOut(auth);
-  window.currentProfile = null;
-  showPage('loginPage');
-  showToast('Berhasil keluar.');
-};
-
-// HELPERS
-function timeAgo(ts){
-  const d = Date.now()-ts;
-  if(d<60000) return 'Baru saja';
-  if(d<3600000) return Math.floor(d/60000)+'m lalu';
-  if(d<86400000) return Math.floor(d/3600000)+'j lalu';
-  return Math.floor(d/86400000)+'h lalu';
-}
-
-window.showLoading = function(s, msg){
-  document.getElementById('loading').classList.toggle('active', s);
-  const txt = document.getElementById('loadingText');
-  if(txt) txt.textContent = (s && msg) ? msg : 'Memuat...';
-};
-window.showToast = function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); };
-
-// Success alert modal
-window.showSuccessModal = function(iconType, iconEmoji, title, body){
-  const wrap = document.getElementById('successIcon');
-  wrap.className = `success-icon-wrap ${iconType}`;
-  wrap.textContent = iconEmoji;
-  document.getElementById('successTitle').textContent = title;
-  // Ganti newline jadi <br>
-  document.getElementById('successBody').innerHTML = body.replace(/\n/g,'<br>');
-  document.getElementById('successModal').classList.add('active');
-};
-window.closeSuccessModal = function(){
-  document.getElementById('successModal').classList.remove('active');
-};
-
-// Update tampilan menu upgrade sesuai status premium/pro
-window.updateUpgradeMenuState = function(){
-  const p = window.currentProfile;
-  const premiumItem = document.getElementById('menuPremium');
-  const proItem     = document.getElementById('menuPro');
-  if(!premiumItem || !proItem) return;
-
-  if(p.pro){
-    // Sudah PRO — keduanya tidak bisa diklik
-    premiumItem.classList.remove('locked','locked-pro');
-    premiumItem.classList.add('done-badge');
-    premiumItem.onclick = ()=>showToast('Kamu sudah Premium ✅');
-    proItem.classList.remove('locked','locked-pro');
-    proItem.classList.add('done-badge');
-    proItem.onclick = ()=>showToast('Kamu sudah PRO 👑');
-  } else if(p.premium){
-    // Sudah Premium — premium done, pro bisa diklik
-    premiumItem.classList.remove('locked','locked-pro');
-    premiumItem.classList.add('done-badge');
-    premiumItem.onclick = ()=>showToast('Kamu sudah Premium ✅');
-    proItem.classList.remove('locked','done-badge','locked-pro');
-    proItem.onclick = ()=>openProModal();
-  } else {
-    // Belum premium — premium bisa diklik, pro terkunci
-    premiumItem.classList.remove('locked','done-badge','locked-pro');
-    premiumItem.onclick = ()=>openModal('premiumModal');
-    proItem.classList.add('locked-pro');
-    proItem.classList.remove('locked','done-badge');
-    proItem.onclick = ()=>showToast('Upgrade Premium dulu! ⭐');
-  }
-};
-
-window.openModal = function(id){ document.getElementById(id).classList.add('active'); };
-window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); };
-
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+// ===== UTILS =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-window.closePage = function(id){ document.getElementById(id).classList.remove('active'); document.getElementById('appPage').classList.add('active'); };
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function formatRp(n) { return 'Rp '+parseInt(n||0).toLocaleString('id-ID'); }
+function fmtDate(d=new Date()) {
+  const days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+function fmtTime(d=new Date()) {
+  return d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+}
+function greeting() {
+  const h=new Date().getHours();
+  if(h<12) return 'Selamat pagi ☀️';
+  if(h<15) return 'Selamat siang 🌤️';
+  if(h<18) return 'Selamat sore 🌅';
+  return 'Selamat malam 🌙';
+}
+async function compressImage(dataUrl, maxW=300, quality=0.6) {
+  return new Promise(res=>{
+    const img=new Image(); img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const scale=Math.min(1,maxW/img.width);
+      canvas.width=img.width*scale; canvas.height=img.height*scale;
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      res(canvas.toDataURL('image/jpeg',quality));
+    }; img.src=dataUrl;
+  });
+}
+function fileToBase64(file) {
+  return new Promise(res=>{
+    const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(file);
+  });
+}
 
-window.switchTab = function(tab, el){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
-  el.classList.add('active');
+// ===== AUTH =====
+window.btnGoogleLogin = document.getElementById('btnGoogleLogin');
+document.getElementById('btnGoogleLogin').onclick = async ()=>{
+  try {
+    const provider=new GoogleAuthProvider();
+    const result=await signInWithPopup(auth,provider);
+    currentUser=result.user;
+    await checkUserProfile(currentUser);
+  } catch(e){ showToast('Login gagal: '+e.message); }
 };
+
+onAuthStateChanged(auth, async user=>{
+  if(user){ currentUser=user; await checkUserProfile(user); }
+  else { showScreen('loginScreen'); }
+});
+
+async function checkUserProfile(user) {
+  const snap=await get(ref(db,`users/${user.uid}`));
+  if(snap.exists()) {
+    currentProfile=snap.val();
+    initMainApp();
+  } else {
+    document.getElementById('regName').value=user.displayName||'';
+    showScreen('registerScreen');
+  }
+}
+
+// ===== REGISTER =====
+window.selectRole = function(role) {
+  selectedRole=role;
+  document.getElementById('roleUser').classList.toggle('selected',role==='user');
+  document.getElementById('roleHelper').classList.toggle('selected',role==='helper');
+};
+window.handleAvatarUpload = async function(input) {
+  if(!input.files[0]) return;
+  const b64=await fileToBase64(input.files[0]);
+  avatarBase64=await compressImage(b64,300,0.65);
+  document.getElementById('avatarImg').src=avatarBase64;
+};
+window.submitRegister = async function() {
+  const name=document.getElementById('regName').value.trim();
+  const gender=document.getElementById('regGender').value;
+  const age=document.getElementById('regAge').value;
+  const domisili=document.getElementById('regDomisili').value.trim();
+  const bio=document.getElementById('regBio').value.trim();
+  if(!name||!gender||!age||!domisili) return showToast('Lengkapi semua field!');
+  const data={
+    uid:currentUser.uid, name, gender, age:parseInt(age), domisili, bio,
+    role:selectedRole, email:currentUser.email,
+    avatar:avatarBase64||currentUser.photoURL||'',
+    premium:false, pro:false, rating:0, ratingCount:0,
+    totalEarning:0, todayEarning:0, totalOrders:0, doneOrders:0, rejectedOrders:0,
+    isOnline:false, createdAt:Date.now()
+  };
+  try {
+    await set(ref(db,`users/${currentUser.uid}`),data);
+    currentProfile=data;
+    initMainApp();
+  } catch(e){ showToast('Gagal daftar: '+e.message); }
+};
+
+// ===== MAIN APP =====
+function initMainApp() {
+  showScreen('mainScreen');
+  renderBottomNav();
+  renderCategories();
+  updateDateTime();
+  setInterval(updateDateTime,1000);
+  updateProfileUI();
+  loadHelpers();
+  loadChats();
+  loadHistory();
+  if(currentProfile.role==='helper') {
+    updateHelperDash();
+    listenIncomingOrders();
+    restoreOnlineStatus();
+  }
+}
+
+function renderBottomNav() {
+  const isHelper = currentProfile.role==='helper';
+  const items = isHelper ? [
+    {id:'home',icon:'fa-home',label:'Home'},
+    {id:'helper',icon:'fa-tools',label:'Helper'},
+    {id:'chat',icon:'fa-comments',label:'Chat'},
+    {id:'history',icon:'fa-history',label:'History'},
+    {id:'profile',icon:'fa-user-circle',label:'Profil'}
+  ] : [
+    {id:'home',icon:'fa-home',label:'Home'},
+    {id:'chat',icon:'fa-comments',label:'Chat'},
+    {id:'history',icon:'fa-history',label:'History'},
+    {id:'profile',icon:'fa-user-circle',label:'Profil'}
+  ];
+  const nav=document.getElementById('bottomNav');
+  nav.innerHTML=items.map(i=>`
+    <div class="nav-item ${i.id==='home'?'active':''}" onclick="switchTab('${i.id}',this)" data-tab="${i.id}">
+      <div class="nav-icon"><i class="fas ${i.icon}"></i></div>
+      <span>${i.label}</span>
+    </div>`).join('');
+}
+
+window.switchTab = function(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const tc=document.getElementById(`tab${tab.charAt(0).toUpperCase()+tab.slice(1)}`);
+  if(tc) tc.classList.add('active');
+  if(el) el.classList.add('active');
+  if(tab==='helper') updateHelperDash();
+  if(tab==='history') loadHistory();
+  if(tab==='chat') loadChats();
+  document.getElementById('mainBody').scrollTop=0;
+};
+
+function updateDateTime() {
+  const now=new Date();
+  const dt=`${fmtDate(now)} • ${fmtTime(now)}`;
+  const el1=document.getElementById('homeDatetime'); if(el1) el1.textContent=dt;
+  const el2=document.getElementById('helperDatetime'); if(el2) el2.textContent=dt;
+  const g=greeting();
+  const eg=document.getElementById('homeGreeting'); if(eg) eg.textContent=g;
+  const hg=document.getElementById('helperGreeting'); if(hg) hg.textContent=g;
+}
+
+function renderCategories() {
+  const grid=document.getElementById('categoriesGrid');
+  if(!grid) return;
+  grid.innerHTML=CATEGORIES.map(c=>`
+    <div class="cat-item" onclick="quickOrder('${c.name}')">
+      <div class="cat-icon" style="background:${c.color}20;font-size:22px">${c.icon}</div>
+      <span>${c.name}</span>
+    </div>`).join('');
+  const sel=document.getElementById('orderCategory');
+  if(sel) sel.innerHTML=CATEGORIES.map(c=>`<option>${c.name}</option>`).join('');
+}
+
+// ===== HELPERS ONLINE =====
+function loadHelpers() {
+  const list=document.getElementById('helpersList');
+  const countEl=document.getElementById('onlineCount');
+  if(helpersListener) off(ref(db,'users'),helpersListener);
+  onValue(ref(db,'users'),snap=>{
+    const helpers=[];
+    snap.forEach(child=>{
+      const d=child.val();
+      if(d.role==='helper'&&d.isOnline) helpers.push(d);
+    });
+    countEl.textContent=`(${helpers.length} online)`;
+    if(helpers.length===0){
+      list.innerHTML='<div class="empty-state"><i class="fas fa-user-slash"></i><p>Belum ada helper online</p></div>';
+      return;
+    }
+    list.innerHTML=helpers.map(h=>`
+      <div class="helper-card">
+        <div class="helper-avatar">
+          <img src="${h.avatar||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2258%22 height=%2258%22%3E%3Crect width=%2258%22 height=%2258%22 fill=%22%23e8ecf0%22/%3E%3C/svg%3E'}" alt="${h.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2258%22 height=%2258%22%3E%3Crect width=%2258%22 height=%2258%22 fill=%22%23e8ecf0%22/%3E%3C/svg%3E'">
+          <div class="online-dot"></div>
+        </div>
+        <div class="helper-info">
+          <div class="helper-name">${h.name} 
+            <span class="badge-role">${h.role==='helper'?'Helper':'User'}</span>
+            ${h.pro?'<span class="badge-role badge-pro">PRO</span>':h.premium?'<span class="badge-role badge-premium">Premium</span>':''}
+          </div>
+          <div class="helper-meta">
+            <span class="star-rating">${'★'.repeat(Math.round(h.rating||0))}${'☆'.repeat(5-Math.round(h.rating||0))}</span>
+            <span>${h.gender||''}, ${h.age||''}th</span>
+            <span>📍 ${h.domisili||''}</span>
+          </div>
+          <div class="helper-bio">${h.bio||'Siap membantu!'}</div>
+        </div>
+        <div class="helper-action">
+          <button class="btn-order" onclick="openOrderModal('${h.uid}')">Order</button>
+        </div>
+      </div>`).join('');
+  });
+}
+
+// ===== ORDER =====
+window.quickOrder = function(cat) {
+  document.getElementById('orderCategory').value=cat;
+  openModal('modalOrder');
+};
+window.openOrderModal = function(helperUID) {
+  currentOrderTarget=helperUID;
+  openModal('modalOrder');
+};
+window.submitOrder = async function() {
+  const cat=document.getElementById('orderCategory').value;
+  const desc=document.getElementById('orderDesc').value.trim();
+  const price=document.getElementById('orderPrice').value;
+  if(!cat||!desc||!price) return showToast('Lengkapi semua field!');
+  if(!currentOrderTarget) return showToast('Pilih helper terlebih dahulu!');
+  const orderData={
+    id:Date.now().toString(),
+    userUID:currentUser.uid,
+    helperUID:currentOrderTarget,
+    userName:currentProfile.name,
+    userAvatar:currentProfile.avatar||'',
+    category:cat, description:desc,
+    price:parseInt(price), status:'new',
+    createdAt:Date.now()
+  };
+  try {
+    const newRef=push(ref(db,'orders'));
+    orderData.id=newRef.key;
+    await set(newRef,orderData);
+    closeModal('modalOrder');
+    document.getElementById('orderDesc').value='';
+    document.getElementById('orderPrice').value='';
+    currentOrderTarget=null;
+    showToast('Order berhasil dikirim!');
+  } catch(e){ showToast('Gagal kirim order: '+e.message); }
+};
+
+// ===== HELPER DASHBOARD =====
+function updateHelperDash() {
+  if(!currentProfile) return;
+  document.getElementById('helperWelcome').textContent=`Halo, ${currentProfile.name}!`;
+  const av=document.getElementById('helperDashAvatar');
+  if(av) av.src=currentProfile.avatar||'';
+  document.getElementById('statTotal').textContent=formatRp(currentProfile.totalEarning||0);
+  document.getElementById('statToday').textContent=formatRp(currentProfile.todayEarning||0);
+  document.getElementById('statOrders').textContent=currentProfile.totalOrders||0;
+  document.getElementById('statDoneReject').textContent=`${currentProfile.doneOrders||0}/${currentProfile.rejectedOrders||0}`;
+  const locked=!currentProfile.premium&&!currentProfile.pro;
+  const toggle=document.getElementById('onlineToggleLabel');
+  toggle.classList.toggle('locked',locked);
+  document.getElementById('onlineToggle').checked=currentProfile.isOnline||false;
+  document.getElementById('toggleStatus').textContent=currentProfile.isOnline?'Kamu sedang online sebagai helper':'Kamu sedang offline';
+  updateOnlineStatusBar();
+}
+
+function updateOnlineStatusBar() {
+  const bar=document.getElementById('onlineStatusBar');
+  if(currentProfile.role==='helper'&&currentProfile.isOnline){
+    bar.innerHTML='<div class="online-status-bar"><i class="fas fa-circle"></i><span>Kamu sedang online sebagai helper</span></div>';
+  } else { bar.innerHTML=''; }
+}
+
+async function restoreOnlineStatus() {
+  const snap=await get(ref(db,`users/${currentUser.uid}/isOnline`));
+  if(snap.val()) document.getElementById('onlineToggle').checked=true;
+}
+
+window.toggleHelperOnline = async function(val) {
+  if(!currentProfile.premium&&!currentProfile.pro) {
+    document.getElementById('onlineToggle').checked=false;
+    showToast('Upgrade Premium terlebih dahulu!');
+    return;
+  }
+  try {
+    await update(ref(db,`users/${currentUser.uid}`),{isOnline:val});
+    currentProfile.isOnline=val;
+    document.getElementById('toggleStatus').textContent=val?'Kamu sedang online sebagai helper':'Kamu sedang offline';
+    updateOnlineStatusBar();
+    showToast(val?'Kamu sekarang online!':'Kamu sekarang offline');
+  } catch(e){ showToast('Gagal update status'); }
+};
+
+// ===== INCOMING ORDERS =====
+function listenIncomingOrders() {
+  if(orderListener) off(ref(db,'orders'));
+  onValue(ref(db,'orders'),snap=>{
+    const orders=[];
+    snap.forEach(child=>{
+      const d=child.val();
+      if(d.helperUID===currentUser.uid) orders.push(d);
+    });
+    renderIncomingOrders(orders.filter(o=>o.status==='new'));
+    // also update history
+  });
+  // Listen for NEW orders - show notif
+  onChildAdded(ref(db,'orders'),snap=>{
+    const d=snap.val();
+    if(d.helperUID===currentUser.uid&&d.status==='new'){
+      showOrderNotif(d);
+    }
+  });
+}
+
+function showOrderNotif(order) {
+  document.getElementById('notifOrderUser').textContent=`Dari: ${order.userName}`;
+  document.getElementById('notifOrderCat').textContent=`📌 ${order.category}`;
+  document.getElementById('notifOrderDesc').textContent=order.description;
+  document.getElementById('notifOrderPrice').textContent=formatRp(order.price);
+  document.getElementById('notifOverlay').classList.add('active');
+}
+window.closeNotif = ()=>document.getElementById('notifOverlay').classList.remove('active');
+window.goToHelperTab = function() {
+  closeNotif();
+  const btn=document.querySelector('[data-tab="helper"]');
+  if(btn) btn.click();
+};
+
+function renderIncomingOrders(orders) {
+  const el=document.getElementById('incomingOrders');
+  if(!orders.length){ el.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada order masuk</p></div>'; return; }
+  el.innerHTML=orders.map(o=>`
+    <div class="order-card" id="order_${o.id}">
+      <div class="order-header">
+        <div class="order-user-info">
+          <img src="${o.userAvatar||''}" alt="" onerror="this.style.display='none'">
+          <div><div class="name">${o.userName}</div><div class="time">${new Date(o.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div></div>
+        </div>
+        <span class="order-status status-new">Baru</span>
+      </div>
+      <div class="order-cat">📌 ${o.category}</div>
+      <div class="order-desc">${o.description}</div>
+      <div class="order-price">${formatRp(o.price)}</div>
+      <div class="order-actions">
+        <button class="btn-sm btn-accept" onclick="acceptOrder('${o.id}','${o.userUID}')"><i class="fas fa-check"></i> Terima</button>
+        <button class="btn-sm btn-reject" onclick="rejectOrder('${o.id}')"><i class="fas fa-times"></i> Tolak</button>
+        <button class="btn-sm btn-chat" onclick="openChat('${o.userUID}','${o.userName}','${o.userAvatar||''}')"><i class="fas fa-comment"></i> Chat</button>
+      </div>
+    </div>`).join('');
+}
+
+window.acceptOrder = async function(orderId, userUID) {
+  try {
+    await update(ref(db,`orders/${orderId}`),{status:'process'});
+    await update(ref(db,`users/${currentUser.uid}`),{totalOrders:(currentProfile.totalOrders||0)+1});
+    currentProfile.totalOrders=(currentProfile.totalOrders||0)+1;
+    showToast('Order diterima!');
+  } catch(e){ showToast('Gagal terima order'); }
+};
+window.rejectOrder = function(orderId) {
+  currentRejectOrderId=orderId;
+  openModal('modalReject');
+};
+window.confirmReject = async function() {
+  const reason=document.getElementById('rejectReason').value.trim();
+  if(!reason) return showToast('Tulis alasan terlebih dahulu!');
+  try {
+    await update(ref(db,`orders/${currentRejectOrderId}`),{status:'rejected',rejectReason:reason});
+    await update(ref(db,`users/${currentUser.uid}`),{rejectedOrders:(currentProfile.rejectedOrders||0)+1});
+    currentProfile.rejectedOrders=(currentProfile.rejectedOrders||0)+1;
+    closeModal('modalReject');
+    document.getElementById('rejectReason').value='';
+    showToast('Order ditolak');
+  } catch(e){ showToast('Gagal tolak order'); }
+};
+
+// ===== HISTORY =====
+let histFilter='all';
+function loadHistory() {
+  onValue(ref(db,'orders'),snap=>{
+    const orders=[];
+    snap.forEach(child=>{
+      const d=child.val();
+      if(d.userUID===currentUser.uid||d.helperUID===currentUser.uid) orders.push(d);
+    });
+    renderHistory(orders);
+  });
+}
+window.filterHistory = function(f, el) {
+  histFilter=f;
+  document.querySelectorAll('.hist-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  loadHistory();
+};
+function renderHistory(orders) {
+  const filtered=histFilter==='all'?orders:orders.filter(o=>o.status===histFilter);
+  filtered.sort((a,b)=>b.createdAt-a.createdAt);
+  const el=document.getElementById('historyList');
+  if(!filtered.length){ el.innerHTML='<div class="empty-state"><i class="fas fa-history"></i><p>Belum ada riwayat</p></div>'; return; }
+  el.innerHTML=filtered.map(o=>{
+    const isHelper=o.helperUID===currentUser.uid;
+    const statusMap={new:'status-new',process:'status-process',done:'status-done',rejected:'status-reject'};
+    const statusLabel={new:'Baru',process:'Proses',done:'Selesai',rejected:'Ditolak'};
+    return `<div class="order-card">
+      <div class="order-header">
+        <div class="order-user-info">
+          <div><div class="name">${isHelper?o.userName:'Order kamu'}</div>
+          <div class="time">${new Date(o.createdAt).toLocaleDateString('id-ID')}</div></div>
+        </div>
+        <span class="order-status ${statusMap[o.status]||''}">${statusLabel[o.status]||o.status}</span>
+      </div>
+      <div class="order-cat">📌 ${o.category}</div>
+      <div class="order-desc">${o.description}</div>
+      <div class="order-price">${formatRp(o.price)}</div>
+      ${o.status==='process'&&isHelper?`<div class="order-actions"><button class="btn-sm btn-done" onclick="doneOrder('${o.id}','${o.userUID}',${o.price})"><i class="fas fa-check-double"></i> Selesai</button></div>`:''}
+      ${o.status==='process'&&!isHelper?`<div class="order-actions"><button class="btn-sm btn-chat" onclick="openChat('${o.helperUID}','Helper','')"><i class="fas fa-comment"></i> Chat Helper</button></div>`:''}
+      ${o.status==='done'&&!isHelper&&!o.rated?`<div class="order-actions"><button class="btn-sm btn-accept" onclick="openRating('${o.id}','${o.helperUID}')"><i class="fas fa-star"></i> Beri Rating</button></div>`:''}
+      ${o.rejectReason?`<div class="text-xs text-muted" style="margin-top:8px">Alasan ditolak: ${o.rejectReason}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+window.doneOrder = async function(orderId, userUID, price) {
+  try {
+    await update(ref(db,`orders/${orderId}`),{status:'done'});
+    const earning=(currentProfile.totalEarning||0)+price;
+    const todayEarning=(currentProfile.todayEarning||0)+price;
+    const doneOrders=(currentProfile.doneOrders||0)+1;
+    await update(ref(db,`users/${currentUser.uid}`),{totalEarning:earning,todayEarning,doneOrders});
+    currentProfile.totalEarning=earning; currentProfile.todayEarning=todayEarning; currentProfile.doneOrders=doneOrders;
+    showToast('Order selesai!');
+  } catch(e){ showToast('Gagal update'); }
+};
+
+// ===== RATING =====
+window.openRating = function(orderId, helperUID) {
+  currentRatingOrderId={orderId,helperUID};
+  currentRating=0;
+  document.querySelectorAll('#starsInput i').forEach(i=>i.classList.remove('active'));
+  openModal('modalRating');
+};
+window.setRating = function(val) {
+  currentRating=val;
+  document.querySelectorAll('#starsInput i').forEach(i=>{
+    i.classList.toggle('active',parseInt(i.dataset.val)<=val);
+  });
+};
+window.submitRating = async function() {
+  if(!currentRating) return showToast('Pilih rating terlebih dahulu!');
+  const {orderId,helperUID}=currentRatingOrderId;
+  try {
+    const hSnap=await get(ref(db,`users/${helperUID}`));
+    const hData=hSnap.val();
+    const newCount=(hData.ratingCount||0)+1;
+    const newRating=((hData.rating||0)*(hData.ratingCount||0)+currentRating)/newCount;
+    await update(ref(db,`users/${helperUID}`),{rating:newRating,ratingCount:newCount});
+    await update(ref(db,`orders/${orderId}`),{rated:true,ratingValue:currentRating});
+    closeModal('modalRating');
+    showToast('Rating berhasil dikirim!');
+  } catch(e){ showToast('Gagal kirim rating'); }
+};
+
+// ===== CHAT =====
+function loadChats() {
+  onValue(ref(db,'chats'),snap=>{
+    const myChats=[];
+    snap.forEach(child=>{
+      const id=child.key;
+      if(id.includes(currentUser.uid)){
+        const otherUID=id.replace(currentUser.uid,'').replace('_','');
+        const msgs=child.val();
+        const lastMsg=msgs?Object.values(msgs).sort((a,b)=>b.ts-a.ts)[0]:null;
+        myChats.push({chatId:id,otherUID,lastMsg});
+      }
+    });
+    if(!myChats.length){ document.getElementById('chatList').innerHTML='<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>'; return; }
+    Promise.all(myChats.map(c=>get(ref(db,`users/${c.otherUID}`)).then(s=>({...c,profile:s.val()}))))
+    .then(chats=>{
+      document.getElementById('chatList').innerHTML='<div class="chat-list">'+chats.filter(c=>c.profile).map(c=>`
+        <div class="chat-item" onclick="openChat('${c.otherUID}','${c.profile.name||''}','${c.profile.avatar||''}')">
+          <img src="${c.profile.avatar||''}" alt="" onerror="this.style.display='none'">
+          <div class="chat-item-info">
+            <div class="chat-item-name"><span>${c.profile.name||'User'}</span><span>${c.lastMsg?new Date(c.lastMsg.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}):''}</span></div>
+            <div class="chat-item-msg">${c.lastMsg?c.lastMsg.text:'Mulai percakapan'}</div>
+          </div>
+        </div>`).join('')+'</div>';
+    });
+  });
+}
+
+window.openChat = function(uid, name, avatar) {
+  currentChatUID=uid;
+  document.getElementById('chatRoomName').textContent=name||'User';
+  document.getElementById('chatRoomAvatar').src=avatar||'';
+  document.getElementById('chatMessages').innerHTML='';
+  showScreen('chatRoomScreen');
+  listenChatMessages(uid);
+};
+window.closeChatRoom = function() {
+  if(chatListeners[currentChatUID]) {
+    off(ref(db,`chats/${getChatId(currentChatUID)}`));
+  }
+  showScreen('mainScreen');
+  currentChatUID=null;
+};
+
+function getChatId(otherUID) {
+  return [currentUser.uid,otherUID].sort().join('_');
+}
+function listenChatMessages(otherUID) {
+  const chatId=getChatId(otherUID);
+  const msgsRef=ref(db,`chats/${chatId}`);
+  off(msgsRef);
+  onValue(msgsRef,snap=>{
+    const msgs=[];
+    snap.forEach(child=>msgs.push(child.val()));
+    msgs.sort((a,b)=>a.ts-b.ts);
+    const container=document.getElementById('chatMessages');
+    container.innerHTML=msgs.map(m=>{
+      const isMine=m.from===currentUser.uid;
+      const time=new Date(m.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="msg-bubble ${isMine?'sent':'recv'}">
+        <div class="msg-text">${m.text}</div>
+        <div class="msg-time">${time}</div>
+      </div>`;
+    }).join('');
+    container.scrollTop=container.scrollHeight;
+  });
+}
+window.sendMessage = async function() {
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text||!currentChatUID) return;
+  const chatId=getChatId(currentChatUID);
+  const msgData={from:currentUser.uid,to:currentChatUID,text,ts:Date.now()};
+  try {
+    await push(ref(db,`chats/${chatId}`),msgData);
+    input.value='';
+  } catch(e){ showToast('Gagal kirim pesan'); }
+};
+
+// ===== PROFILE =====
+function updateProfileUI() {
+  if(!currentProfile) return;
+  document.getElementById('homeWelcome').textContent=`Halo, ${currentProfile.name}!`;
+  document.getElementById('profileName').textContent=currentProfile.name||'';
+  const av=document.getElementById('profileAvatar');
+  if(av) av.src=currentProfile.avatar||'';
+  const badges=document.getElementById('profileBadges');
+  let b=`<span class="badge-role">${currentProfile.role==='helper'?'Helper':'User'}</span>`;
+  if(currentProfile.pro) b+=`<span class="badge-role badge-pro">PRO</span>`;
+  else if(currentProfile.premium) b+=`<span class="badge-role badge-premium">Premium</span>`;
+  badges.innerHTML=b;
+  // Lock upgrade pro if no premium
+  const proBtn=document.getElementById('menuUpgradePro');
+  if(currentProfile.premium||currentProfile.pro) {
+    document.getElementById('menuUpgradePremium').style.opacity=currentProfile.premium||currentProfile.pro?'0.5':'1';
+  }
+  if(!currentProfile.premium&&!currentProfile.pro) proBtn.style.opacity='0.5';
+}
+
+window.openUpgradePremium = function() {
+  if(currentProfile.premium||currentProfile.pro) return showToast('Sudah upgrade premium!');
+  openModal('modalPremium');
+};
+window.openUpgradePro = function() {
+  if(!currentProfile.premium) return showToast('Upgrade Premium terlebih dahulu!');
+  if(currentProfile.pro) return showToast('Sudah upgrade pro!');
+  openModal('modalPro');
+};
+window.handleKtpUpload = async function(input) {
+  if(!input.files[0]) return;
+  const b64=await fileToBase64(input.files[0]);
+  ktpBase64=await compressImage(b64,600,0.6);
+  const ktp=document.getElementById('ktpUpload');
+  ktp.innerHTML=`<img src="${ktpBase64}" alt="KTP">`;
+};
+window.submitPremium = async function() {
+  const phone=document.getElementById('premiumPhone').value.trim();
+  if(!phone) return showToast('Isi nomor HP!');
+  if(!ktpBase64) return showToast('Upload foto KTP!');
+  try {
+    await update(ref(db,`users/${currentUser.uid}`),{premium:true,premiumData:{phone,ktp:ktpBase64,submittedAt:Date.now()}});
+    currentProfile.premium=true;
+    closeModal('modalPremium');
+    updateProfileUI();
+    if(currentProfile.role==='helper') updateHelperDash();
+    showToast('Upgrade Premium berhasil!');
+  } catch(e){ showToast('Gagal upgrade: '+e.message); }
+};
+window.submitPro = async function() {
+  const email=document.getElementById('proEmail').value.trim();
+  if(!email) return showToast('Isi email konfirmasi!');
+  try {
+    await update(ref(db,`users/${currentUser.uid}`),{pro:true,proData:{email,submittedAt:Date.now()}});
+    currentProfile.pro=true;
+    closeModal('modalPro');
+    updateProfileUI();
+    showToast('Upgrade Pro berhasil!');
+  } catch(e){ showToast('Gagal upgrade: '+e.message); }
+};
+
+window.openEditProfile = function() {
+  document.getElementById('editName').value=currentProfile.name||'';
+  document.getElementById('editDomisili').value=currentProfile.domisili||'';
+  document.getElementById('editGender').value=currentProfile.gender||'Laki-laki';
+  document.getElementById('editBio').value=currentProfile.bio||'';
+  document.getElementById('editRole').value=currentProfile.role||'user';
+  document.getElementById('editAvatarImg').src=currentProfile.avatar||'';
+  editAvatarBase64=null;
+  openModal('modalEditProfile');
+};
+window.handleEditAvatarUpload = async function(input) {
+  if(!input.files[0]) return;
+  const b64=await fileToBase64(input.files[0]);
+  editAvatarBase64=await compressImage(b64,300,0.65);
+  document.getElementById('editAvatarImg').src=editAvatarBase64;
+};
+window.saveEditProfile = async function() {
+  const name=document.getElementById('editName').value.trim();
+  const domisili=document.getElementById('editDomisili').value.trim();
+  const gender=document.getElementById('editGender').value;
+  const bio=document.getElementById('editBio').value.trim();
+  const role=document.getElementById('editRole').value;
+  if(!name) return showToast('Nama tidak boleh kosong!');
+  const updates={name,domisili,gender,bio,role};
+  if(editAvatarBase64) updates.avatar=editAvatarBase64;
+  try {
+    await update(ref(db,`users/${currentUser.uid}`),updates);
+    Object.assign(currentProfile,updates);
+    closeModal('modalEditProfile');
+    updateProfileUI();
+    showToast('Profil berhasil diupdate!');
+  } catch(e){ showToast('Gagal update profil'); }
+};
+
+// ===== DARK MODE =====
+window.toggleDarkMode = function() {
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('darkModeToggle').checked=!isDark;
+  localStorage.setItem('bbqpro_theme',isDark?'light':'dark');
+};
+if(localStorage.getItem('bbqpro_theme')==='dark') {
+  document.documentElement.setAttribute('data-theme','dark');
+  const t=document.getElementById('darkModeToggle'); if(t) t.checked=true;
+}
+
+// ===== MISC =====
+window.submitReport = async function() {
+  const type=document.getElementById('reportType').value;
+  const detail=document.getElementById('reportDetail').value.trim();
+  if(!detail) return showToast('Isi detail laporan!');
+  try {
+    await push(ref(db,'reports'),{uid:currentUser.uid,type,detail,ts:Date.now()});
+    closeModal('modalReport');
+    document.getElementById('reportDetail').value='';
+    showToast('Laporan berhasil dikirim!');
+  } catch(e){ showToast('Gagal kirim laporan'); }
+};
+
+window.deleteAccount = async function() {
+  try {
+    if(currentProfile.isOnline) await update(ref(db,`users/${currentUser.uid}`),{isOnline:false});
+    await remove(ref(db,`users/${currentUser.uid}`));
+    await deleteUser(auth.currentUser);
+    closeModal('modalDeleteAccount');
+    showScreen('loginScreen');
+  } catch(e){ showToast('Gagal hapus akun: '+e.message); }
+};
+
+window.logout = async function() {
+  try {
+    if(currentProfile&&currentProfile.isOnline) {
+      await update(ref(db,`users/${currentUser.uid}`),{isOnline:false});
+    }
+    await signOut(auth);
+    currentUser=null; currentProfile=null;
+    showScreen('loginScreen');
+  } catch(e){ showToast('Gagal keluar'); }
+};
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('active'); });
+});
 </script>
 </body>
 </html>
