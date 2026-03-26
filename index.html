@@ -219,169 +219,62 @@ input:checked+.slider::before{transform:translateX(24px);}
 .chat-unread-badge{background:var(--primary);color:#fff;font-size:10px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0;margin-left:8px;}
 
 /* CHAT ROOM */
-#chatRoomScreen{background:#ECE5DD;display:flex;flex-direction:column;}
+#chatRoomScreen{background:#ECE5DD;}
 [data-theme="dark"] #chatRoomScreen{background:#0B141A;}
-.chat-room-header{background:#075E54;padding:44px 16px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2);flex-shrink:0;z-index:2;}
+.chat-room-header{background:#075E54;padding:44px 16px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
 [data-theme="dark"] .chat-room-header{background:#1F2C34;}
 .chat-room-header .back-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;}
 .chat-room-header .back-btn i{font-size:20px;}
-.chat-room-header img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,0.2);flex-shrink:0;}
-.chat-room-header .user-info{flex:1;min-width:0;}
-.chat-room-header .user-info h4{font-size:16px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-room-header img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,0.2);}
+.chat-room-header .user-info{flex:1;}
+.chat-room-header .user-info h4{font-size:16px;font-weight:700;color:#fff;}
 .chat-room-header .user-info .status{font-size:12px;color:rgba(255,255,255,0.75);}
-.chat-room-header .more-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.9);flex-shrink:0;}
+.chat-room-header .more-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.9);}
 
 /* CHAT WALLPAPER PATTERN */
 #chatRoomScreen::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' opacity='0.04'%3E%3Ctext x='10' y='40' font-size='30'%3E🔥%3C/text%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 
-/* MESSAGES AREA */
-.chat-messages{
-  flex:1;
-  overflow-y:auto;
-  overflow-x:hidden;
-  padding:10px 10px 6px;
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  position:relative;
-  z-index:1;
-  -webkit-overflow-scrolling:touch;
-}
+.chat-messages{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:2px;position:relative;z-index:1;}
 .chat-messages::-webkit-scrollbar{display:none;}
 
 /* DATE DIVIDER */
-.chat-date-divider{display:flex;justify-content:center;margin:10px 0 6px;flex-shrink:0;}
-.chat-date-divider span{background:rgba(225,245,254,0.92);color:#555;font-size:11px;font-weight:600;padding:5px 14px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.12);}
-[data-theme="dark"] .chat-date-divider span{background:rgba(31,44,51,0.95);color:#aaa;}
+.chat-date-divider{display:flex;justify-content:center;margin:8px 0;}
+.chat-date-divider span{background:rgba(225,245,254,0.9);color:#555;font-size:11px;font-weight:600;padding:4px 12px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,0.1);}
+[data-theme="dark"] .chat-date-divider span{background:rgba(31,44,51,0.9);color:#aaa;}
 
-/* ===== BUBBLE FLEXBOX CHAT STYLE ===== */
-
-/* Row wrapper — flex utama kiri / kanan */
-.msg-row{
-  display:flex;
-  flex-direction:row;
-  align-items:flex-end;
-  width:100%;
-  margin-bottom:2px;
-  gap:6px;
-  animation:msgIn .18s ease;
-}
-@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-
+/* BUBBLE WHATSAPP STYLE */
+.msg-row{display:flex;margin-bottom:2px;}
 .msg-row.sent{justify-content:flex-end;}
 .msg-row.recv{justify-content:flex-start;}
+.msg-row.sent+.msg-row.recv,.msg-row.recv+.msg-row.sent{margin-top:6px;}
 
-/* Sedikit jarak tambahan saat berganti pengirim */
-.msg-row.sent+.msg-row.recv,
-.msg-row.recv+.msg-row.sent{margin-top:8px;}
+.msg-bubble{max-width:75%;position:relative;}
+.msg-bubble .bubble-inner{padding:8px 12px 22px 12px;border-radius:8px;font-size:14px;line-height:1.5;position:relative;word-break:break-word;}
 
-/* Avatar penerima (recv) */
-.msg-avatar{
-  width:30px;height:30px;border-radius:50%;object-fit:cover;
-  background:var(--border);flex-shrink:0;align-self:flex-end;
-}
-.msg-row.sent .msg-avatar{display:none;}
+/* SENT bubble */
+.msg-row.sent .bubble-inner{background:#DCF8C6;color:#1a1a1a;border-top-right-radius:0;}
+[data-theme="dark"] .msg-row.sent .bubble-inner{background:#005C4B;color:#e9edef;}
+/* tail sent */
+.msg-row.sent .bubble-inner::after{content:'';position:absolute;top:0;right:-8px;width:0;height:0;border-style:solid;border-width:0 0 10px 9px;border-color:transparent transparent transparent #DCF8C6;}
+[data-theme="dark"] .msg-row.sent .bubble-inner::after{border-color:transparent transparent transparent #005C4B;}
 
-/* Wrapper bubble — batasi max-width */
-.msg-bubble{
-  display:flex;
-  flex-direction:column;
-  max-width:72%;
-  min-width:60px;
-}
-.msg-row.sent .msg-bubble{align-items:flex-end;}
-.msg-row.recv .msg-bubble{align-items:flex-start;}
+/* RECV bubble */
+.msg-row.recv .bubble-inner{background:#fff;color:#1a1a1a;border-top-left-radius:0;}
+[data-theme="dark"] .msg-row.recv .bubble-inner{background:#202C33;color:#e9edef;}
+/* tail recv */
+.msg-row.recv .bubble-inner::before{content:'';position:absolute;top:0;left:-8px;width:0;height:0;border-style:solid;border-width:0 9px 10px 0;border-color:transparent #fff transparent transparent;}
+[data-theme="dark"] .msg-row.recv .bubble-inner::before{border-color:transparent #202C33 transparent transparent;}
 
-/* Nama pengirim (untuk grup / recv) */
-.msg-sender-name{
-  font-size:11px;font-weight:700;
-  color:var(--primary);
-  margin-bottom:2px;
-  padding:0 4px;
-}
-
-/* Bubble utama */
-.bubble-inner{
-  position:relative;
-  padding:8px 12px 22px 12px;
-  border-radius:12px;
-  font-size:14px;
-  line-height:1.55;
-  word-break:break-word;
-  white-space:pre-wrap;
-  box-shadow:0 1px 2px rgba(0,0,0,0.13);
-  max-width:100%;
-}
-
-/* SENT — bubble kanan (hijau) */
-.msg-row.sent .bubble-inner{
-  background:#DCF8C6;
-  color:#111;
-  border-bottom-right-radius:4px;
-}
-[data-theme="dark"] .msg-row.sent .bubble-inner{
-  background:#005C4B;
-  color:#e9edef;
-}
-/* Tail kanan */
-.msg-row.sent .bubble-inner::after{
-  content:'';position:absolute;
-  bottom:0;right:-7px;
-  width:0;height:0;
-  border-style:solid;
-  border-width:0 0 10px 8px;
-  border-color:transparent transparent #DCF8C6 transparent;
-}
-[data-theme="dark"] .msg-row.sent .bubble-inner::after{
-  border-color:transparent transparent #005C4B transparent;
-}
-
-/* RECV — bubble kiri (putih) */
-.msg-row.recv .bubble-inner{
-  background:#fff;
-  color:#111;
-  border-bottom-left-radius:4px;
-}
-[data-theme="dark"] .msg-row.recv .bubble-inner{
-  background:#202C33;
-  color:#e9edef;
-}
-/* Tail kiri */
-.msg-row.recv .bubble-inner::before{
-  content:'';position:absolute;
-  bottom:0;left:-7px;
-  width:0;height:0;
-  border-style:solid;
-  border-width:0 8px 10px 0;
-  border-color:transparent #fff transparent transparent;
-}
-[data-theme="dark"] .msg-row.recv .bubble-inner::before{
-  border-color:transparent #202C33 transparent transparent;
-}
-
-/* Timestamp + centang di kanan bawah bubble */
-.msg-meta{
-  position:absolute;
-  bottom:4px;right:8px;
-  display:flex;align-items:center;gap:3px;
-  pointer-events:none;
-}
-.msg-time-wa{font-size:10px;color:#667781;white-space:nowrap;line-height:1;}
+.msg-meta{position:absolute;bottom:5px;right:10px;display:flex;align-items:center;gap:3px;}
+.msg-time-wa{font-size:10px;color:#667781;white-space:nowrap;}
 [data-theme="dark"] .msg-time-wa{color:#8696a0;}
-.msg-tick{font-size:11px;color:#53BDEB;line-height:1;}
-.msg-tick.grey{color:#8696a0;}
+.msg-tick{font-size:12px;color:#53BDEB;}
 
-/* RECV sender name — handled above */
+/* RECV sender name */
+.msg-sender-name{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:2px;padding:0 2px;}
 
 /* CHAT INPUT WAY */
-.chat-input-wrap{
-  background:#F0F2F5;
-  padding:8px 10px;
-  display:flex;align-items:flex-end;gap:8px;
-  position:relative;z-index:2;
-  flex-shrink:0;
-  border-top:1px solid rgba(0,0,0,0.06);
-}
+.chat-input-wrap{background:#F0F2F5;padding:10px 12px;display:flex;align-items:flex-end;gap:8px;position:relative;z-index:1;}
 [data-theme="dark"] .chat-input-wrap{background:#1F2C34;}
 .chat-input-box{flex:1;background:#fff;border:none;border-radius:24px;padding:10px 18px;font-size:14px;font-family:var(--font);color:#1a1a1a;outline:none;resize:none;max-height:120px;min-height:44px;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
 [data-theme="dark"] .chat-input-box{background:#2A3942;color:#e9edef;}
@@ -1590,70 +1483,32 @@ function listenChatMessages(otherUID) {
     lastDate = null;
     let html = '';
 
-    // Avatar penerima (lawan bicara)
-    const recvAvatar = document.getElementById('chatRoomAvatar').src;
-    const defaultAv = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Ccircle cx='15' cy='15' r='15' fill='%23ccc'/%3E%3C/svg%3E";
-
-    let prevSender = null;
-
-    msgs.forEach((m, idx) => {
+    msgs.forEach(m => {
       const d = new Date(m.ts);
       const dateStr = d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
       if(dateStr !== lastDate) {
         html += `<div class="chat-date-divider"><span>${dateStr}</span></div>`;
         lastDate = dateStr;
-        prevSender = null;
       }
-
       const isMine = m.from === currentUser.uid;
       const time = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-      const senderChanged = prevSender !== m.from;
-      prevSender = m.from;
-
-      // Cek apakah ini pesan terakhir dari sender yang sama (untuk tail)
-      const nextMsg = msgs[idx+1];
-      const isLastInGroup = !nextMsg || nextMsg.from !== m.from;
-
-      if(isMine) {
-        html += `
-        <div class="msg-row sent" style="margin-bottom:${isLastInGroup?'6':'2'}px;">
-          <div class="msg-bubble">
-            <div class="bubble-inner" style="${!isLastInGroup?'border-bottom-right-radius:12px;':''}">
-              ${escHtml(m.text)}
-              <div class="msg-meta">
-                <span class="msg-time-wa">${time}</span>
-                <span class="msg-tick"><i class="fas fa-check-double"></i></span>
-              </div>
+      html += `<div class="msg-row ${isMine?'sent':'recv'}">
+        <div class="msg-bubble">
+          <div class="bubble-inner">
+            ${escHtml(m.text)}
+            <div class="msg-meta">
+              <span class="msg-time-wa">${time}</span>
+              ${isMine?'<span class="msg-tick"><i class="fas fa-check-double"></i></span>':''}
             </div>
           </div>
-        </div>`;
-        // Sembunyikan tail kalau bukan akhir group
-        if(!isLastInGroup) {
-          // Remove ::after via inline — kita pakai class
-        }
-      } else {
-        html += `
-        <div class="msg-row recv" style="margin-bottom:${isLastInGroup?'6':'2'}px;align-items:flex-end;">
-          ${isLastInGroup
-            ? `<img class="msg-avatar" src="${recvAvatar||defaultAv}" onerror="this.src='${defaultAv}'" alt="">`
-            : `<div style="width:30px;flex-shrink:0;"></div>`
-          }
-          <div class="msg-bubble">
-            <div class="bubble-inner" style="${!isLastInGroup?'border-bottom-left-radius:12px;':''}">
-              ${escHtml(m.text)}
-              <div class="msg-meta">
-                <span class="msg-time-wa">${time}</span>
-              </div>
-            </div>
-          </div>
-        </div>`;
-      }
+        </div>
+      </div>`;
     });
 
     if(!html) {
-      html = `<div style="display:flex;justify-content:center;margin-top:40px;">
-        <div style="background:rgba(0,0,0,0.28);color:#fff;font-size:12px;font-weight:600;padding:8px 18px;border-radius:14px;letter-spacing:.2px;">
-          💬 Belum ada pesan. Mulai percakapan!
+      html = `<div style="display:flex;justify-content:center;margin-top:32px;">
+        <div style="background:rgba(0,0,0,0.3);color:#fff;font-size:12px;padding:8px 16px;border-radius:12px;">
+          Belum ada pesan. Mulai percakapan!
         </div>
       </div>`;
     }
@@ -1668,36 +1523,12 @@ window.sendMessage = async function() {
   const text = input.value.trim();
   if(!text || !currentChatUID) return;
   const chatId = getChatId(currentChatUID);
-  const ts = Date.now();
-  const msgData = { from: currentUser.uid, to: currentChatUID, text, ts, read: false };
+  const msgData = { from: currentUser.uid, to: currentChatUID, text, ts: Date.now(), read: false };
   input.value = '';
   input.style.height = 'auto';
-
-  // Optimistic: langsung append bubble baru tanpa tunggu Firebase
-  const container = document.getElementById('chatMessages');
-  const time = new Date(ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  const div = document.createElement('div');
-  div.className = 'msg-row sent';
-  div.style.marginBottom = '6px';
-  div.innerHTML = `
-    <div class="msg-bubble">
-      <div class="bubble-inner">
-        ${escHtml(text)}
-        <div class="msg-meta">
-          <span class="msg-time-wa">${time}</span>
-          <span class="msg-tick grey"><i class="fas fa-check"></i></span>
-        </div>
-      </div>
-    </div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-
   try {
     await push(ref(db, `chats/${chatId}`), msgData);
-  } catch(e){
-    showToast('Gagal kirim pesan');
-    div.remove();
-  }
+  } catch(e){ showToast('Gagal kirim pesan'); }
 };
 
 window.onInput = function(el) {
