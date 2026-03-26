@@ -409,6 +409,23 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* SUCCESS ALERT MODAL */
+.success-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 600; display: none; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); }
+.success-modal.active { display: flex; }
+.success-card { background: var(--card); border-radius: 28px; padding: 32px 24px; width: 100%; max-width: 340px; text-align: center; animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
+.success-icon-wrap { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.success-icon-wrap.star  { background: linear-gradient(135deg,#FFB347,#FF6B00); }
+.success-icon-wrap.crown { background: linear-gradient(135deg,#FF6B00,#FFB347); }
+.success-icon-wrap.check { background: linear-gradient(135deg,#22C55E,#16A34A); }
+.success-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+.success-body  { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; }
+.btn-success-close { width: 100%; padding: 14px; background: linear-gradient(135deg,var(--primary),var(--primary-light)); border: none; border-radius: 16px; color: #fff; font-family: 'Nunito',sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; }
+
+/* LOCKED MENU ITEM */
+.menu-item.locked { opacity: 0.45; pointer-events: none; }
+.menu-item.done-badge::after { content: '✅ Aktif'; font-size: 11px; font-weight: 800; color: var(--online); background: rgba(34,197,94,0.12); padding: 3px 10px; border-radius: 20px; }
+.menu-item.locked-pro::after { content: '🔒 Upgrade Premium dulu'; font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+
 /* LOADING */
 .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 600; display: none; align-items: center; justify-content: center; }
 .dark .loading-overlay { background: rgba(0,0,0,0.8); }
@@ -631,12 +648,12 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
       </div>
       <div class="profile-menu">
         <div class="menu-section"><div class="menu-section-title">Akun</div></div>
-        <div class="menu-item" onclick="openModal('premiumModal')">
+        <div class="menu-item" id="menuPremium" onclick="openModal('premiumModal')">
           <div class="menu-icon orange">⭐</div>
           <div class="menu-text"><h4>Upgrade Premium</h4><p>User +5x order | Helper buka toggle online</p></div>
           <div class="menu-arrow">›</div>
         </div>
-        <div class="menu-item" onclick="openProModal()">
+        <div class="menu-item locked-pro" id="menuPro" onclick="showToast('Upgrade Premium dulu! ⭐')">
           <div class="menu-icon" style="background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,179,71,0.2));color:#FF6B00;">👑</div>
           <div class="menu-text"><h4>Upgrade Pro</h4><p>Order tanpa batas & auto rating 5⭐</p></div>
           <div class="menu-arrow">›</div>
@@ -923,6 +940,16 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
   </div>
 </div>
 
+<!-- SUCCESS ALERT MODAL -->
+<div class="success-modal" id="successModal">
+  <div class="success-card">
+    <div class="success-icon-wrap" id="successIcon">⭐</div>
+    <div class="success-title" id="successTitle">Berhasil!</div>
+    <div class="success-body"  id="successBody">Terima kasih.</div>
+    <button class="btn-success-close" onclick="closeSuccessModal()">Tutup</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1103,6 +1130,7 @@ function initApp(){
   listenHistory();
   updateDatetime();
   setInterval(updateDatetime, 1000);
+  updateUpgradeMenuState();
 }
 
 function updateDatetime(){
@@ -1683,25 +1711,30 @@ window.setRating = function(n){
   document.querySelectorAll('.star-btn').forEach((s,i)=>s.classList.toggle('active',i<n));
 };
 window.submitRating = async function(){
-  if(!window.selectedRating){showToast('Pilih rating!');return;}
-  showLoading(true);
-  const orderId = window.ratingOrderId;
-  const snap = await get(ref(db,`orders/${orderId}`));
-  if(snap.exists()){
-    const o = snap.val();
-    const helperId = o.helperId;
-    const hSnap = await get(ref(db,`users/${helperId}`));
-    if(hSnap.exists()){
-      const h = hSnap.val();
-      const newCount = (h.ratingCount||0)+1;
-      const newRating = ((h.rating||5)*(h.ratingCount||0)+window.selectedRating)/newCount;
-      await update(ref(db,`users/${helperId}`),{rating:newRating,ratingCount:newCount});
-    }
-    await update(ref(db,`orders/${orderId}`),{rated:true,ratingValue:window.selectedRating});
-  }
-  showLoading(false);
+  if(!window.selectedRating){showToast('Pilih rating dulu!');return;}
   closeModal('ratingModal');
-  showToast('Rating berhasil dikirim! ⭐');
+  // Simpan ke Firebase di background — tidak perlu tunggu
+  const orderId = window.ratingOrderId;
+  const rating  = window.selectedRating;
+  // Tampilkan success modal langsung tanpa loading
+  showSuccessModal(
+    'star', '⭐',
+    'Terima Kasih atas Penilaianmu!',
+    `Kamu memberi <strong>${rating} bintang</strong>. Rating kamu sangat membantu helper kami berkembang lebih baik. 🙏`
+  );
+  // Fire-and-forget ke Firebase
+  get(ref(db,`orders/${orderId}`)).then(snap => {
+    if(!snap.exists()) return;
+    const o = snap.val();
+    update(ref(db,`orders/${orderId}`),{rated:true,ratingValue:rating});
+    get(ref(db,`users/${o.helperId}`)).then(hSnap => {
+      if(!hSnap.exists()) return;
+      const h = hSnap.val();
+      const newCount  = (h.ratingCount||0)+1;
+      const newRating = ((h.rating||5)*(h.ratingCount||0)+rating)/newCount;
+      update(ref(db,`users/${o.helperId}`),{rating:newRating,ratingCount:newCount});
+    });
+  });
 };
 
 // TOGGLE DARK MODE
@@ -1731,16 +1764,28 @@ window.submitPremium = async function(){
   const uid = window.currentProfile.uid;
   await update(ref(db,`users/${uid}`),{premium:true, premiumPhone:phone, ktpPhoto:window.ktpBase64, premiumAt:Date.now()});
   window.currentProfile.premium = true;
-  // Re-enable toggle
   const tog = document.getElementById('helperToggle');
   if(tog) tog.disabled = false;
   showLoading(false);
   closeModal('premiumModal');
-  showToast('Premium aktif! ⭐');
   updateProfileUI();
+  updateUpgradeMenuState();
+  showSuccessModal(
+    'star','⭐',
+    'Premium Aktif! ⭐',
+    'Selamat! Akun kamu sekarang sudah Premium.
+
+User mendapat +5 kali order.
+Helper dapat mengaktifkan toggle online.'
+  );
 };
 
-window.openProModal = function(){ openModal('proModal'); };
+window.openProModal = function(){
+  const p = window.currentProfile;
+  if(p.pro){showToast('Kamu sudah PRO! 👑');return;}
+  if(!p.premium){showToast('Upgrade Premium dulu sebelum PRO!');return;}
+  openModal('proModal');
+};
 window.submitPro = async function(){
   const email = document.getElementById('proEmail').value.trim();
   if(!email){showToast('Masukkan email konfirmasi!');return;}
@@ -1753,8 +1798,18 @@ window.submitPro = async function(){
   if(tog) tog.disabled = false;
   showLoading(false);
   closeModal('proModal');
-  showToast('PRO aktif! 👑 Auto rating 5⭐');
   updateProfileUI();
+  updateUpgradeMenuState();
+  showSuccessModal(
+    'crown','👑',
+    'Selamat, Kamu Kini PRO! 👑',
+    'Akses PRO berhasil diaktifkan!
+
+✅ Order & terima order tanpa batas
+✅ Auto rating 5⭐ untuk helper
+
+Konfirmasi telah dikirim ke email kamu.'
+  );
 };
 
 // EDIT PROFILE
@@ -1891,6 +1946,52 @@ function timeAgo(ts){
 
 window.showLoading = function(s){ document.getElementById('loading').classList.toggle('active',s); };
 window.showToast = function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); };
+
+// Success alert modal
+window.showSuccessModal = function(iconType, iconEmoji, title, body){
+  const wrap = document.getElementById('successIcon');
+  wrap.className = `success-icon-wrap ${iconType}`;
+  wrap.textContent = iconEmoji;
+  document.getElementById('successTitle').textContent = title;
+  // Ganti newline jadi <br>
+  document.getElementById('successBody').innerHTML = body.replace(/\n/g,'<br>');
+  document.getElementById('successModal').classList.add('active');
+};
+window.closeSuccessModal = function(){
+  document.getElementById('successModal').classList.remove('active');
+};
+
+// Update tampilan menu upgrade sesuai status premium/pro
+window.updateUpgradeMenuState = function(){
+  const p = window.currentProfile;
+  const premiumItem = document.getElementById('menuPremium');
+  const proItem     = document.getElementById('menuPro');
+  if(!premiumItem || !proItem) return;
+
+  if(p.pro){
+    // Sudah PRO — keduanya tidak bisa diklik
+    premiumItem.classList.remove('locked','locked-pro');
+    premiumItem.classList.add('done-badge');
+    premiumItem.onclick = ()=>showToast('Kamu sudah Premium ✅');
+    proItem.classList.remove('locked','locked-pro');
+    proItem.classList.add('done-badge');
+    proItem.onclick = ()=>showToast('Kamu sudah PRO 👑');
+  } else if(p.premium){
+    // Sudah Premium — premium done, pro bisa diklik
+    premiumItem.classList.remove('locked','locked-pro');
+    premiumItem.classList.add('done-badge');
+    premiumItem.onclick = ()=>showToast('Kamu sudah Premium ✅');
+    proItem.classList.remove('locked','done-badge','locked-pro');
+    proItem.onclick = ()=>openProModal();
+  } else {
+    // Belum premium — premium bisa diklik, pro terkunci
+    premiumItem.classList.remove('locked','done-badge','locked-pro');
+    premiumItem.onclick = ()=>openModal('premiumModal');
+    proItem.classList.add('locked-pro');
+    proItem.classList.remove('locked','done-badge');
+    proItem.onclick = ()=>showToast('Upgrade Premium dulu! ⭐');
+  }
+};
 
 window.openModal = function(id){ document.getElementById(id).classList.add('active'); };
 window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); };
