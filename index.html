@@ -289,12 +289,44 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 .room-name { font-size: 15px; font-weight: 700; flex: 1; }
 .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
 .msg-text { display: block; }
-.msg { max-width: 78%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.6; word-break: break-word; position: relative; }
-.msg-in { background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; align-self: flex-start; color: var(--text); }
-.msg-out { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #ffffff !important; border-bottom-right-radius: 4px; align-self: flex-end; box-shadow: 0 2px 8px rgba(255,107,0,0.35); }
-.msg-out * { color: #ffffff !important; }
-.msg-in .msg-time { color: var(--text-secondary); opacity: 0.8; font-size: 10px; text-align: right; margin-top: 4px; display: block; }
-.msg-out .msg-time { color: rgba(255,255,255,0.75) !important; font-size: 10px; text-align: right; margin-top: 4px; display: block; }
+.msg {
+  max-width: 78%;
+  padding: 9px 13px 6px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  word-break: break-word;
+  display: inline-flex;
+  flex-direction: column;
+}
+.msg-in {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  color: var(--text);
+}
+.msg-out {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF8C33 100%);
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  box-shadow: 0 2px 8px rgba(255,107,0,0.3);
+}
+.msg-text {
+  display: block;
+  color: inherit;
+}
+.msg-out .msg-text { color: #ffffff; }
+.msg-in .msg-text  { color: var(--text); }
+.msg-time {
+  display: block;
+  font-size: 10px;
+  margin-top: 3px;
+  text-align: right;
+  align-self: flex-end;
+}
+.msg-out .msg-time { color: rgba(255,255,255,0.75); }
+.msg-in  .msg-time { color: var(--text-secondary); }
 .chat-input-area { background: var(--card); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 10px; align-items: center; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
 .chat-input { flex: 1; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--text); outline: none; }
 .btn-send { width: 44px; height: 44px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border: none; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -902,7 +934,7 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, get, update, push, onValue, off, query, orderByChild, equalTo, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, update, push, onValue, off, query, orderByChild, equalTo, startAt, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
@@ -918,6 +950,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
+// Expose Firebase query helpers untuk digunakan di loadMessages
+window.__fbQueryFns = { query, orderByChild, startAt };
 
 // GLOBAL STATE
 window.currentUser = null;
@@ -1435,7 +1469,7 @@ window.openChatWith = function(peerId, peerName, peerPhoto){
   if(window.currentChatPeerId && window.currentChatPeerId !== peerId){
     const oldKey = getConvKey(window.currentUser.uid, window.currentChatPeerId);
     if(window.chatListeners[oldKey]){
-      window.chatListeners[oldKey]();
+      window.chatListeners[oldKey].forEach(fn => fn());
       delete window.chatListeners[oldKey];
     }
   }
@@ -1460,10 +1494,12 @@ window.closeChatRoom = function(){
   const uid = window.currentUser.uid;
   if(window.currentChatPeerId){
     const convKey = getConvKey(uid, window.currentChatPeerId);
+    // chatListeners[convKey] sekarang array of unsub functions
     if(window.chatListeners[convKey]){
-      window.chatListeners[convKey]();
+      window.chatListeners[convKey].forEach(fn => fn());
       delete window.chatListeners[convKey];
     }
+    // Mark read
     get(ref(db,`chats/${convKey}`)).then(snap => {
       if(snap.exists()){
         const updates = {};
@@ -1480,52 +1516,92 @@ window.closeChatRoom = function(){
 
 function getConvKey(uid1, uid2){ return [uid1,uid2].sort().join('_'); }
 
+// Buat satu bubble element dari data pesan
+function makeBubble(m, uid){
+  const isOut = m.from === uid;
+  const div = document.createElement('div');
+  div.className = `msg ${isOut ? 'msg-out' : 'msg-in'}`;
+  const safeText = (m.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  const timeStr = new Date(m.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  div.innerHTML = `<span class="msg-text">${safeText}</span><span class="msg-time">${timeStr}</span>`;
+  return div;
+}
+
 function loadMessages(peerId){
   const uid = window.currentUser.uid;
   const convKey = getConvKey(uid, peerId);
-  const r = ref(db,`chats/${convKey}`);
-  // Detach listener lama jika ada
+  const msgEl = document.getElementById('chatMessages');
+
+  // Matikan semua listener lama di conv ini
   if(window.chatListeners[convKey]){
-    window.chatListeners[convKey](); // unsubscribe — onValue returns unsub fn
+    window.chatListeners[convKey].forEach(fn => fn());
     delete window.chatListeners[convKey];
   }
-  const unsub = onValue(r, snap => {
-    const el = document.getElementById('chatMessages');
-    // Cek apakah chat room ini masih aktif
+  msgEl.innerHTML = '';
+  window.chatListeners[convKey] = [];
+
+  const convRef = ref(db, `chats/${convKey}`);
+
+  // STEP 1: Load semua pesan lama sekaligus pakai onValue sekali (once)
+  get(convRef).then(snap => {
     if(window.currentChatPeerId !== peerId) return;
-    el.innerHTML = '';
-    if(snap.exists()){
-      const msgs = [];
-      snap.forEach(ch => msgs.push(ch.val()));
-      msgs.sort((a,b) => a.createdAt - b.createdAt);
-      msgs.forEach(m => {
-        const isOut = m.from === uid;
-        const div = document.createElement('div');
-        div.className = `msg ${isOut?'msg-out':'msg-in'}`;
-        // Escape HTML untuk keamanan
-        const safeText = m.text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        const timeStr = new Date(m.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-        div.innerHTML = `<span class="msg-text">${safeText}</span><span class="msg-time">${timeStr}</span>`;
-        el.appendChild(div);
-      });
-      el.scrollTop = el.scrollHeight;
-    }
+    msgEl.innerHTML = '';
+    const msgs = [];
+    if(snap.exists()) snap.forEach(ch => msgs.push(ch.val()));
+    msgs.sort((a,b) => a.createdAt - b.createdAt);
+    msgs.forEach(m => msgEl.appendChild(makeBubble(m, uid)));
+    msgEl.scrollTop = msgEl.scrollHeight;
+
+    // STEP 2: Setelah load selesai, pasang onChildAdded hanya untuk pesan BARU
+    // startAt = timestamp sekarang agar tidak double-render pesan lama
+    const { query: fbQuery, orderByChild: obc, startAt } = window.__fbQueryFns;
+    const newMsgsRef = fbQuery(convRef, obc('createdAt'), startAt(Date.now()));
+    
+    const unsubNew = onChildAdded(newMsgsRef, snap => {
+      if(window.currentChatPeerId !== peerId) return;
+      const m = snap.val();
+      // Hindari duplikat — cek apakah bubble dengan timestamp ini sudah ada
+      // Gunakan data-key attribute
+      const existing = msgEl.querySelector(`[data-key="${snap.key}"]`);
+      if(existing) return;
+      const bubble = makeBubble(m, uid);
+      bubble.setAttribute('data-key', snap.key);
+      msgEl.appendChild(bubble);
+      msgEl.scrollTop = msgEl.scrollHeight;
+      // Mark read jika pesan masuk
+      if(m.to === uid && !m.read){
+        update(ref(db, `chats/${convKey}/${snap.key}`), {read: true});
+      }
+    });
+    window.chatListeners[convKey].push(unsubNew);
   });
-  window.chatListeners[convKey] = unsub;
 }
 
 window.sendMessage = async function(){
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
-  if(!text||!window.currentChatPeerId) return;
+  if(!text || !window.currentChatPeerId) return;
   input.value = '';
+  input.focus();
   const uid = window.currentUser.uid;
-  const convKey = getConvKey(uid, window.currentChatPeerId);
-  const msgRef = push(ref(db,`chats/${convKey}`));
-  await set(msgRef,{
-    from: uid, to: window.currentChatPeerId,
-    text, createdAt: Date.now(), read: false
-  });
+  const peerId = window.currentChatPeerId;
+  const convKey = getConvKey(uid, peerId);
+  const msgRef = push(ref(db, `chats/${convKey}`));
+  const msgData = {
+    from: uid,
+    to: peerId,
+    text: text,
+    createdAt: Date.now(),
+    read: false
+  };
+  // Optimistic UI — langsung append bubble tanpa tunggu Firebase
+  const msgEl = document.getElementById('chatMessages');
+  const bubble = makeBubble(msgData, uid);
+  bubble.setAttribute('data-key', msgRef.key);
+  msgEl.appendChild(bubble);
+  msgEl.scrollTop = msgEl.scrollHeight;
+  // Kirim ke Firebase
+  await set(msgRef, msgData);
 };
 
 // HISTORY
