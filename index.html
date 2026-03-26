@@ -45,6 +45,7 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
   position: fixed; inset: 0; background: linear-gradient(135deg, #FF6B00 0%, #FF8C33 50%, #FFB347 100%);
   display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
   transition: opacity 0.5s, transform 0.5s;
+  pointer-events: all;
 }
 #splash .logo { font-size: 64px; margin-bottom: 8px; animation: bounce 1s infinite alternate; }
 #splash h1 { font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: 4px; }
@@ -427,9 +428,10 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 .menu-item.locked-pro::after { content: '🔒 Upgrade Premium dulu'; font-size: 11px; font-weight: 700; color: var(--text-secondary); }
 
 /* LOADING */
-.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 600; display: none; align-items: center; justify-content: center; }
-.dark .loading-overlay { background: rgba(0,0,0,0.8); }
+.loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); z-index: 800; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.dark .loading-overlay { background: rgba(15,15,26,0.9); }
 .loading-overlay.active { display: flex; }
+.loading-overlay p { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin-top: 4px; }
 .loading-spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
 /* EMPTY STATE */
@@ -956,6 +958,7 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 <!-- LOADING -->
 <div class="loading-overlay" id="loading">
   <div class="loading-spinner"></div>
+  <p id="loadingText">Memuat...</p>
 </div>
 
 <script type="module">
@@ -1031,26 +1034,62 @@ function randomGrad(){
 }
 renderCategories();
 
+// Compress gambar sebelum dijadikan base64 — max 400px, quality 0.6
+function compressImage(file, maxSize=400, quality=0.6){
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if(w > h){ if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;} }
+        else      { if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;} }
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 // AUTH STATE
 onAuthStateChanged(auth, async user => {
   if(user){
     window.currentUser = user;
-    showLoading(true);
-    const snap = await get(ref(db,`users/${user.uid}`));
-    if(snap.exists()){
-      window.currentProfile = snap.val();
+    showLoading(true, 'Memeriksa akun...');
+    // Timeout 8 detik agar tidak stuck jika koneksi lambat
+    const timeoutId = setTimeout(() => {
       showLoading(false);
-      showPage('appPage');
-      initApp();
-    } else {
+      document.getElementById('splash').classList.add('hide');
+      showToast('Koneksi lambat, coba lagi...');
+      showPage('loginPage');
+    }, 8000);
+    try {
+      const snap = await get(ref(db,`users/${user.uid}`));
+      clearTimeout(timeoutId);
+      if(snap.exists()){
+        window.currentProfile = snap.val();
+        showLoading(false);
+        showPage('appPage');
+        initApp();
+      } else {
+        showLoading(false);
+        showPage('registerPage');
+      }
+    } catch(e){
+      clearTimeout(timeoutId);
       showLoading(false);
-      showPage('registerPage');
+      showPage('loginPage');
+      showToast('Gagal memuat data: '+e.message);
     }
   } else {
     showPage('loginPage');
     showLoading(false);
   }
-  setTimeout(()=>{ document.getElementById('splash').classList.add('hide'); },1000);
+  setTimeout(()=>{ document.getElementById('splash').classList.add('hide'); },800);
 });
 
 window.loginGoogle = async function(){
@@ -1071,7 +1110,7 @@ window.submitRegister = async function(){
   const domisili = document.getElementById('regDomisili').value.trim();
   const bio = document.getElementById('regBio').value.trim();
   if(!name||!gender||!age||!domisili){showToast('Lengkapi semua field!');return;}
-  showLoading(true);
+  showLoading(true, 'Menyimpan profil...');
   const uid = window.currentUser.uid;
   const profile = {
     uid, name, gender, age: parseInt(age), domisili, bio,
@@ -1096,16 +1135,13 @@ window.selectRole = function(role){
   document.getElementById('roleHelper').classList.toggle('active', role==='helper');
 };
 
-window.previewRegPhoto = function(input){
+window.previewRegPhoto = async function(input){
   if(input.files&&input.files[0]){
-    const reader = new FileReader();
-    reader.onload = e => {
-      window.regPhotoBase64 = e.target.result;
-      const img = document.getElementById('regAvatarPreview');
-      img.src = e.target.result; img.style.display='block';
-      document.getElementById('regAvatarIcon').style.display='none';
-    };
-    reader.readAsDataURL(input.files[0]);
+    const compressed = await compressImage(input.files[0], 400, 0.65);
+    window.regPhotoBase64 = compressed;
+    const img = document.getElementById('regAvatarPreview');
+    img.src = compressed; img.style.display='block';
+    document.getElementById('regAvatarIcon').style.display='none';
   }
 };
 
@@ -1746,15 +1782,13 @@ window.toggleDarkMode = function(){
 if(localStorage.getItem('bbqdark')==='1'){ document.body.classList.add('dark'); document.getElementById('darkToggle').checked=true; }
 
 // PREMIUM
-window.previewKTP = function(input){
+window.previewKTP = async function(input){
   if(input.files&&input.files[0]){
-    const reader = new FileReader();
-    reader.onload = e => {
-      window.ktpBase64 = e.target.result;
-      const img = document.getElementById('ktpPreview');
-      img.src = e.target.result; img.style.display='block';
-    };
-    reader.readAsDataURL(input.files[0]);
+    // KTP boleh sedikit lebih besar agar terbaca — max 800px quality 0.7
+    const compressed = await compressImage(input.files[0], 800, 0.7);
+    window.ktpBase64 = compressed;
+    const img = document.getElementById('ktpPreview');
+    img.src = compressed; img.style.display='block';
   }
 };
 window.submitPremium = async function(){
@@ -1832,16 +1866,13 @@ window.selectEditRole = function(role){
   document.getElementById('editRoleUser').classList.toggle('active', role==='user');
   document.getElementById('editRoleHelper').classList.toggle('active', role==='helper');
 };
-window.previewEditPhoto = function(input){
+window.previewEditPhoto = async function(input){
   if(input.files&&input.files[0]){
-    const reader = new FileReader();
-    reader.onload = e => {
-      window.editPhotoBase64 = e.target.result;
-      const img = document.getElementById('editAvatarPreview');
-      img.src=e.target.result; img.style.display='block';
-      document.getElementById('editAvatarIcon').style.display='none';
-    };
-    reader.readAsDataURL(input.files[0]);
+    const compressed = await compressImage(input.files[0], 400, 0.65);
+    window.editPhotoBase64 = compressed;
+    const img = document.getElementById('editAvatarPreview');
+    img.src=compressed; img.style.display='block';
+    document.getElementById('editAvatarIcon').style.display='none';
   }
 };
 window.saveEditProfile = async function(){
@@ -1944,7 +1975,11 @@ function timeAgo(ts){
   return Math.floor(d/86400000)+'h lalu';
 }
 
-window.showLoading = function(s){ document.getElementById('loading').classList.toggle('active',s); };
+window.showLoading = function(s, msg){
+  document.getElementById('loading').classList.toggle('active', s);
+  const txt = document.getElementById('loadingText');
+  if(txt) txt.textContent = (s && msg) ? msg : 'Memuat...';
+};
 window.showToast = function(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); };
 
 // Success alert modal
