@@ -1368,68 +1368,89 @@ window.submitRating = async function() {
 };
 
 // ===== CHAT =====
+// chatId dibuat dengan base64 encode kedua UID yang sudah di-sort, agar tidak ada konflik karakter
+
+function makeChatId(uidA, uidB) {
+  // Sort dulu lalu encode ke base64 yang aman untuk Firebase key
+  const sorted = [uidA, uidB].sort().join('||');
+  // btoa bisa ada karakter + / = yang tidak aman di Firebase key, encode manual
+  return btoa(sorted).replace(/\+/g,'_').replace(/\//g,'-').replace(/=/g,'');
+}
+
+// Simpan index chat di /userChats/{myUID}/{otherUID} = chatId
+// Ini menghindari parsing chatId sama sekali
+
+let chatListUnsubscribe = null;
 
 function loadChats() {
   const el = document.getElementById('chatList');
-  onValue(ref(db,'chats'), snap => {
-    const myChats = [];
-    snap.forEach(child => {
-      const chatId = child.key;
-      // chatId format: uid1_uid2 (sorted)
-      const parts = chatId.split('_');
-      if(parts.length < 2) return;
-      // Find the part that is NOT currentUser.uid
-      // Could be split by first underscore only (UIDs may contain no underscores but let's be safe)
-      const idx = parts.indexOf(currentUser.uid);
-      if(idx === -1) return; // not my chat
-      // The other UID is the remaining part(s) joined
-      const otherUID = parts.filter((_,i)=>i!==idx).join('_');
-      if(!otherUID) return;
-      const msgs = child.val();
-      const msgArr = msgs ? Object.values(msgs) : [];
-      const lastMsg = msgArr.length ? msgArr.sort((a,b)=>b.ts-a.ts)[0] : null;
-      const unread = msgArr.filter(m=>m.to===currentUser.uid&&!m.read).length;
-      myChats.push({chatId, otherUID, lastMsg, unread});
-    });
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
 
-    if(!myChats.length) {
-      el.innerHTML='<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>';
+  // Dengarkan index chat milik saya
+  if(chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe = null; }
+
+  chatListUnsubscribe = onValue(ref(db, `userChats/${currentUser.uid}`), async snap => {
+    if(!snap.exists()) {
+      el.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>';
       return;
     }
 
-    Promise.all(myChats.map(c =>
-      get(ref(db,`users/${c.otherUID}`)).then(s => ({...c, profile: s.val()}))
-    )).then(chats => {
-      const valid = chats.filter(c => c.profile);
-      if(!valid.length) {
-        el.innerHTML='<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>';
-        return;
-      }
-      valid.sort((a,b) => (b.lastMsg?.ts||0) - (a.lastMsg?.ts||0));
-      el.innerHTML = '<div style="background:var(--card);border-radius:var(--radius);overflow:hidden;margin:0 16px;box-shadow:var(--shadow);">' +
-        valid.map(c => {
-          const lastTime = c.lastMsg ? new Date(c.lastMsg.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) : '';
-          const lastText = c.lastMsg ? (c.lastMsg.from===currentUser.uid?'Kamu: ':'')+c.lastMsg.text : 'Mulai percakapan';
-          const av = c.profile.avatar || '';
-          const isOnline = c.profile.isOnline;
-          return `<div class="chat-item" onclick="openChat('${c.otherUID}','${escHtml(c.profile.name||'User')}','${av}')">
-            <div class="chat-avatar-wrap">
-              <img src="${av}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22%3E%3Ccircle cx=%2226%22 cy=%2226%22 r=%2226%22 fill=%22%23ccc%22/%3E%3C/svg%3E'">
-              ${isOnline?'<div class="chat-online-dot"></div>':''}
-            </div>
-            <div class="chat-item-info">
-              <div class="chat-item-top">
-                <span class="chat-name">${escHtml(c.profile.name||'User')}</span>
-                <span class="chat-time">${lastTime}</span>
-              </div>
-              <div class="chat-item-bottom">
-                <span class="chat-item-msg">${escHtml(lastText)}</span>
-                ${c.unread>0?`<span class="chat-unread-badge">${c.unread}</span>`:''}
-              </div>
-            </div>
-          </div>`;
-        }).join('') + '</div>';
+    const entries = []; // [{otherUID, chatId}]
+    snap.forEach(child => {
+      entries.push({ otherUID: child.key, chatId: child.val() });
     });
+
+    if(!entries.length) {
+      el.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>';
+      return;
+    }
+
+    // Fetch profil + pesan terakhir semua chat
+    const rows = await Promise.all(entries.map(async e => {
+      const [profSnap, msgsSnap] = await Promise.all([
+        get(ref(db, `users/${e.otherUID}`)),
+        get(ref(db, `chats/${e.chatId}`))
+      ]);
+      const profile = profSnap.val();
+      const msgs = msgsSnap.val() ? Object.values(msgsSnap.val()) : [];
+      msgs.sort((a,b) => b.ts - a.ts);
+      const lastMsg = msgs[0] || null;
+      const unread = msgs.filter(m => m.to === currentUser.uid && !m.read).length;
+      return { ...e, profile, lastMsg, unread };
+    }));
+
+    const valid = rows.filter(r => r.profile);
+    valid.sort((a,b) => (b.lastMsg?.ts||0) - (a.lastMsg?.ts||0));
+
+    if(!valid.length) {
+      el.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><p>Belum ada percakapan</p></div>';
+      return;
+    }
+
+    el.innerHTML = '<div style="background:var(--card);border-radius:var(--radius);overflow:hidden;margin:0 16px;box-shadow:var(--shadow);">' +
+      valid.map((c,i) => {
+        const lastTime = c.lastMsg ? new Date(c.lastMsg.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) : '';
+        const lastText = c.lastMsg ? (c.lastMsg.from === currentUser.uid ? 'Kamu: ' : '') + c.lastMsg.text : 'Mulai percakapan';
+        const av = c.profile.avatar || '';
+        const isOnline = c.profile.isOnline;
+        const borderBottom = i < valid.length-1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div class="chat-item" style="${borderBottom}" onclick="openChat('${c.otherUID}','${escHtml(c.profile.name||'User')}','${av.replace(/'/g,"\\'")}')">
+          <div class="chat-avatar-wrap">
+            <img src="${av}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22%3E%3Ccircle cx=%2226%22 cy=%2226%22 r=%2226%22 fill=%22%23ccc%22/%3E%3C/svg%3E'">
+            ${isOnline ? '<div class="chat-online-dot"></div>' : ''}
+          </div>
+          <div class="chat-item-info">
+            <div class="chat-item-top">
+              <span class="chat-name">${escHtml(c.profile.name||'User')}</span>
+              <span class="chat-time">${lastTime}</span>
+            </div>
+            <div class="chat-item-bottom">
+              <span class="chat-item-msg">${escHtml(lastText)}</span>
+              ${c.unread > 0 ? `<span class="chat-unread-badge">${c.unread}</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
   });
 }
 
@@ -1437,46 +1458,47 @@ function loadChats() {
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 window.openChat = async function(uid, name, avatar) {
-  // If name is empty (called from order history), fetch from DB
-  if(!name || name==='Helper' || name==='User') {
-    try {
-      const snap = await get(ref(db,`users/${uid}`));
-      if(snap.exists()) {
-        const p = snap.val();
-        name = p.name || name;
-        avatar = p.avatar || avatar;
-      }
-    } catch(e){}
-  }
+  // Fetch profil dari DB jika nama tidak diketahui
+  try {
+    const snap = await get(ref(db,`users/${uid}`));
+    if(snap.exists()) {
+      const p = snap.val();
+      name = p.name || name || 'User';
+      avatar = p.avatar || avatar || '';
+    }
+  } catch(e){}
+
   currentChatUID = uid;
   document.getElementById('chatRoomName').textContent = name || 'User';
-  const av = document.getElementById('chatRoomAvatar');
-  av.src = avatar || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22%3E%3Ccircle cx=%2221%22 cy=%2221%22 r=%2221%22 fill=%22%23555%22/%3E%3C/svg%3E';
-  av.onerror = function(){ this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22%3E%3Ccircle cx=%2221%22 cy=%2221%22 r=%2221%22 fill=%22%23555%22/%3E%3C/svg%3E'; };
-  document.getElementById('chatMessages').innerHTML = '<div style="display:flex;justify-content:center;padding:32px"><div class="spinner"></div></div>';
+  const avEl = document.getElementById('chatRoomAvatar');
+  const fallbackAv = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42'%3E%3Ccircle cx='21' cy='21' r='21' fill='%23555'/%3E%3C/svg%3E";
+  avEl.src = avatar || fallbackAv;
+  avEl.onerror = function(){ this.src = fallbackAv; };
+  document.getElementById('chatMessages').innerHTML = '<div style="display:flex;justify-content:center;padding:40px"><div class="spinner"></div></div>';
   showScreen('chatRoomScreen');
   listenChatMessages(uid);
+
+  // Pastikan index userChats terdaftar di kedua sisi
+  const chatId = makeChatId(currentUser.uid, uid);
+  await set(ref(db, `userChats/${currentUser.uid}/${uid}`), chatId).catch(()=>{});
+  await set(ref(db, `userChats/${uid}/${currentUser.uid}`), chatId).catch(()=>{});
 };
 
 window.closeChatRoom = function() {
-  if(chatRoomListener) { chatRoomListener(); chatRoomListener=null; }
+  if(chatRoomListener) { chatRoomListener(); chatRoomListener = null; }
   showScreen('mainScreen');
   currentChatUID = null;
 };
 
-function getChatId(otherUID) {
-  return [currentUser.uid, otherUID].sort().join('_');
-}
-
 function listenChatMessages(otherUID) {
-  if(chatRoomListener) { chatRoomListener(); chatRoomListener=null; }
-  const chatId = getChatId(otherUID);
+  if(chatRoomListener) { chatRoomListener(); chatRoomListener = null; }
+  const chatId = makeChatId(currentUser.uid, otherUID);
   const msgsRef = ref(db, `chats/${chatId}`);
   let lastDate = null;
 
   chatRoomListener = onValue(msgsRef, snap => {
     const msgs = [];
-    snap.forEach(child => msgs.push({key:child.key, ...child.val()}));
+    snap.forEach(child => msgs.push({ key: child.key, ...child.val() }));
     msgs.sort((a,b) => a.ts - b.ts);
 
     const container = document.getElementById('chatMessages');
@@ -1485,20 +1507,20 @@ function listenChatMessages(otherUID) {
 
     msgs.forEach(m => {
       const d = new Date(m.ts);
-      const dateStr = d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+      const dateStr = d.toLocaleDateString('id-ID',{ day:'numeric', month:'long', year:'numeric' });
       if(dateStr !== lastDate) {
         html += `<div class="chat-date-divider"><span>${dateStr}</span></div>`;
         lastDate = dateStr;
       }
       const isMine = m.from === currentUser.uid;
-      const time = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-      html += `<div class="msg-row ${isMine?'sent':'recv'}">
+      const time = d.toLocaleTimeString('id-ID',{ hour:'2-digit', minute:'2-digit' });
+      html += `<div class="msg-row ${isMine ? 'sent' : 'recv'}">
         <div class="msg-bubble">
           <div class="bubble-inner">
             ${escHtml(m.text)}
             <div class="msg-meta">
               <span class="msg-time-wa">${time}</span>
-              ${isMine?'<span class="msg-tick"><i class="fas fa-check-double"></i></span>':''}
+              ${isMine ? '<span class="msg-tick"><i class="fas fa-check-double"></i></span>' : ''}
             </div>
           </div>
         </div>
@@ -1507,14 +1529,15 @@ function listenChatMessages(otherUID) {
 
     if(!html) {
       html = `<div style="display:flex;justify-content:center;margin-top:32px;">
-        <div style="background:rgba(0,0,0,0.3);color:#fff;font-size:12px;padding:8px 16px;border-radius:12px;">
-          Belum ada pesan. Mulai percakapan!
+        <div style="background:rgba(0,0,0,0.35);color:#fff;font-size:12px;font-weight:600;padding:8px 18px;border-radius:12px;backdrop-filter:blur(4px);">
+          Belum ada pesan. Mulai percakapan! 👋
         </div>
       </div>`;
     }
 
     container.innerHTML = html;
-    container.scrollTop = container.scrollHeight;
+    // Scroll ke bawah
+    requestAnimationFrame(() => { container.scrollTop = container.scrollHeight; });
   });
 }
 
@@ -1522,13 +1545,30 @@ window.sendMessage = async function() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if(!text || !currentChatUID) return;
-  const chatId = getChatId(currentChatUID);
-  const msgData = { from: currentUser.uid, to: currentChatUID, text, ts: Date.now(), read: false };
+
+  const chatId = makeChatId(currentUser.uid, currentChatUID);
+  const msgData = {
+    from: currentUser.uid,
+    to: currentChatUID,
+    text: text,
+    ts: Date.now(),
+    read: false
+  };
+
   input.value = '';
   input.style.height = 'auto';
+
   try {
-    await push(ref(db, `chats/${chatId}`), msgData);
-  } catch(e){ showToast('Gagal kirim pesan'); }
+    // Pastikan index userChats terdaftar
+    await Promise.all([
+      set(ref(db, `userChats/${currentUser.uid}/${currentChatUID}`), chatId),
+      set(ref(db, `userChats/${currentChatUID}/${currentUser.uid}`), chatId),
+      push(ref(db, `chats/${chatId}`), msgData)
+    ]);
+  } catch(e) {
+    showToast('Gagal kirim pesan: ' + e.message);
+    input.value = text; // kembalikan teks jika gagal
+  }
 };
 
 window.onInput = function(el) {
@@ -1677,6 +1717,9 @@ window.logout = async function() {
     if(currentProfile&&currentProfile.isOnline) {
       await update(ref(db,`users/${currentUser.uid}`),{isOnline:false});
     }
+    // Cleanup all listeners
+    if(chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe=null; }
+    if(chatRoomListener) { chatRoomListener(); chatRoomListener=null; }
     await signOut(auth);
     currentUser=null; currentProfile=null;
     showScreen('loginScreen');
