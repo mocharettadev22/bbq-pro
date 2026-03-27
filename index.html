@@ -1648,15 +1648,20 @@ window.selectCategory = (cat) => {
   showToast(`Pilih helper dulu untuk "${cat}"`, 'info');
 };
 
-// ===== ONLINE HELPERS =====
+// ===== ONLINE HELPERS (realtime, semua user, filter client-side) =====
 function listenOnlineHelpers() {
-  const helperRef = query(ref(db, 'users'), orderByChild('isOnline'), equalTo(true));
-  onlineHelpersListener = onValue(helperRef, (snap) => {
+  // Gunakan ref biasa ke seluruh users — filter isOnline di client
+  // Ini lebih reliable daripada query orderByChild karena tidak butuh index
+  const usersRef = ref(db, 'users');
+  onlineHelpersListener = onValue(usersRef, (snap) => {
     const list = document.getElementById('helperList');
     const helpers = [];
     snap.forEach(c => {
       const d = c.val();
-      if (d.role === 'helper' || d.role === 'user') helpers.push({...d, uid: c.key});
+      // Tampilkan semua user yang isOnline === true (helper maupun user)
+      if (d.isOnline === true) {
+        helpers.push({ ...d, uid: c.key });
+      }
     });
 
     if (helpers.length === 0) {
@@ -1664,31 +1669,47 @@ function listenOnlineHelpers() {
       return;
     }
 
-    list.innerHTML = helpers.map(h => `
-      <div class="helper-card">
-        <div class="helper-avatar">
-          ${h.photo ? `<img src="${h.photo}" alt="">` : `<div style="width:100%;height:100%;background:var(--bg);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="color:var(--text-muted)">person</span></div>`}
-        </div>
-        <div class="helper-info">
-          <div class="helper-name-row">
-            <span class="helper-name">${h.name}</span>
-            <span class="helper-role-badge ${h.role==='helper'?'badge-helper':'badge-user'}">${h.role}</span>
-            ${h.premium?'<span class="helper-role-badge badge-premium">★ Premium</span>':''}
+    list.innerHTML = helpers.map(h => {
+      const ratingVal = h.ratingCount > 0 ? (h.rating / h.ratingCount).toFixed(1) : 'Baru';
+      const ratingCount = h.ratingCount > 0 ? `(${h.ratingCount})` : '';
+      const isMe = currentUser && h.uid === currentUser.uid;
+      const avatarHtml = h.photo
+        ? `<img src="${h.photo}" alt="" style="width:100%;height:100%;object-fit:cover">`
+        : `<div style="width:100%;height:100%;background:var(--primary);display:flex;align-items:center;justify-content:center"><span style="color:white;font-size:22px;font-weight:800">${(h.name||'U')[0].toUpperCase()}</span></div>`;
+
+      return `
+        <div class="helper-card">
+          <div class="helper-avatar">${avatarHtml}</div>
+          <div class="helper-info">
+            <div class="helper-name-row">
+              <span class="helper-name">${h.name || 'User'}</span>
+              <span class="helper-role-badge ${h.role === 'helper' ? 'badge-helper' : 'badge-user'}">${h.role || 'user'}</span>
+              ${h.pro ? '<span class="helper-role-badge badge-pro">💎 Pro</span>' : h.premium ? '<span class="helper-role-badge badge-premium">★ Premium</span>' : ''}
+            </div>
+            <div class="helper-meta">${h.gender || ''} • ${h.age || ''}thn • ${h.area || ''}</div>
+            <div class="helper-bio">${h.bio || 'Siap membantu!'}</div>
+            <div class="helper-rating">
+              <span class="material-icons-round">star</span>
+              ${ratingVal}
+              <span style="font-size:10px;color:var(--text-muted);font-weight:400">${ratingCount}</span>
+            </div>
           </div>
-          <div class="helper-meta">${h.gender||''} • ${h.age||''}thn • ${h.area||''}</div>
-          <div class="helper-bio">${h.bio||'Siap membantu!'}</div>
-          <div class="helper-rating">
-            <span class="material-icons-round">star</span>
-            ${h.ratingCount>0?(h.rating/h.ratingCount).toFixed(1):'Baru'}
-            <span style="font-size:10px;color:var(--text-muted);font-weight:400">${h.ratingCount>0?`(${h.ratingCount})`:''}</span>
+          <div class="helper-actions">
+            <div class="online-indicator">
+              <div style="width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite"></div>
+              Online
+            </div>
+            ${!isMe
+              ? `<button class="btn btn-sm btn-primary" onclick="openOrderModal('${h.uid}')">Order</button>`
+              : `<span style="font-size:10px;color:var(--text-muted);font-weight:600">Kamu</span>`
+            }
           </div>
         </div>
-        <div class="helper-actions">
-          <div class="online-indicator"><div style="width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite"></div>Online</div>
-          ${h.uid !== currentUser.uid ? `<button class="btn btn-sm btn-primary" onclick="openOrderModal('${h.uid}')">Order</button>` : `<span style="font-size:10px;color:var(--text-muted)">Kamu</span>`}
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+  }, (error) => {
+    console.error('Error listening users:', error);
+    document.getElementById('helperList').innerHTML = `<div class="empty-state"><span class="material-icons-round">wifi_off</span><h3>Gagal memuat</h3><p>Periksa koneksi internet</p></div>`;
   });
 }
 
