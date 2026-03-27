@@ -4,1439 +4,1457 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#FF6B35">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>BBQ - Butuh Bantuanku</title>
-<link rel="manifest" href="data:application/json,{}">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
+<link rel="manifest" href="#" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
 :root {
   --primary: #FF6B35;
-  --primary-dark: #E5502A;
+  --primary-dark: #e05a28;
   --primary-light: #FF8C5A;
-  --secondary: #2D3A4A;
-  --accent: #FFD166;
-  --success: #06D6A0;
-  --danger: #EF476F;
-  --info: #118AB2;
-  --bg: #F7F8FC;
+  --bg: #F5F5F5;
+  --bg-dark: #121212;
   --card: #FFFFFF;
-  --text: #1A1D23;
-  --text-muted: #8B95A5;
-  --border: #E8EBF0;
-  --shadow: 0 2px 20px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.15);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --nav-height: 72px;
+  --card-dark: #1E1E1E;
+  --text: #1A1A1A;
+  --text-dark: #F0F0F0;
+  --text-muted: #888;
+  --border: #EFEFEF;
+  --border-dark: #2A2A2A;
+  --success: #22C55E;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --info: #3B82F6;
+  --nav-height: 65px;
   --header-height: 60px;
-  --font: 'Plus Jakarta Sans', sans-serif;
-  --font2: 'Nunito', sans-serif;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.12);
 }
-
 [data-theme="dark"] {
-  --bg: #0F1117;
-  --card: #1A1D27;
-  --text: #F0F2F8;
-  --text-muted: #6B7589;
-  --border: #252834;
-  --shadow: 0 2px 20px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  --bg: #121212;
+  --card: #1E1E1E;
+  --text: #F0F0F0;
+  --text-muted: #888;
+  --border: #2A2A2A;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-  height: 100%;
-  font-family: var(--font);
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
-  overflow: hidden;
-  user-select: none;
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
+/* PAGES */
+.page { display: none; min-height: 100vh; flex-direction: column; }
+.page.active { display: flex; }
 
-/* ===== SCREENS ===== */
-.screen {
-  position: fixed;
-  inset: 0;
-  display: none;
-  flex-direction: column;
-  background: var(--bg);
-  z-index: 10;
-}
-.screen.active { display: flex; }
-
-/* ===== SPLASH ===== */
-#splashScreen {
-  background: linear-gradient(145deg, #FF6B35, #FF8C5A, #FFD166);
+/* LOGIN PAGE */
+#page-login {
+  background: linear-gradient(160deg, #FF6B35 0%, #FF8C5A 40%, #FFB347 100%);
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  padding: 40px 24px;
 }
-.splash-logo {
-  text-align: center;
-  color: white;
-  animation: splashIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.splash-icon {
-  width: 90px; height: 90px;
-  background: rgba(255,255,255,0.25);
-  border-radius: 28px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.4);
-}
-.splash-icon .material-icons-round { font-size: 48px; color: white; }
-.splash-logo h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
-.splash-logo p { font-size: 14px; opacity: 0.85; margin-top: 4px; font-weight: 500; }
-.splash-loader {
-  margin-top: 48px;
-  display: flex; gap: 8px;
-}
-.splash-dot {
-  width: 8px; height: 8px; background: rgba(255,255,255,0.7);
-  border-radius: 50%;
-  animation: dotBounce 1.2s infinite;
-}
-.splash-dot:nth-child(2) { animation-delay: 0.2s; }
-.splash-dot:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes splashIn { from { transform: scale(0.5) translateY(30px); opacity: 0; } }
-@keyframes dotBounce { 0%,80%,100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-12px); opacity: 1; } }
-
-/* ===== LOGIN ===== */
-#loginScreen {
-  background: linear-gradient(180deg, #FF6B35 0%, #FF8C5A 40%, var(--bg) 100%);
-  overflow-y: auto;
-}
-.login-hero {
-  padding: 60px 24px 40px;
-  text-align: center;
-  color: white;
-}
-.login-logo {
+.login-logo { text-align: center; margin-bottom: 48px; }
+.login-logo .logo-icon {
   width: 80px; height: 80px;
   background: rgba(255,255,255,0.2);
   border-radius: 24px;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 16px;
+  font-size: 36px;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.35);
+  border: 1px solid rgba(255,255,255,0.3);
 }
-.login-logo .material-icons-round { font-size: 42px; }
-.login-hero h1 { font-size: 28px; font-weight: 800; }
-.login-hero p { margin-top: 8px; opacity: 0.9; font-size: 14px; font-weight: 500; }
+.login-logo h1 { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+.login-logo p { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: 4px; }
 .login-card {
-  margin: 0 16px;
-  background: var(--card);
+  background: #fff;
   border-radius: 24px;
-  padding: 28px 24px;
-  box-shadow: var(--shadow-lg);
+  padding: 32px 24px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
-.login-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+[data-theme="dark"] .login-card { background: #1E1E1E; }
+.login-card h2 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .login-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
 .btn-google {
   width: 100%;
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  padding: 14px 20px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 15px; font-weight: 600;
+  padding: 14px;
+  background: #fff;
+  border: 1.5px solid #DDD;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.btn-google:hover { background: var(--bg); border-color: var(--primary); }
-.btn-google img { width: 22px; height: 22px; }
-.login-footer { text-align: center; margin-top: 20px; }
-.login-footer p { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+.btn-google:hover { background: #F5F5F5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.btn-google img { width: 20px; height: 20px; }
 
-/* ===== REGISTER ===== */
-#registerScreen { overflow-y: auto; }
+/* REGISTER PAGE */
+#page-register { background: var(--bg); overflow-y: auto; }
 .reg-header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  padding: 48px 24px 24px;
-  color: white;
+  background: var(--primary);
+  padding: 50px 24px 24px;
+  color: #fff;
 }
-.reg-header h1 { font-size: 22px; font-weight: 800; }
+.reg-header h2 { font-size: 22px; font-weight: 800; }
 .reg-header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-.reg-body { padding: 20px 16px 100px; }
-
-/* ===== FORM ELEMENTS ===== */
-.form-group { margin-bottom: 16px; }
-.form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
-.form-control {
-  width: 100%;
-  padding: 13px 16px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--card);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 14px; font-weight: 500;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-control:focus { border-color: var(--primary); }
-select.form-control { appearance: none; cursor: pointer; }
-textarea.form-control { resize: none; min-height: 80px; }
-
-/* Photo Upload */
+.reg-body { padding: 24px; flex: 1; }
 .photo-upload {
-  display: flex; align-items: center; gap: 16px;
-  padding: 16px;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s;
+  text-align: center;
+  margin-bottom: 24px;
 }
-.photo-upload:hover { border-color: var(--primary); background: rgba(255,107,53,0.04); }
-.photo-preview {
-  width: 64px; height: 64px;
+.photo-circle {
+  width: 90px; height: 90px;
   border-radius: 50%;
-  background: var(--bg);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  margin: 0 auto 12px;
   display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative;
   overflow: hidden;
-  border: 2px solid var(--border);
-  flex-shrink: 0;
+  border: 3px solid var(--primary);
 }
-.photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-.photo-preview .material-icons-round { font-size: 28px; color: var(--text-muted); }
-.photo-upload-text p { font-size: 13px; font-weight: 600; color: var(--text); }
-.photo-upload-text span { font-size: 11px; color: var(--text-muted); }
-
-/* Role Selector */
-.role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.role-card {
-  padding: 16px 12px;
+.photo-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.photo-circle .cam-icon { font-size: 28px; color: #fff; }
+.photo-circle .edit-badge {
+  position: absolute; bottom: 4px; right: 4px;
+  background: var(--primary); color: #fff;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  border: 2px solid #fff;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+.form-group textarea { resize: none; height: 80px; }
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea { background: #2A2A2A; border-color: #333; color: #F0F0F0; }
+.role-selector { display: flex; gap: 12px; }
+.role-btn {
+  flex: 1; padding: 14px 10px;
   border: 2px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 12px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
+  background: var(--card);
 }
-.role-card.selected { border-color: var(--primary); background: rgba(255,107,53,0.08); }
-.role-card .material-icons-round { font-size: 28px; color: var(--text-muted); margin-bottom: 6px; display: block; }
-.role-card.selected .material-icons-round { color: var(--primary); }
-.role-card p { font-size: 13px; font-weight: 600; }
-.role-card span { font-size: 11px; color: var(--text-muted); }
-
-/* Buttons */
-.btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 14px 20px;
-  border-radius: var(--radius);
-  border: none;
-  font-family: var(--font);
-  font-size: 14px; font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  width: 100%;
-}
+.role-btn.active { border-color: var(--primary); background: rgba(255,107,53,0.08); }
+.role-btn i { font-size: 22px; color: var(--primary); display: block; margin-bottom: 6px; }
+.role-btn span { font-size: 13px; font-weight: 600; color: var(--text); }
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  box-shadow: 0 4px 20px rgba(255,107,53,0.4);
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(255,107,53,0.35);
 }
-.btn-primary:active { transform: scale(0.97); box-shadow: 0 2px 10px rgba(255,107,53,0.3); }
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--border);
-  color: var(--text);
-}
-.btn-success {
-  background: linear-gradient(135deg, var(--success), #04B589);
-  color: white;
-  box-shadow: 0 4px 16px rgba(6,214,160,0.35);
-}
-.btn-danger {
-  background: linear-gradient(135deg, var(--danger), #D6395F);
-  color: white;
-  box-shadow: 0 4px 16px rgba(239,71,111,0.35);
-}
-.btn-sm { padding: 8px 14px; font-size: 12px; width: auto; border-radius: var(--radius-sm); }
-.btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 50%; border: none; background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.btn-primary:active { transform: scale(0.98); }
 
-/* ===== MAIN APP ===== */
-#appScreen { overflow: hidden; }
-.app-body {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
+/* APP SHELL */
+#page-app { background: var(--bg); overflow: hidden; }
+.app-wrapper { display: flex; flex-direction: column; height: 100vh; }
+.main-content { flex: 1; overflow-y: auto; padding-bottom: var(--nav-height); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
 
-/* ===== BOTTOM NAV ===== */
+/* BOTTOM NAV */
 .bottom-nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
   height: var(--nav-height);
   background: var(--card);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  z-index: 100;
   padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-  z-index: 50;
-  flex-shrink: 0;
 }
 .nav-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 3px; padding: 8px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
   cursor: pointer;
   border-radius: 12px;
   transition: all 0.2s;
-  min-width: 52px;
   position: relative;
 }
-.nav-item .material-icons-round { font-size: 22px; color: var(--text-muted); transition: all 0.2s; }
-.nav-item span.label { font-size: 10px; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
-.nav-item.active .material-icons-round { color: var(--primary); }
-.nav-item.active span.label { color: var(--primary); }
-.nav-item.active { background: rgba(255,107,53,0.08); }
-.nav-badge {
-  position: absolute; top: 6px; right: 8px;
+.nav-item i { font-size: 20px; color: var(--text-muted); transition: all 0.2s; }
+.nav-item span { font-size: 10px; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
+.nav-item.active i { color: var(--primary); }
+.nav-item.active span { color: var(--primary); }
+.nav-item .badge {
+  position: absolute; top: 6px; right: 50%;
+  transform: translateX(8px);
   background: var(--danger);
-  color: white;
-  font-size: 9px; font-weight: 700;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
   min-width: 16px; height: 16px;
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   padding: 0 4px;
 }
 
-/* ===== PAGES ===== */
-.page {
-  position: absolute;
-  inset: 0;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-}
-.page.active { display: flex; }
-
-/* Page Header */
-.page-header {
-  padding: 16px 20px 12px;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 12px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 5;
-}
-.page-header h1 { font-size: 17px; font-weight: 700; flex: 1; }
-.page-scroll { flex: 1; overflow-y: auto; }
-.page-scroll::-webkit-scrollbar { display: none; }
-
-/* ===== HOME PAGE ===== */
+/* HOME TAB */
 .home-header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 60%, var(--accent) 100%);
-  padding: 20px 20px 24px;
-  color: white;
-  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: 50px 20px 20px;
+  color: #fff;
 }
-.home-greeting { font-size: 13px; opacity: 0.85; font-weight: 500; }
-.home-name { font-size: 22px; font-weight: 800; margin-top: 2px; }
-.home-datetime { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; opacity: 0.8; }
-.home-online-badge {
-  margin-top: 10px;
-  background: rgba(6,214,160,0.2);
-  border: 1px solid rgba(6,214,160,0.4);
-  color: #06D6A0;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 11px; font-weight: 600;
-  display: inline-flex; align-items: center; gap: 6px;
+.home-header .greeting { font-size: 22px; font-weight: 800; }
+.home-header .datetime { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.online-status-bar {
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.3);
+  padding: 8px 16px;
+  margin: 12px 16px 0;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #22C55E;
+  display: none;
+  align-items: center;
+  gap: 8px;
 }
-.online-dot { width: 7px; height: 7px; background: #06D6A0; border-radius: 50%; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+.online-status-bar.show { display: flex; }
+.online-dot { width: 8px; height: 8px; background: #22C55E; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.7} }
 
-/* Category Grid */
-.section { padding: 16px 16px 8px; }
-.section-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
-.section-sub { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-.cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.cat-item {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 10px 4px;
+.section-title {
+  font-size: 16px; font-weight: 700;
+  color: var(--text);
+  padding: 20px 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-title span { font-size: 12px; font-weight: 500; color: var(--primary); }
+
+/* CATEGORY GRID */
+.category-scroll { padding: 0 16px; overflow-x: auto; }
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.category-item {
   background: var(--card);
-  border-radius: var(--radius);
+  border-radius: 14px;
+  padding: 12px 6px;
+  text-align: center;
   cursor: pointer;
-  border: 1.5px solid var(--border);
   transition: all 0.2s;
-  box-shadow: var(--shadow);
+  border: 1.5px solid var(--border);
 }
-.cat-item:active { transform: scale(0.93); }
-.cat-icon {
-  width: 42px; height: 42px;
+.category-item:active { transform: scale(0.95); }
+.category-item .cat-icon {
+  width: 44px; height: 44px;
   border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  margin: 0 auto 8px;
+  font-size: 18px;
 }
-.cat-item p { font-size: 10px; font-weight: 600; text-align: center; line-height: 1.3; color: var(--text); }
+.category-item .cat-name { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.3; }
 
-/* Helper Cards */
-.helper-list { display: flex; flex-direction: column; gap: 10px; padding: 0 16px 16px; }
+/* HELPER CARDS */
+.helpers-list { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
 .helper-card {
   background: var(--card);
   border-radius: var(--radius);
   padding: 14px;
-  display: flex; gap: 12px;
+  display: flex;
+  gap: 12px;
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  border: 1.5px solid var(--border);
   cursor: pointer;
   transition: all 0.2s;
 }
 .helper-card:active { transform: scale(0.98); }
 .helper-avatar {
-  width: 52px; height: 52px;
-  border-radius: 16px;
-  overflow: hidden;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
   flex-shrink: 0;
-  background: var(--bg);
-  border: 2px solid var(--border);
+  background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; font-weight: 700;
 }
-.helper-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.helper-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .helper-info { flex: 1; min-width: 0; }
-.helper-name-row { display: flex; align-items: center; gap: 6px; }
-.helper-name { font-size: 14px; font-weight: 700; }
-.helper-role-badge {
+.helper-info .name { font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.helper-info .role-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,107,53,0.1);
+  color: var(--primary);
+  font-size: 10px; font-weight: 700;
   padding: 2px 8px;
   border-radius: 20px;
-  font-size: 10px; font-weight: 700;
+  margin: 2px 0;
 }
-.badge-helper { background: rgba(255,107,53,0.12); color: var(--primary); }
-.badge-user { background: rgba(17,138,178,0.12); color: var(--info); }
-.badge-premium { background: rgba(255,209,102,0.2); color: #B8860B; }
-.badge-pro { background: rgba(106,0,255,0.1); color: #6A00FF; }
-.helper-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.helper-bio { font-size: 12px; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.helper-rating { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; color: #F59E0B; margin-top: 4px; }
-.helper-rating .material-icons-round { font-size: 14px; }
-.helper-actions { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; flex-direction: column; justify-content: space-between; }
-.online-indicator { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: var(--success); }
+.helper-info .meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.helper-info .bio { font-size: 12px; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.helper-rating { display: flex; align-items: center; gap: 2px; font-size: 11px; color: #F59E0B; font-weight: 700; margin-top: 2px; }
+.online-indicator { width: 10px; height: 10px; background: #22C55E; border-radius: 50%; flex-shrink: 0; margin-top: 4px; border: 2px solid #fff; }
+.btn-order {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  align-self: flex-start;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.3);
+}
+.btn-order:active { transform: scale(0.95); }
 
-/* ===== HELPER DASHBOARD ===== */
-.dashboard-header {
-  background: linear-gradient(135deg, var(--secondary), #3D4F63);
-  padding: 20px 20px 28px;
-  color: white;
-  flex-shrink: 0;
+/* HELPER DASHBOARD */
+.helper-dash-header {
+  background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+  padding: 50px 20px 24px;
+  color: #fff;
 }
-.dash-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.dash-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; }
-.dash-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.dash-greeting { font-size: 12px; opacity: 0.7; }
-.dash-name { font-size: 16px; font-weight: 700; }
-.dash-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.helper-dash-header .dash-top { display: flex; gap: 12px; align-items: center; }
+.dash-avatar {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; font-weight: 700;
+  overflow: hidden; flex-shrink: 0;
+}
+.dash-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.dash-info .greeting { font-size: 16px; font-weight: 800; }
+.dash-info .datetime { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 16px 16px 0;
+}
 .stat-card {
-  background: rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
 }
-.stat-value { font-size: 20px; font-weight: 800; }
-.stat-label { font-size: 10px; opacity: 0.75; margin-top: 2px; font-weight: 500; }
-
-/* Toggle Online */
+.stat-card .label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.stat-card .value { font-size: 24px; font-weight: 800; color: var(--text); margin-top: 4px; }
+.stat-card .sub { font-size: 11px; color: var(--success); font-weight: 600; margin-top: 2px; }
 .toggle-section {
-  margin: 16px;
+  margin: 16px 16px 0;
   background: var(--card);
   border-radius: var(--radius);
-  padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: var(--shadow);
-  border: 1.5px solid var(--border);
+  padding: 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.toggle-info h3 { font-size: 14px; font-weight: 700; }
-.toggle-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.toggle-switch {
-  position: relative;
-  width: 52px; height: 28px;
-}
+.toggle-label { }
+.toggle-label .title { font-size: 15px; font-weight: 700; color: var(--text); }
+.toggle-label .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.toggle-switch { position: relative; width: 50px; height: 26px; }
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; inset: 0;
-  background: var(--border);
-  border-radius: 14px;
+.toggle-track {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: #DDD;
+  border-radius: 13px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: 0.3s;
 }
-.toggle-slider:before {
+.toggle-track:before {
   content: '';
   position: absolute;
-  left: 4px; top: 4px;
   width: 20px; height: 20px;
-  background: white;
+  left: 3px; top: 3px;
+  background: #fff;
   border-radius: 50%;
-  transition: transform 0.3s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
-.toggle-switch input:checked + .toggle-slider { background: var(--success); }
-.toggle-switch input:checked + .toggle-slider:before { transform: translateX(24px); }
-.toggle-switch.locked .toggle-slider { opacity: 0.5; cursor: not-allowed; }
+.toggle-switch input:checked + .toggle-track { background: var(--primary); }
+.toggle-switch input:checked + .toggle-track:before { transform: translateX(24px); }
+.toggle-switch input:disabled + .toggle-track { opacity: 0.5; cursor: not-allowed; }
 
-/* Order Cards */
+/* ORDER CARDS */
+.order-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .order-card {
   background: var(--card);
   border-radius: var(--radius);
-  margin: 0 16px 10px;
-  overflow: hidden;
+  padding: 14px;
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  border: 1.5px solid var(--border);
 }
-.order-card-header {
-  padding: 12px 14px;
-  background: rgba(255,107,53,0.05);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+.order-card .order-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.order-user-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff; font-weight: 700;
+  overflow: hidden; flex-shrink: 0;
 }
-.order-status { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-.status-pending { background: rgba(255,209,102,0.2); color: #B8860B; }
-.status-process { background: rgba(17,138,178,0.15); color: var(--info); }
-.status-done { background: rgba(6,214,160,0.15); color: var(--success); }
-.status-rejected { background: rgba(239,71,111,0.15); color: var(--danger); }
-.order-card-body { padding: 12px 14px; }
-.order-user { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.order-user-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: var(--bg); border: 2px solid var(--border); }
-.order-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.order-user-name { font-size: 13px; font-weight: 700; }
-.order-user-meta { font-size: 11px; color: var(--text-muted); }
-.order-desc { font-size: 13px; color: var(--text); margin-bottom: 8px; line-height: 1.5; }
-.order-price { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+.order-user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.order-meta .user-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.order-meta .order-time { font-size: 11px; color: var(--text-muted); }
+.order-body { margin-bottom: 12px; }
+.order-category {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(59,130,246,0.1);
+  color: #3B82F6;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+.order-desc { font-size: 13px; color: var(--text); line-height: 1.5; }
+.order-amount { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 6px; }
 .order-actions { display: flex; gap: 8px; }
-.order-cat-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: rgba(255,107,53,0.1); color: var(--primary); border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+.btn-accept {
+  flex: 1; padding: 10px;
+  background: var(--success);
+  color: #fff; border: none;
+  border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-reject {
+  flex: 1; padding: 10px;
+  background: rgba(239,68,68,0.1);
+  color: var(--danger); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-chat-sm {
+  padding: 10px 14px;
+  background: rgba(59,130,246,0.1);
+  color: #3B82F6; border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
 
-/* ===== CHAT ===== */
-.chat-list { flex: 1; overflow-y: auto; }
+/* CHAT */
+.chat-layout { display: flex; flex-direction: column; height: calc(100vh - var(--nav-height)); }
+.chat-sidebar { flex: 1; overflow-y: auto; }
+.chat-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 50px 16px 16px;
+  font-size: 18px;
+  font-weight: 800;
+}
 .chat-item {
-  display: flex; align-items: center; gap: 12px;
+  display: flex;
+  gap: 12px;
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   cursor: pointer;
+  align-items: center;
   transition: background 0.15s;
 }
 .chat-item:active { background: var(--bg); }
-.chat-avatar { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: var(--bg); flex-shrink: 0; border: 2px solid var(--border); }
-.chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.chat-name { font-size: 14px; font-weight: 700; }
-.chat-preview { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-.chat-time { font-size: 10px; color: var(--text-muted); margin-left: auto; flex-shrink: 0; }
-.chat-unread { background: var(--primary); color: white; border-radius: 10px; min-width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; margin-top: 4px; }
+.chat-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff; font-weight: 700;
+  flex-shrink: 0; overflow: hidden;
+}
+.chat-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.chat-info { flex: 1; min-width: 0; }
+.chat-info .chat-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.chat-info .chat-preview { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-time { font-size: 11px; color: var(--text-muted); }
+.unread-badge {
+  background: var(--primary); color: #fff;
+  font-size: 10px; font-weight: 700;
+  min-width: 18px; height: 18px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+}
 
-/* Chat Room */
-#chatRoom {
-  position: fixed; inset: 0;
+/* CHAT WINDOW */
+#chat-window {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  height: 100vh;
   background: var(--bg);
+  z-index: 200;
   display: none;
   flex-direction: column;
-  z-index: 200;
 }
-#chatRoom.open { display: flex; }
-.chat-room-header {
-  background: var(--card);
-  padding: 12px 16px;
-  display: flex; align-items: center; gap: 12px;
-  border-bottom: 1px solid var(--border);
-  padding-top: max(12px, env(safe-area-inset-top));
+#chat-window.open { display: flex; }
+.chat-win-header {
+  background: var(--primary);
+  padding: 50px 16px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
 }
-.chat-room-header .back-btn { flex-shrink: 0; }
-.chat-room-messages {
-  flex: 1; overflow-y: auto; padding: 16px;
-  display: flex; flex-direction: column; gap: 8px;
+.chat-win-header .back-btn { font-size: 20px; cursor: pointer; }
+.chat-win-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+  overflow: hidden;
 }
-.chat-room-messages::-webkit-scrollbar { display: none; }
-.msg {
+.chat-win-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.chat-win-info .name { font-size: 15px; font-weight: 700; }
+.chat-win-info .status { font-size: 11px; opacity: 0.8; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.msg-bubble {
   max-width: 75%;
   padding: 10px 14px;
   border-radius: 18px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   position: relative;
 }
-.msg.sent {
+.msg-bubble.sent {
+  background: var(--primary);
+  color: #fff;
   align-self: flex-end;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
   border-bottom-right-radius: 4px;
 }
-.msg.received {
-  align-self: flex-start;
+.msg-bubble.received {
   background: var(--card);
   color: var(--text);
+  align-self: flex-start;
   border-bottom-left-radius: 4px;
-  box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
-.msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-.chat-input-area {
+.msg-time { font-size: 10px; opacity: 0.65; margin-top: 3px; text-align: right; }
+.msg-bubble.received .msg-time { text-align: left; }
+.chat-input-bar {
+  padding: 10px 16px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
   background: var(--card);
-  padding: 10px 16px;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
-  display: flex; gap: 10px; align-items: flex-end;
 }
 .chat-input {
   flex: 1;
+  padding: 12px 16px;
   background: var(--bg);
-  border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 10px 16px;
-  font-family: var(--font);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-family: inherit;
   font-size: 14px;
   color: var(--text);
   outline: none;
-  resize: none;
-  max-height: 100px;
-  min-height: 40px;
 }
 .chat-input:focus { border-color: var(--primary); }
-.chat-send-btn {
-  width: 42px; height: 42px;
-  border-radius: 50%;
+.btn-send {
+  width: 44px; height: 44px;
   background: var(--primary);
-  border: none;
-  color: white;
+  border: none; border-radius: 50%;
+  color: #fff; font-size: 18px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.35);
 }
-.chat-send-btn:active { transform: scale(0.9); }
 
-/* ===== HISTORY ===== */
-.tab-bar {
+/* HISTORY */
+.history-header {
+  background: var(--primary);
+  padding: 50px 16px 16px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+}
+.tab-pills {
   display: flex;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-.tab-bar::-webkit-scrollbar { display: none; }
-.tab-item {
   padding: 12px 16px;
-  font-size: 13px; font-weight: 600;
-  color: var(--text-muted);
-  white-space: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+}
+.tab-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px; font-weight: 700;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text-muted);
   transition: all 0.2s;
 }
-.tab-item.active { color: var(--primary); border-bottom-color: var(--primary); }
-
-/* ===== PROFILE ===== */
-.profile-header {
-  background: linear-gradient(135deg, var(--secondary), #3D4F63);
-  padding: 40px 20px 24px;
-  color: white;
-  display: flex; align-items: center; gap: 16px;
-  flex-shrink: 0;
+.tab-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.history-item {
+  margin: 0 16px 12px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid var(--border);
 }
-.profile-avatar-wrap { position: relative; }
-.profile-avatar { width: 72px; height: 72px; border-radius: 22px; border: 3px solid rgba(255,255,255,0.4); overflow: hidden; }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+}
+.status-badge.proses { background: rgba(245,158,11,0.15); color: #F59E0B; }
+.status-badge.selesai { background: rgba(34,197,94,0.15); color: #22C55E; }
+.status-badge.ditolak { background: rgba(239,68,68,0.15); color: #EF4444; }
+.btn-complete {
+  width: 100%; padding: 10px;
+  background: var(--success);
+  color: #fff; border: none;
+  border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; margin-top: 10px;
+}
+.btn-rate {
+  width: 100%; padding: 10px;
+  background: rgba(245,158,11,0.15);
+  color: #F59E0B; border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  cursor: pointer; margin-top: 10px;
+}
+
+/* PROFILE */
+.profile-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  padding: 50px 20px 30px;
+  text-align: center;
+  color: #fff;
+}
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  margin: 0 auto 12px;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; font-weight: 700;
+}
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile-name { font-size: 18px; font-weight: 800; }
-.profile-role { font-size: 12px; opacity: 0.7; margin-top: 2px; }
-.profile-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-.menu-section { padding: 8px 16px; }
-.menu-section-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0 4px; }
+.profile-name { font-size: 20px; font-weight: 800; }
+.profile-role { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+.premium-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(245,158,11,0.2);
+  border: 1px solid rgba(245,158,11,0.4);
+  color: #F59E0B;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+.profile-menu { padding: 16px; }
+.menu-section { margin-bottom: 20px; }
+.menu-section-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 4px; margin-bottom: 8px; }
 .menu-item {
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.menu-item:last-child { border-bottom: none; }
-.menu-item:active { opacity: 0.6; }
-.menu-icon {
-  width: 40px; height: 40px;
+  padding: 14px 16px;
+  background: var(--card);
   border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
 }
-.menu-text { flex: 1; }
-.menu-text h4 { font-size: 14px; font-weight: 600; }
-.menu-text p { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-.menu-arrow { color: var(--text-muted); }
+.menu-item:active { background: var(--bg); }
+.menu-item .icon-wrap {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.menu-item .label { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+.menu-item .chevron { color: var(--text-muted); font-size: 12px; }
+.menu-item .sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.menu-item.danger .label { color: var(--danger); }
 
-/* ===== MODALS ===== */
+/* MODALS */
 .modal-overlay {
-  position: fixed; inset: 0;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.5);
   z-index: 300;
   display: none;
   align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  backdrop-filter: blur(4px);
 }
 .modal-overlay.open { display: flex; }
 .modal-sheet {
   background: var(--card);
   border-radius: 24px 24px 0 0;
-  width: 100%;
+  width: 100%; max-width: 430px;
+  padding: 20px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 20px 20px max(20px, env(safe-area-inset-bottom));
-  animation: slideUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+  animation: slideUp 0.3s ease;
 }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+.modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
 .modal-center {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
   background: var(--card);
-  border-radius: 24px;
-  width: calc(100% - 40px);
+  border-radius: 20px;
+  width: calc(100% - 48px);
   max-width: 380px;
-  margin: auto;
   padding: 24px;
-  animation: scaleIn 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
-}
-@keyframes slideUp { from { transform: translateY(100%); } }
-@keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } }
-.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
-.modal-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-
-/* Order Modal */
-#orderModal .modal-overlay { align-items: flex-end; }
-
-/* Rating Stars */
-.star-rating { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
-.star { font-size: 36px; cursor: pointer; transition: transform 0.15s; }
-.star.active { color: #F59E0B; }
-.star:not(.active) { color: var(--border); }
-.star:active { transform: scale(1.3); }
-
-/* Empty State */
-.empty-state {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 48px 24px;
-  text-align: center;
-}
-.empty-state .material-icons-round { font-size: 64px; color: var(--border); margin-bottom: 16px; }
-.empty-state h3 { font-size: 16px; font-weight: 700; }
-.empty-state p { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: calc(var(--nav-height) + 16px);
-  left: 16px; right: 16px;
-  background: var(--secondary);
-  color: white;
-  padding: 14px 18px;
-  border-radius: var(--radius);
-  font-size: 13px; font-weight: 600;
-  z-index: 1000;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(20px);
+  z-index: 400;
+  display: none;
   opacity: 0;
-  transition: all 0.3s;
+  transition: all 0.25s;
+}
+.modal-center.open { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* NOTIFICATION MODAL */
+.notif-modal {
+  position: fixed; top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  z-index: 500;
+  padding: 60px 16px 0;
   pointer-events: none;
 }
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast .material-icons-round { font-size: 20px; flex-shrink: 0; }
-
-/* Notification Popup */
-.notif-popup {
-  position: fixed;
-  top: 16px; left: 16px; right: 16px;
+.notif-card {
   background: var(--card);
   border-radius: 16px;
-  padding: 16px;
-  box-shadow: var(--shadow-lg);
-  z-index: 500;
-  display: none;
-  border-left: 4px solid var(--primary);
-  animation: slideDown 0.3s;
+  padding: 14px 16px;
+  display: flex; gap: 12px; align-items: center;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  transform: translateY(-120%);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: all;
 }
-.notif-popup.show { display: flex; gap: 12px; align-items: flex-start; }
-@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } }
-.notif-title { font-size: 13px; font-weight: 700; }
-.notif-body { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.notif-card.show { transform: translateY(0); }
+.notif-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff; flex-shrink: 0;
+}
+.notif-text .title { font-size: 13px; font-weight: 700; color: var(--text); }
+.notif-text .sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
 .notif-actions { display: flex; gap: 8px; margin-top: 10px; }
+.notif-btn {
+  flex: 1; padding: 8px;
+  border: none; border-radius: 8px;
+  font-family: inherit; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.notif-btn.view { background: var(--primary); color: #fff; }
+.notif-btn.close { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
 
-/* Loading Spinner */
+/* STARS */
+.star-rating { display: flex; gap: 4px; justify-content: center; margin: 12px 0; }
+.star-btn { font-size: 28px; cursor: pointer; color: #DDD; transition: color 0.15s; }
+.star-btn.active { color: #F59E0B; }
+
+/* LOADER */
 .spinner {
-  width: 32px; height: 32px;
-  border: 3px solid var(--border);
+  width: 40px; height: 40px;
+  border: 3px solid rgba(255,107,53,0.2);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  margin: 40px auto;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.loading-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 999;
-  display: none;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(4px);
+/* TOAST */
+.toast {
+  position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1A1A1A;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 24px;
+  font-size: 13px; font-weight: 600;
+  z-index: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+  max-width: calc(100% - 32px);
+  text-align: center;
 }
-.loading-overlay.show { display: flex; }
-.loading-box {
-  background: var(--card);
-  border-radius: 20px;
-  padding: 28px 36px;
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
-}
-.loading-box p { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 0; }
-
-/* Safe area for status bar */
-.has-safe-top { padding-top: max(16px, env(safe-area-inset-top)); }
-
-/* Dark mode toggle in profile */
-.dark-toggle-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-/* Premium modal */
+/* PREMIUM FORM */
 .ktp-upload {
   border: 2px dashed var(--border);
-  border-radius: var(--radius);
+  border-radius: 12px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 16px;
+  margin: 12px 0;
+  transition: border-color 0.2s;
 }
 .ktp-upload:hover { border-color: var(--primary); }
-.ktp-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: var(--radius-sm); display: none; }
+.ktp-upload img { max-width: 100%; border-radius: 8px; display: none; }
+.ktp-upload .placeholder i { font-size: 32px; color: var(--text-muted); }
+.ktp-upload .placeholder p { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
 
-/* Alert */
-.alert {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  margin-bottom: 16px;
-  font-size: 13px;
-  font-weight: 500;
-  display: flex; align-items: flex-start; gap: 8px;
+/* EMPTY STATE */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
 }
-.alert .material-icons-round { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.alert-warning { background: rgba(255,209,102,0.2); color: #92610A; border: 1px solid rgba(255,209,102,0.4); }
-.alert-info { background: rgba(17,138,178,0.1); color: var(--info); border: 1px solid rgba(17,138,178,0.2); }
-.alert-success { background: rgba(6,214,160,0.1); color: #047A5C; border: 1px solid rgba(6,214,160,0.25); }
+.empty-state i { font-size: 48px; opacity: 0.3; margin-bottom: 12px; display: block; }
+.empty-state p { font-size: 14px; }
+
+/* DARK MODE OVERRIDES */
+[data-theme="dark"] .btn-google { background: #2A2A2A; border-color: #333; color: #F0F0F0; }
+[data-theme="dark"] .category-item { background: #1E1E1E; border-color: #2A2A2A; }
+[data-theme="dark"] .role-btn { background: #2A2A2A; border-color: #333; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+.section-space { height: 16px; }
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splashScreen" class="screen active">
-  <div class="splash-logo">
-    <div class="splash-icon"><span class="material-icons-round">handshake</span></div>
-    <h1>BBQ</h1>
-    <p>Butuh Bantuanku</p>
-    <div class="splash-loader">
-      <div class="splash-dot"></div>
-      <div class="splash-dot"></div>
-      <div class="splash-dot"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- NOTIFICATION -->
+<div class="notif-modal" id="notifModal">
+  <div class="notif-card" id="notifCard">
+    <div class="notif-icon">🛵</div>
+    <div style="flex:1">
+      <div class="notif-text">
+        <div class="title" id="notifTitle">Order Masuk!</div>
+        <div class="sub" id="notifSub">Seseorang membutuhkan bantuanmu</div>
+      </div>
+      <div class="notif-actions">
+        <button class="notif-btn view" onclick="viewOrder()">Lihat</button>
+        <button class="notif-btn close" onclick="closeNotif()">Tutup</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginScreen" class="screen">
-  <div class="login-hero">
-    <div class="login-logo"><span class="material-icons-round">handshake</span></div>
+<!-- ========== PAGE: LOGIN ========== -->
+<div class="page active" id="page-login">
+  <div class="login-logo">
+    <div class="logo-icon">🔥</div>
     <h1>BBQ</h1>
-    <p>Solusi bantuan terdekat di sekitarmu</p>
+    <p>Butuh Bantuanku — Bantuan di ujung jari</p>
   </div>
   <div class="login-card">
-    <h2>Selamat Datang! 👋</h2>
-    <p>Masuk untuk mulai mencari bantuan atau menjadi helper berpenghasilan</p>
-    <button class="btn-google" onclick="signInGoogle()">
+    <h2>Selamat Datang!</h2>
+    <p>Masuk untuk mulai menggunakan layanan BBQ</p>
+    <button class="btn-google" onclick="loginGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      Lanjutkan dengan Google
+      Masuk dengan Google
     </button>
-    <div class="login-footer">
-      <p>Dengan masuk, kamu menyetujui<br><b>Syarat & Ketentuan</b> serta <b>Kebijakan Privasi</b> BBQ</p>
-    </div>
   </div>
 </div>
 
-<!-- REGISTER -->
-<div id="registerScreen" class="screen">
-  <div class="reg-header has-safe-top">
-    <h1>Lengkapi Profil 🎯</h1>
-    <p>Informasi ini akan ditampilkan ke pengguna lain</p>
+<!-- ========== PAGE: REGISTER ========== -->
+<div class="page" id="page-register">
+  <div class="reg-header">
+    <h2>Lengkapi Profil</h2>
+    <p>Isi data diri kamu untuk memulai</p>
   </div>
-  <div class="reg-body page-scroll">
-    <div class="alert alert-info">
-      <span class="material-icons-round">info</span>
-      <span>Foto dan data akan disimpan aman di database kami</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Foto Profil</label>
-      <div class="photo-upload" onclick="document.getElementById('regPhotoInput').click()">
-        <div class="photo-preview" id="regPhotoPreview">
-          <span class="material-icons-round">add_a_photo</span>
-        </div>
-        <div class="photo-upload-text">
-          <p>Pilih Foto Profil</p>
-          <span>Dari galeri HP kamu</span>
-        </div>
+  <div class="reg-body">
+    <div class="photo-upload">
+      <div class="photo-circle" onclick="document.getElementById('avatarInput').click()">
+        <img id="avatarPreview" src="" alt="">
+        <i class="fas fa-camera cam-icon" id="camIcon"></i>
+        <div class="edit-badge"><i class="fas fa-pen"></i></div>
       </div>
-      <input type="file" id="regPhotoInput" accept="image/*" style="display:none" onchange="previewRegPhoto(this)">
+      <p style="font-size:12px;color:var(--text-muted)">Tap untuk upload foto profil</p>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
     </div>
     <div class="form-group">
-      <label class="form-label">Nama Lengkap</label>
-      <input type="text" class="form-control" id="regName" placeholder="Nama lengkap kamu">
+      <label>Nama Lengkap</label>
+      <input type="text" id="regName" placeholder="Masukkan nama lengkap">
     </div>
     <div class="form-group">
-      <label class="form-label">Gender</label>
-      <select class="form-control" id="regGender">
+      <label>Gender</label>
+      <select id="regGender">
         <option value="">Pilih Gender</option>
-        <option value="Laki-laki">Laki-laki</option>
-        <option value="Perempuan">Perempuan</option>
+        <option>Laki-laki</option>
+        <option>Perempuan</option>
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">Umur</label>
-      <input type="number" class="form-control" id="regAge" placeholder="Umur kamu" min="15" max="99">
+      <label>Umur</label>
+      <input type="number" id="regAge" placeholder="Umur kamu" min="17" max="99">
     </div>
     <div class="form-group">
-      <label class="form-label">Domisili (Kecamatan)</label>
-      <input type="text" class="form-control" id="regArea" placeholder="Nama kecamatan kamu">
+      <label>Domisili (Kecamatan)</label>
+      <input type="text" id="regLocation" placeholder="Contoh: Coblong, Bandung">
     </div>
     <div class="form-group">
-      <label class="form-label">Bio Singkat</label>
-      <textarea class="form-control" id="regBio" placeholder="Ceritakan sedikit tentang kamu..." rows="3"></textarea>
+      <label>Bio</label>
+      <textarea id="regBio" placeholder="Ceritakan sedikit tentang dirimu..."></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Daftar Sebagai</label>
+      <label>Daftar Sebagai</label>
       <div class="role-selector">
-        <div class="role-card selected" id="roleUser" onclick="selectRole('user')">
-          <span class="material-icons-round">person</span>
-          <p>User</p>
-          <span>Cari bantuan</span>
+        <div class="role-btn active" id="roleUser" onclick="selectRole('user')">
+          <i class="fas fa-user"></i>
+          <span>User</span>
         </div>
-        <div class="role-card" id="roleHelper" onclick="selectRole('helper')">
-          <span class="material-icons-round">support_agent</span>
-          <p>Helper</p>
-          <span>Bantu & hasilkan</span>
+        <div class="role-btn" id="roleHelper" onclick="selectRole('helper')">
+          <i class="fas fa-hard-hat"></i>
+          <span>Helper</span>
         </div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="submitRegister()">
-      <span class="material-icons-round">check_circle</span>
-      Daftar Sekarang
+    <button class="btn-primary" onclick="submitRegister()">
+      <i class="fas fa-check-circle"></i> Daftar Sekarang
     </button>
+    <div style="height:30px"></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="appScreen" class="screen">
-  <div class="app-body">
+<!-- ========== PAGE: APP ========== -->
+<div class="page" id="page-app">
+  <div class="app-wrapper">
+    <div class="main-content" id="mainContent">
 
-    <!-- HOME PAGE -->
-    <div id="pageHome" class="page active">
-      <div class="page-scroll">
+      <!-- HOME TAB -->
+      <div class="tab-content active" id="tab-home">
         <div class="home-header">
-          <div class="home-greeting" id="homeGreeting">Selamat Pagi</div>
-          <div class="home-name" id="homeName">Loading...</div>
-          <div class="home-datetime">
-            <span class="material-icons-round" style="font-size:14px">calendar_today</span>
-            <span id="homeDatetime"></span>
-          </div>
-          <div id="helperOnlineBadge" style="display:none" class="home-online-badge">
-            <div class="online-dot"></div>
-            Kamu sedang online sebagai Helper
-          </div>
+          <div class="greeting" id="homeGreeting">Selamat Pagi!</div>
+          <div class="datetime" id="homeDatetime">Memuat...</div>
+        </div>
+        <div class="online-status-bar" id="helperOnlineBar">
+          <div class="online-dot"></div>
+          <span>Kamu sedang online sebagai Helper</span>
         </div>
 
-        <div class="section">
-          <div class="section-title">Layanan</div>
-          <div class="section-sub">Bantuan apa yang kamu butuhkan?</div>
-          <div style="height:10px"></div>
-          <div class="cat-grid" id="catGrid"></div>
+        <div class="section-title">Kategori Layanan <span>Lihat semua</span></div>
+        <div style="padding:0 16px">
+          <div class="category-grid" id="categoryGrid"></div>
         </div>
 
-        <div class="section">
-          <div class="section-title">Helper Online</div>
-          <div class="section-sub">Tersedia sekarang di sekitarmu</div>
-        </div>
-        <div class="helper-list" id="helperList">
-          <div class="empty-state">
-            <span class="material-icons-round">group_off</span>
-            <h3>Belum ada helper online</h3>
-            <p>Helper akan muncul saat mereka aktif</p>
-          </div>
+        <div class="section-title">Helper Online <span id="helperCount">0 helper</span></div>
+        <div class="helpers-list" id="helpersList">
+          <div class="spinner"></div>
         </div>
       </div>
-    </div>
 
-    <!-- HELPER DASHBOARD PAGE -->
-    <div id="pageHelper" class="page">
-      <div class="page-scroll">
-        <div class="dashboard-header">
+      <!-- HELPER DASHBOARD TAB -->
+      <div class="tab-content" id="tab-helper">
+        <div class="helper-dash-header">
           <div class="dash-top">
-            <div class="dash-avatar"><img id="dashAvatar" src="" alt=""></div>
-            <div>
-              <div class="dash-greeting" id="dashGreeting">Selamat Pagi</div>
-              <div class="dash-name" id="dashName">Loading...</div>
-              <div style="font-size:11px;opacity:0.6;margin-top:2px" id="dashDatetime"></div>
-            </div>
-          </div>
-          <div class="dash-stats">
-            <div class="stat-card">
-              <div class="stat-value" id="statTotal">Rp0</div>
-              <div class="stat-label">Total Pendapatan</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="statToday">Rp0</div>
-              <div class="stat-label">Pendapatan Hari Ini</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="statOrders">0</div>
-              <div class="stat-label">Total Order</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" id="statDone">0✓ 0✗</div>
-              <div class="stat-label">Selesai / Ditolak</div>
+            <div class="dash-avatar" id="dashAvatar">H</div>
+            <div class="dash-info">
+              <div class="greeting" id="dashGreeting">Selamat Pagi!</div>
+              <div class="datetime" id="dashDatetime">Memuat...</div>
             </div>
           </div>
         </div>
-
-        <div class="toggle-section">
-          <div class="toggle-info">
-            <h3>Mode Helper</h3>
-            <p id="helperToggleStatus">Kamu sedang offline</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="label">Total Pendapatan</div>
+            <div class="value" id="statTotal">Rp0</div>
+            <div class="sub">Semua waktu</div>
           </div>
-          <label class="toggle-switch" id="helperToggleWrap">
-            <input type="checkbox" id="helperOnlineToggle" onchange="toggleHelperOnline(this.checked)">
-            <span class="toggle-slider"></span>
+          <div class="stat-card">
+            <div class="label">Pendapatan Hari Ini</div>
+            <div class="value" id="statToday">Rp0</div>
+            <div class="sub">Hari ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Total Order</div>
+            <div class="value" id="statOrders">0</div>
+            <div class="sub">Semua order</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Selesai / Tolak</div>
+            <div class="value" id="statDone">0/0</div>
+            <div class="sub">Riwayat order</div>
+          </div>
+        </div>
+
+        <div class="toggle-section" id="onlineToggleSection">
+          <div class="toggle-label">
+            <div class="title">Status Online</div>
+            <div class="sub" id="onlineToggleSub">Aktifkan untuk menerima order</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="helperOnlineToggle" onchange="toggleHelperOnline(this.checked)" disabled>
+            <span class="toggle-track"></span>
           </label>
         </div>
-
-        <div class="section">
-          <div class="section-title">Order Masuk</div>
+        <div style="padding:4px 16px 0;font-size:11px;color:var(--danger);display:none" id="premiumLockMsg">
+          🔒 Upgrade Premium untuk mengaktifkan fitur ini
         </div>
-        <div id="helperOrderList">
+
+        <div class="section-title">Order Masuk</div>
+        <div class="order-list" id="incomingOrderList">
           <div class="empty-state">
-            <span class="material-icons-round">inbox</span>
-            <h3>Belum ada order masuk</h3>
-            <p>Order akan muncul saat kamu online</p>
+            <i class="fas fa-inbox"></i>
+            <p>Belum ada order masuk</p>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- CHAT PAGE -->
-    <div id="pageChat" class="page">
-      <div class="page-header">
-        <h1>Pesan</h1>
-      </div>
-      <div class="chat-list page-scroll" id="chatList">
-        <div class="empty-state" style="margin-top:40px">
-          <span class="material-icons-round">forum</span>
-          <h3>Belum ada pesan</h3>
-          <p>Mulai chat dengan helper atau user</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- HISTORY PAGE -->
-    <div id="pageHistory" class="page">
-      <div class="page-header">
-        <h1>Riwayat</h1>
-      </div>
-      <div class="tab-bar" id="historyTabs">
-        <div class="tab-item active" onclick="switchHistoryTab('semua',this)">Semua</div>
-        <div class="tab-item" onclick="switchHistoryTab('proses',this)">Proses</div>
-        <div class="tab-item" onclick="switchHistoryTab('selesai',this)">Selesai</div>
-        <div class="tab-item" onclick="switchHistoryTab('ditolak',this)">Ditolak</div>
-      </div>
-      <div class="page-scroll" id="historyList">
-        <div class="empty-state" style="margin-top:40px">
-          <span class="material-icons-round">receipt_long</span>
-          <h3>Belum ada riwayat</h3>
-          <p>Riwayat order akan tampil di sini</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROFILE PAGE -->
-    <div id="pageProfile" class="page">
-      <div class="page-scroll">
-        <div class="profile-header has-safe-top">
-          <div class="profile-avatar-wrap">
-            <div class="profile-avatar"><img id="profileAvatar" src="" alt=""></div>
-          </div>
-          <div>
-            <div class="profile-name" id="profileName">Loading...</div>
-            <div class="profile-role" id="profileRole">User</div>
-            <div class="profile-badges" id="profileBadges"></div>
+      <!-- CHAT TAB -->
+      <div class="tab-content" id="tab-chat">
+        <div class="chat-header">💬 Pesan</div>
+        <div id="chatList">
+          <div class="empty-state" style="padding:60px 20px">
+            <i class="fas fa-comment-dots"></i>
+            <p>Belum ada percakapan</p>
           </div>
         </div>
+      </div>
 
-        <div class="menu-section">
-          <div class="menu-section-title">Akun & Langganan</div>
-          <div class="menu-item" onclick="openPremiumModal()">
-            <div class="menu-icon" style="background:rgba(255,209,102,0.15)"><span class="material-icons-round" style="color:#B8860B">workspace_premium</span></div>
-            <div class="menu-text"><h4>Upgrade Premium</h4><p id="premiumDesc">User: +5 order • Helper: buka toggle online</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
-          </div>
-          <div class="menu-item" id="proMenuItem" onclick="openProModal()">
-            <div class="menu-icon" style="background:rgba(106,0,255,0.1)"><span class="material-icons-round" style="color:#6A00FF">diamond</span></div>
-            <div class="menu-text"><h4>Upgrade Pro</h4><p>Order & terima order tanpa batas</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
-          </div>
-          <div class="menu-item" onclick="openEditProfile()">
-            <div class="menu-icon" style="background:rgba(17,138,178,0.1)"><span class="material-icons-round" style="color:var(--info)">edit</span></div>
-            <div class="menu-text"><h4>Edit Profil</h4><p>Ubah foto, nama, domisili, bio</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
+      <!-- HISTORY TAB -->
+      <div class="tab-content" id="tab-history">
+        <div class="history-header">📋 Riwayat</div>
+        <div class="tab-pills">
+          <div class="tab-pill active" onclick="filterHistory('semua',this)">Semua</div>
+          <div class="tab-pill" onclick="filterHistory('proses',this)">Proses</div>
+          <div class="tab-pill" onclick="filterHistory('selesai',this)">Selesai</div>
+          <div class="tab-pill" onclick="filterHistory('ditolak',this)">Ditolak</div>
+        </div>
+        <div id="historyList" style="padding-bottom:20px">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div class="tab-content" id="tab-profile">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatarDisplay">U</div>
+          <div class="profile-name" id="profileName">Loading...</div>
+          <div class="profile-role" id="profileRole">User</div>
+          <div class="premium-badge" id="premiumBadgeDisplay" style="display:none">
+            <i class="fas fa-crown"></i> Premium
           </div>
         </div>
-
-        <div class="menu-section">
-          <div class="menu-section-title">Pengaturan</div>
-          <div class="dark-toggle-row">
-            <div style="display:flex;align-items:center;gap:14px">
-              <div class="menu-icon" style="background:rgba(0,0,0,0.06)"><span class="material-icons-round">dark_mode</span></div>
-              <div class="menu-text"><h4>Mode Gelap</h4><p>Ganti tampilan tema</p></div>
+        <div class="profile-menu">
+          <div class="menu-section">
+            <div class="menu-section-title">Akun</div>
+            <div class="menu-item" onclick="openModal('modalPremium')">
+              <div class="icon-wrap" style="background:rgba(245,158,11,0.15)"><i class="fas fa-crown" style="color:#F59E0B"></i></div>
+              <div style="flex:1">
+                <div class="label">Upgrade Premium</div>
+                <div class="sub" id="premiumSubText">User +5 order / Helper buka toggle online</div>
+              </div>
+              <i class="fas fa-chevron-right chevron"></i>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode(this.checked)">
-              <span class="toggle-slider"></span>
-            </label>
+            <div class="menu-item" onclick="openModal('modalPro')">
+              <div class="icon-wrap" style="background:rgba(99,102,241,0.15)"><i class="fas fa-gem" style="color:#6366F1"></i></div>
+              <div style="flex:1">
+                <div class="label">Upgrade Pro</div>
+                <div class="sub">Order tanpa batas & terima order tak terbatas</div>
+              </div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            <div class="menu-item" onclick="openModal('modalEditProfile')">
+              <div class="icon-wrap" style="background:rgba(59,130,246,0.15)"><i class="fas fa-pen" style="color:#3B82F6"></i></div>
+              <div class="label">Edit Profil</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
           </div>
-        </div>
-
-        <div class="menu-section">
-          <div class="menu-section-title">Informasi</div>
-          <div class="menu-item" onclick="showInfoModal('penting')">
-            <div class="menu-icon" style="background:rgba(239,71,111,0.1)"><span class="material-icons-round" style="color:var(--danger)">warning</span></div>
-            <div class="menu-text"><h4>Perhatian Penting</h4><p>Keamanan & privasi</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
+          <div class="menu-section">
+            <div class="menu-section-title">Preferensi</div>
+            <div class="menu-item" onclick="toggleDarkMode()">
+              <div class="icon-wrap" style="background:rgba(107,114,128,0.15)"><i class="fas fa-moon" style="color:#6B7280" id="darkModeIcon"></i></div>
+              <div class="label" id="darkModeLabel">Mode Gelap</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
           </div>
-          <div class="menu-item" onclick="showInfoModal('tentang')">
-            <div class="menu-icon" style="background:rgba(255,107,53,0.1)"><span class="material-icons-round" style="color:var(--primary)">info</span></div>
-            <div class="menu-text"><h4>Tentang Aplikasi</h4><p>Versi & informasi BBQ</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
+          <div class="menu-section">
+            <div class="menu-section-title">Lainnya</div>
+            <div class="menu-item" onclick="openModal('modalWarning')">
+              <div class="icon-wrap" style="background:rgba(239,68,68,0.1)"><i class="fas fa-exclamation-triangle" style="color:#EF4444"></i></div>
+              <div class="label">Perhatian Penting</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            <div class="menu-item" onclick="openModal('modalAbout')">
+              <div class="icon-wrap" style="background:rgba(59,130,246,0.1)"><i class="fas fa-info-circle" style="color:#3B82F6"></i></div>
+              <div class="label">Tentang Aplikasi</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            <div class="menu-item" onclick="openModal('modalReport')">
+              <div class="icon-wrap" style="background:rgba(245,158,11,0.1)"><i class="fas fa-flag" style="color:#F59E0B"></i></div>
+              <div class="label">Laporkan</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            <div class="menu-item danger" onclick="openModal('modalDeleteAcc')">
+              <div class="icon-wrap" style="background:rgba(239,68,68,0.1)"><i class="fas fa-trash" style="color:#EF4444"></i></div>
+              <div class="label">Hapus Akun</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
+            <div class="menu-item danger" onclick="logoutUser()">
+              <div class="icon-wrap" style="background:rgba(239,68,68,0.1)"><i class="fas fa-sign-out-alt" style="color:#EF4444"></i></div>
+              <div class="label">Keluar</div>
+              <i class="fas fa-chevron-right chevron"></i>
+            </div>
           </div>
-          <div class="menu-item" onclick="showInfoModal('laporan')">
-            <div class="menu-icon" style="background:rgba(255,107,53,0.1)"><span class="material-icons-round" style="color:var(--primary)">flag</span></div>
-            <div class="menu-text"><h4>Laporkan</h4><p>Laporkan masalah atau pengguna</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
-          </div>
-        </div>
-
-        <div class="menu-section">
-          <div class="menu-section-title">Lainnya</div>
-          <div class="menu-item" onclick="confirmDeleteAccount()">
-            <div class="menu-icon" style="background:rgba(239,71,111,0.1)"><span class="material-icons-round" style="color:var(--danger)">delete_forever</span></div>
-            <div class="menu-text"><h4 style="color:var(--danger)">Hapus Akun</h4><p>Aksi ini tidak bisa dibatalkan</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
-          </div>
-          <div class="menu-item" onclick="signOutUser()">
-            <div class="menu-icon" style="background:rgba(239,71,111,0.1)"><span class="material-icons-round" style="color:var(--danger)">logout</span></div>
-            <div class="menu-text"><h4 style="color:var(--danger)">Keluar</h4><p>Keluar dari akun ini</p></div>
-            <span class="material-icons-round menu-arrow">chevron_right</span>
-          </div>
-          <div style="height:16px"></div>
         </div>
       </div>
-    </div>
-  </div><!-- end app-body -->
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav" id="bottomNav">
-    <div class="nav-item active" id="navHome" onclick="switchPage('Home')">
-      <span class="material-icons-round">home</span>
-      <span class="label">Home</span>
     </div>
-    <div class="nav-item" id="navHelper" onclick="switchPage('Helper')" style="display:none">
-      <span class="material-icons-round">support_agent</span>
-      <span class="label">Helper</span>
-    </div>
-    <div class="nav-item" id="navChat" onclick="switchPage('Chat')">
-      <span class="material-icons-round">chat_bubble</span>
-      <span class="label">Chat</span>
-      <div class="nav-badge" id="chatBadge" style="display:none">0</div>
-    </div>
-    <div class="nav-item" id="navHistory" onclick="switchPage('History')">
-      <span class="material-icons-round">receipt_long</span>
-      <span class="label">History</span>
-    </div>
-    <div class="nav-item" id="navProfile" onclick="switchPage('Profile')">
-      <span class="material-icons-round">person</span>
-      <span class="label">Profil</span>
-    </div>
-  </div>
-</div><!-- end appScreen -->
 
-<!-- CHAT ROOM -->
-<div id="chatRoom">
-  <div class="chat-room-header">
-    <button class="btn-icon back-btn" onclick="closeChatRoom()">
-      <span class="material-icons-round">arrow_back</span>
-    </button>
-    <div class="chat-avatar" style="width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid var(--border)">
-      <img id="chatRoomAvatar" src="" alt="" style="width:100%;height:100%;object-fit:cover">
-    </div>
-    <div style="flex:1">
-      <div style="font-size:14px;font-weight:700" id="chatRoomName">-</div>
-      <div style="font-size:11px;color:var(--text-muted)" id="chatRoomStatus">Online</div>
-    </div>
-  </div>
-  <div class="chat-room-messages" id="chatRoomMessages"></div>
-  <div class="chat-input-area">
-    <textarea class="chat-input" id="chatMsgInput" placeholder="Tulis pesan..." rows="1" onkeydown="handleChatKey(event)"></textarea>
-    <button class="chat-send-btn" onclick="sendChatMessage()">
-      <span class="material-icons-round">send</span>
-    </button>
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+      <div class="nav-item active" onclick="switchTab('home',this)" id="nav-home">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('helper',this)" id="nav-helper" style="display:none">
+        <i class="fas fa-hard-hat"></i>
+        <span>Helper</span>
+        <div class="badge" id="orderBadge" style="display:none">0</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('chat',this)" id="nav-chat">
+        <i class="fas fa-comment-dots"></i>
+        <span>Chat</span>
+        <div class="badge" id="chatBadge" style="display:none">0</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('history',this)" id="nav-history">
+        <i class="fas fa-clipboard-list"></i>
+        <span>History</span>
+      </div>
+      <div class="nav-item" onclick="switchTab('profile',this)" id="nav-profile">
+        <i class="fas fa-user-circle"></i>
+        <span>Profil</span>
+      </div>
+    </nav>
   </div>
 </div>
+
+<!-- ========== CHAT WINDOW ========== -->
+<div id="chat-window">
+  <div class="chat-win-header">
+    <span class="back-btn" onclick="closeChatWindow()"><i class="fas fa-arrow-left"></i></span>
+    <div class="chat-win-avatar" id="chatWinAvatar">?</div>
+    <div class="chat-win-info">
+      <div class="name" id="chatWinName">Pengguna</div>
+      <div class="status" id="chatWinStatus">Online</div>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input-bar">
+    <input class="chat-input" id="chatInput" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<!-- ========== MODAL OVERLAY ========== -->
+<div class="modal-overlay" id="overlayBg" onclick="closeAllModals()"></div>
 
 <!-- ORDER MODAL -->
-<div class="modal-overlay" id="orderModalOverlay" onclick="closeOrderModal()">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Pesan Helper 🛒</div>
-    <div class="modal-sub" id="orderHelperName">Pilih layanan yang kamu butuhkan</div>
-    <div class="form-group">
-      <label class="form-label">Kategori Layanan</label>
-      <select class="form-control" id="orderCategory"></select>
+<div id="modalOrder" style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100vh;background:var(--bg);z-index:350;display:none;flex-direction:column">
+  <div style="background:var(--primary);padding:50px 16px 16px;color:#fff;display:flex;align-items:center;gap:12px">
+    <span onclick="document.getElementById('modalOrder').style.display='none'" style="font-size:20px;cursor:pointer"><i class="fas fa-arrow-left"></i></span>
+    <div>
+      <div style="font-size:17px;font-weight:800">Buat Order</div>
+      <div style="font-size:12px;opacity:0.8" id="orderToName">Helper</div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Deskripsi Kebutuhan</label>
-      <textarea class="form-control" id="orderDesc" placeholder="Ceritakan detail bantuan yang kamu butuhkan..." rows="3"></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Nominal Bayaran (Rp)</label>
-      <input type="number" class="form-control" id="orderPrice" placeholder="Contoh: 50000">
-    </div>
-    <button class="btn btn-primary" onclick="submitOrder()">
-      <span class="material-icons-round">send</span>
-      Kirim Permintaan
-    </button>
   </div>
-</div>
-
-<!-- ORDER NOTIF POPUP (for helper) -->
-<div class="notif-popup" id="orderNotifPopup">
-  <span class="material-icons-round" style="color:var(--primary);font-size:28px;flex-shrink:0">notifications_active</span>
-  <div style="flex:1">
-    <div class="notif-title">Order Masuk! 🔔</div>
-    <div class="notif-body" id="orderNotifBody">Ada yang membutuhkan bantuanmu</div>
-    <div class="notif-actions">
-      <button class="btn btn-sm btn-primary" onclick="viewNewOrder()">Lihat</button>
-      <button class="btn btn-sm btn-outline" onclick="closeOrderNotif()">Tutup</button>
+  <div style="padding:20px;overflow-y:auto;flex:1">
+    <div class="form-group">
+      <label>Kategori Layanan</label>
+      <select id="orderCategory"></select>
     </div>
+    <div class="form-group">
+      <label>Deskripsi Kebutuhan</label>
+      <textarea id="orderDesc" placeholder="Jelaskan detail bantuan yang kamu butuhkan..." style="height:100px"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Nominal Bayaran (Rp)</label>
+      <input type="number" id="orderAmount" placeholder="Contoh: 50000">
+    </div>
+    <button class="btn-primary" onclick="submitOrder()">
+      <i class="fas fa-paper-plane"></i> Kirim Order
+    </button>
   </div>
 </div>
 
 <!-- REJECT ORDER MODAL -->
-<div class="modal-overlay" id="rejectModalOverlay">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+<div class="modal-overlay" id="modalRejectOverlay">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">Tolak Order</div>
-    <div class="modal-sub">Berikan alasan penolakan</div>
     <div class="form-group">
-      <textarea class="form-control" id="rejectReason" placeholder="Tulis alasan penolakan..." rows="3"></textarea>
+      <label>Alasan Penolakan</label>
+      <textarea id="rejectReason" placeholder="Tuliskan alasan penolakan..." style="height:80px"></textarea>
     </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-outline" onclick="closeRejectModal()" style="flex:1">Batal</button>
-      <button class="btn btn-danger" onclick="confirmRejectOrder()" style="flex:1">Tolak Order</button>
-    </div>
+    <button class="btn-primary" onclick="submitReject()">Kirim</button>
+    <button onclick="closeModal('modalRejectOverlay')" style="width:100%;padding:12px;background:none;border:none;color:var(--text-muted);font-family:inherit;font-size:14px;cursor:pointer;margin-top:8px">Batal</button>
   </div>
 </div>
 
 <!-- RATING MODAL -->
-<div class="modal-overlay" id="ratingModalOverlay">
-  <div class="modal-center" onclick="e=>e.stopPropagation()">
-    <div style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">⭐</div>
-      <div class="modal-title">Beri Rating Helper</div>
-      <div class="modal-sub" id="ratingHelperName">Bagaimana pengalamanmu?</div>
-      <div class="star-rating" id="starRating">
-        <span class="star" onclick="setRating(1)">★</span>
-        <span class="star" onclick="setRating(2)">★</span>
-        <span class="star" onclick="setRating(3)">★</span>
-        <span class="star" onclick="setRating(4)">★</span>
-        <span class="star" onclick="setRating(5)">★</span>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:8px">
-        <button class="btn btn-outline" onclick="closeRatingModal()" style="flex:1">Lewati</button>
-        <button class="btn btn-primary" onclick="submitRating()" style="flex:1">Kirim</button>
-      </div>
+<div class="modal-overlay" id="modalRating">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="text-align:center">Beri Rating</div>
+    <p style="text-align:center;color:var(--text-muted);font-size:13px;margin-bottom:8px">Bagaimana pengalamanmu?</p>
+    <div class="star-rating" id="starRating">
+      <span class="star-btn" onclick="setRating(1)">★</span>
+      <span class="star-btn" onclick="setRating(2)">★</span>
+      <span class="star-btn" onclick="setRating(3)">★</span>
+      <span class="star-btn" onclick="setRating(4)">★</span>
+      <span class="star-btn" onclick="setRating(5)">★</span>
     </div>
+    <button class="btn-primary" onclick="submitRating()">Kirim Rating</button>
   </div>
 </div>
 
 <!-- PREMIUM MODAL -->
-<div class="modal-overlay" id="premiumModalOverlay">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+<div class="modal-overlay" id="modalPremium">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Upgrade Premium ⭐</div>
-    <div class="modal-sub">Dapatkan akses lebih luas</div>
-    <div class="alert alert-warning">
-      <span class="material-icons-round">workspace_premium</span>
-      <span>User mendapat +5 kali order. Helper dapat membuka toggle online & terima order 5 kali.</span>
+    <div class="modal-title">⭐ Upgrade Premium</div>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">Nikmati fitur premium: User +5 kali order, Helper buka toggle online & terima 5 order</p>
+    <div class="form-group">
+      <label>Nomor HP</label>
+      <input type="tel" id="premiumPhone" placeholder="Contoh: 08xxxxxxxxxx">
     </div>
     <div class="form-group">
-      <label class="form-label">Nomor HP (WhatsApp)</label>
-      <input type="tel" class="form-control" id="premiumPhone" placeholder="08xxxxxxxxxx">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Foto KTP</label>
+      <label>Upload Foto KTP</label>
       <div class="ktp-upload" onclick="document.getElementById('ktpInput').click()">
-        <img id="ktpPreview" class="ktp-preview" alt="">
-        <div id="ktpPlaceholder">
-          <span class="material-icons-round" style="font-size:32px;color:var(--text-muted)">badge</span>
-          <p style="font-size:13px;color:var(--text-muted);margin-top:6px">Upload foto KTP kamu</p>
+        <div class="placeholder" id="ktpPlaceholder">
+          <i class="fas fa-id-card"></i>
+          <p>Tap untuk upload foto KTP</p>
         </div>
+        <img id="ktpPreview" src="" alt="">
       </div>
-      <input type="file" id="ktpInput" accept="image/*" style="display:none" onchange="previewKTP(this)">
+      <input type="file" id="ktpInput" accept="image/*" style="display:none" onchange="handleKTPUpload(event)">
     </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-outline" onclick="closePremiumModal()" style="flex:1">Batal</button>
-      <button class="btn btn-primary" onclick="submitPremium()" style="flex:1" id="submitPremiumBtn">Kirim</button>
-    </div>
+    <button class="btn-primary" id="btnSubmitPremium" onclick="submitPremium()">
+      <i class="fas fa-crown"></i> Ajukan Premium
+    </button>
+    <button onclick="closeModal('modalPremium')" style="width:100%;padding:12px;background:none;border:none;color:var(--text-muted);font-family:inherit;font-size:14px;cursor:pointer;margin-top:4px">Batal</button>
   </div>
 </div>
 
 <!-- PRO MODAL -->
-<div class="modal-overlay" id="proModalOverlay">
-  <div class="modal-center" onclick="e=>e.stopPropagation()">
-    <div style="text-align:center">
-      <div style="font-size:48px;margin-bottom:8px">💎</div>
-      <div class="modal-title">Upgrade Pro</div>
-      <div class="modal-sub">Order & terima order tanpa batas</div>
-      <div class="alert alert-info" style="text-align:left">
-        <span class="material-icons-round">info</span>
-        <span>Konfirmasi pembayaran via Saweria dan kirim bukti ke email kami.</span>
-      </div>
-      <a href="https://saweria.co" target="_blank" class="btn btn-primary" style="display:flex;margin-bottom:12px">
-        <span class="material-icons-round">open_in_new</span>
-        Bayar via Saweria
-      </a>
-      <div class="form-group" style="text-align:left">
-        <label class="form-label">Email Konfirmasi</label>
-        <input type="email" class="form-control" id="proEmail" placeholder="Email untuk konfirmasi">
-      </div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-outline" onclick="closeProModal()" style="flex:1">Batal</button>
-        <button class="btn btn-primary" onclick="submitPro()" style="flex:1">Kirim</button>
-      </div>
+<div class="modal-overlay" id="modalPro">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💎 Upgrade Pro</div>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">Order tanpa batas & terima order tanpa batas</p>
+    <div style="background:rgba(99,102,241,0.08);border-radius:12px;padding:16px;margin-bottom:16px">
+      <p style="font-size:13px;color:var(--text)">Konfirmasi pembayaran melalui Saweria:</p>
+      <a href="https://saweria.co" target="_blank" style="color:#6366F1;font-weight:700;font-size:15px;text-decoration:none">🔗 saweria.co/bbq-app</a>
     </div>
+    <div class="form-group">
+      <label>Email Konfirmasi</label>
+      <input type="email" id="proEmail" placeholder="email@kamu.com">
+    </div>
+    <button class="btn-primary" id="btnSubmitPro" onclick="submitPro()" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">
+      <i class="fas fa-gem"></i> Konfirmasi Upgrade Pro
+    </button>
+    <button onclick="closeModal('modalPro')" style="width:100%;padding:12px;background:none;border:none;color:var(--text-muted);font-family:inherit;font-size:14px;cursor:pointer;margin-top:4px">Batal</button>
   </div>
 </div>
 
 <!-- EDIT PROFILE MODAL -->
-<div class="modal-overlay" id="editProfileOverlay">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Edit Profil ✏️</div>
-    <div class="form-group">
-      <label class="form-label">Foto Profil</label>
-      <div class="photo-upload" onclick="document.getElementById('editPhotoInput').click()">
-        <div class="photo-preview" id="editPhotoPreview">
-          <span class="material-icons-round">add_a_photo</span>
-        </div>
-        <div class="photo-upload-text">
-          <p>Ganti Foto</p>
-          <span>Dari galeri HP kamu</span>
-        </div>
+<div id="modalEditProfile" style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100vh;background:var(--bg);z-index:350;display:none;flex-direction:column;overflow-y:auto">
+  <div style="background:var(--primary);padding:50px 16px 16px;color:#fff;display:flex;align-items:center;gap:12px">
+    <span onclick="closeEditProfile()" style="font-size:20px;cursor:pointer"><i class="fas fa-arrow-left"></i></span>
+    <div style="font-size:17px;font-weight:800">Edit Profil</div>
+  </div>
+  <div style="padding:20px">
+    <div class="photo-upload">
+      <div class="photo-circle" onclick="document.getElementById('editAvatarInput').click()">
+        <img id="editAvatarPreview" src="" alt="">
+        <i class="fas fa-camera cam-icon" id="editCamIcon"></i>
+        <div class="edit-badge"><i class="fas fa-pen"></i></div>
       </div>
-      <input type="file" id="editPhotoInput" accept="image/*" style="display:none" onchange="previewEditPhoto(this)">
+      <input type="file" id="editAvatarInput" accept="image/*" style="display:none" onchange="handleEditAvatar(event)">
     </div>
+    <div class="form-group"><label>Nama</label><input type="text" id="editName"></div>
+    <div class="form-group"><label>Domisili</label><input type="text" id="editLocation"></div>
     <div class="form-group">
-      <label class="form-label">Nama</label>
-      <input type="text" class="form-control" id="editName">
+      <label>Gender</label>
+      <select id="editGender"><option>Laki-laki</option><option>Perempuan</option></select>
     </div>
+    <div class="form-group"><label>Bio</label><textarea id="editBio" style="height:80px"></textarea></div>
     <div class="form-group">
-      <label class="form-label">Domisili (Kecamatan)</label>
-      <input type="text" class="form-control" id="editArea">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Gender</label>
-      <select class="form-control" id="editGender">
-        <option value="Laki-laki">Laki-laki</option>
-        <option value="Perempuan">Perempuan</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Bio</label>
-      <textarea class="form-control" id="editBio" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Peran</label>
+      <label>Peran</label>
       <div class="role-selector">
-        <div class="role-card" id="editRoleUser" onclick="selectEditRole('user')">
-          <span class="material-icons-round">person</span>
-          <p>User</p>
-        </div>
-        <div class="role-card" id="editRoleHelper" onclick="selectEditRole('helper')">
-          <span class="material-icons-round">support_agent</span>
-          <p>Helper</p>
-        </div>
+        <div class="role-btn" id="editRoleUser" onclick="selectEditRole('user')"><i class="fas fa-user"></i><span>User</span></div>
+        <div class="role-btn" id="editRoleHelper" onclick="selectEditRole('helper')"><i class="fas fa-hard-hat"></i><span>Helper</span></div>
       </div>
     </div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-outline" onclick="closeEditProfile()" style="flex:1">Batal</button>
-      <button class="btn btn-primary" onclick="saveEditProfile()" style="flex:1">Simpan</button>
-    </div>
+    <button class="btn-primary" onclick="saveEditProfile()">Simpan Perubahan</button>
+    <div style="height:30px"></div>
   </div>
 </div>
 
-<!-- INFO MODAL -->
-<div class="modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+<!-- WARNING MODAL -->
+<div class="modal-overlay" id="modalWarning">
+  <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="infoModalTitle"></div>
-    <div id="infoModalBody" style="font-size:14px;line-height:1.7;color:var(--text-muted)"></div>
-    <div style="height:16px"></div>
-    <div id="infoModalExtra"></div>
-    <button class="btn btn-primary" onclick="closeInfoModal()" style="margin-top:12px">Tutup</button>
+    <div class="modal-title">⚠️ Perhatian Penting</div>
+    <div style="color:var(--text);font-size:13px;line-height:1.8">
+      <p>🔒 <strong>Jaga Identitas Privasimu</strong><br>Jangan bagikan informasi pribadi seperti alamat rumah lengkap, PIN, atau kata sandi kepada siapapun.</p>
+      <br>
+      <p>⚠️ <strong>Bertemu di Tempat Aman</strong><br>Jika bertemu secara langsung, pilihlah tempat yang ramai dan aman.</p>
+      <br>
+      <p>🚫 <strong>Waspada Penipuan</strong><br>BBQ tidak pernah meminta pembayaran di luar aplikasi. Laporkan jika ada yang mencurigakan.</p>
+      <br>
+      <p>📞 <strong>Keadaan Darurat</strong><br>Hubungi 112 atau layanan darurat setempat jika terjadi sesuatu yang berbahaya.</p>
+    </div>
+    <button class="btn-primary" onclick="closeModal('modalWarning')" style="margin-top:16px">Mengerti</button>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div class="modal-overlay" id="modalAbout">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:48px">🔥</div>
+      <div style="font-size:22px;font-weight:800;color:var(--primary)">BBQ</div>
+      <div style="font-size:13px;color:var(--text-muted)">Butuh Bantuanku</div>
+    </div>
+    <div style="font-size:13px;color:var(--text);line-height:1.8">
+      <p>BBQ adalah platform yang menghubungkan orang-orang yang membutuhkan bantuan dengan para helper terdekat.</p>
+      <br>
+      <p>Versi: 1.0.0</p>
+      <p>Developer: BBQ Team</p>
+      <br>
+      <p>Dengan BBQ, kamu bisa mendapatkan bantuan untuk berbagai kebutuhan sehari-hari dari ojek, kencan, mabar game, hingga pekerjaan berat.</p>
+    </div>
+    <button class="btn-primary" onclick="closeModal('modalAbout')" style="margin-top:16px">Tutup</button>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="modalReport">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🚩 Laporkan</div>
+    <div class="form-group">
+      <label>Jenis Laporan</label>
+      <select id="reportType">
+        <option>Penipuan</option>
+        <option>Pelecehan</option>
+        <option>Konten tidak pantas</option>
+        <option>Bug aplikasi</option>
+        <option>Lainnya</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Deskripsi</label>
+      <textarea id="reportDesc" placeholder="Jelaskan laporan kamu..." style="height:100px"></textarea>
+    </div>
+    <button class="btn-primary" onclick="submitReport()">Kirim Laporan</button>
+    <button onclick="closeModal('modalReport')" style="width:100%;padding:12px;background:none;border:none;color:var(--text-muted);font-family:inherit;font-size:14px;cursor:pointer;margin-top:4px">Batal</button>
   </div>
 </div>
 
 <!-- DELETE ACCOUNT MODAL -->
-<div class="modal-overlay" id="deleteModalOverlay">
-  <div class="modal-center" onclick="e=>e.stopPropagation()">
-    <div style="text-align:center">
-      <span class="material-icons-round" style="font-size:52px;color:var(--danger)">delete_forever</span>
-      <div class="modal-title" style="margin-top:12px">Hapus Akun?</div>
-      <div id="deleteAccountInfo" style="font-size:13px;color:var(--text-muted);margin:8px 0 20px;line-height:1.6"></div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-outline" onclick="closeDeleteModal()" style="flex:1">Batal</button>
-        <button class="btn btn-danger" onclick="executeDeleteAccount()" style="flex:1">Hapus</button>
+<div class="modal-overlay" id="modalDeleteAcc">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--danger)">🗑️ Hapus Akun</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Akun yang akan dihapus:</div>
+    <div style="background:var(--bg);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="font-size:28px" id="deleteAccAvatar">👤</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--text)" id="deleteAccName">-</div>
+        <div style="font-size:12px;color:var(--text-muted)" id="deleteAccEmail">-</div>
       </div>
     </div>
+    <p style="font-size:13px;color:var(--danger);margin-bottom:16px">⚠️ Tindakan ini tidak dapat dibatalkan. Semua data akan dihapus permanen.</p>
+    <button onclick="deleteAccount()" style="width:100%;padding:16px;background:var(--danger);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px">Hapus Akun Saya</button>
+    <button onclick="closeModal('modalDeleteAcc')" style="width:100%;padding:12px;background:none;border:none;color:var(--text-muted);font-family:inherit;font-size:14px;cursor:pointer">Batal</button>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span class="material-icons-round" id="toastIcon">check_circle</span>
-  <span id="toastMsg">Berhasil</span>
-</div>
-
-<!-- LOADING -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-box">
-    <div class="spinner"></div>
-    <p id="loadingText">Memuat...</p>
+<!-- CATEGORY SELECT MODAL (for order) -->
+<div class="modal-overlay" id="modalCategorySelect">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Pilih Kategori Layanan</div>
+    <div class="category-grid" id="catModalGrid" style="gap:10px"></div>
+    <div style="height:16px"></div>
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE SDK -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, get, push, onValue, update, remove, serverTimestamp, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, get, update, push, onValue, onChildAdded, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBVrPa8HaWOSLeZM0m9eO0ZkO5UlVTcb2s",
@@ -1452,1034 +1470,964 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
 
-// --- GLOBALS ---
-let currentUser = null;
-let currentProfile = null;
-let currentOrderTarget = null;
-let currentChatTarget = null;
-let currentChatId = null;
-let pendingRejectOrderId = null;
-let pendingRatingOrderId = null;
-let currentRating = 0;
-let editPhotoBase64 = null;
-let regPhotoBase64 = null;
-let ktpBase64 = null;
-let currentHistoryTab = 'semua';
-let helperListeners = {};
+// Expose to global
+window._fb = { auth, db, provider, ref, set, get, update, push, onValue, onChildAdded, remove, serverTimestamp, signOut, deleteUser, GoogleAuthProvider };
 
-window._auth = auth;
-window._db = db;
-window._ref = ref;
-window._set = set;
-window._get = get;
-window._push = push;
-window._onValue = onValue;
-window._update = update;
-window._remove = remove;
-window._serverTimestamp = serverTimestamp;
-window._query = query;
-window._orderByChild = orderByChild;
-window._equalTo = equalTo;
-window._signOut = signOut;
-window._deleteUser = deleteUser;
-
-// Store references for cleanup
-let onlineHelpersListener = null;
-let incomingOrdersListener = null;
-let chatListener = null;
-let chatListListener = null;
-
-// ===== AUTH STATE =====
+// Auth state
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    currentUser = user;
-    showLoading('Memeriksa akun...');
+    window._currentUser = user;
+    // Check if registered
     const snap = await get(ref(db, `users/${user.uid}`));
-    hideLoading();
     if (snap.exists()) {
-      currentProfile = snap.val();
-      initApp();
+      window._userProfile = snap.val();
+      enterApp();
     } else {
-      showScreen('registerScreen');
+      showPage('register');
       document.getElementById('regName').value = user.displayName || '';
     }
   } else {
-    currentUser = null;
-    currentProfile = null;
-    showScreen('loginScreen');
+    window._currentUser = null;
+    window._userProfile = null;
+    showPage('login');
   }
 });
 
-// ===== SIGN IN =====
-window.signInGoogle = async () => {
-  try {
-    showLoading('Masuk dengan Google...');
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    hideLoading();
-  } catch (e) {
-    hideLoading();
-    showToast('Gagal masuk: ' + e.message, 'error');
-  }
-};
-
-// ===== REGISTER =====
-window.previewRegPhoto = (input) => {
-  const file = input.files[0];
-  if (!file) return;
-  compressImage(file, 200, 200, 0.6, (b64) => {
-    regPhotoBase64 = b64;
-    const prev = document.getElementById('regPhotoPreview');
-    prev.innerHTML = `<img src="${b64}" alt="">`;
+// Listen helpers online
+window.listenHelpersOnline = function() {
+  const helperRef = ref(db, 'online_helpers');
+  onValue(helperRef, (snap) => {
+    const data = snap.val() || {};
+    const keys = Object.keys(data);
+    document.getElementById('helperCount').textContent = `${keys.length} helper`;
+    renderHelperCards(data, keys);
   });
-};
-
-window.selectRole = (role) => {
-  document.getElementById('roleUser').classList.toggle('selected', role === 'user');
-  document.getElementById('roleHelper').classList.toggle('selected', role === 'helper');
-};
-
-window.submitRegister = async () => {
-  const name = document.getElementById('regName').value.trim();
-  const gender = document.getElementById('regGender').value;
-  const age = document.getElementById('regAge').value;
-  const area = document.getElementById('regArea').value.trim();
-  const bio = document.getElementById('regBio').value.trim();
-  const role = document.getElementById('roleHelper').classList.contains('selected') ? 'helper' : 'user';
-
-  if (!name || !gender || !age || !area) return showToast('Lengkapi semua field', 'error');
-
-  showLoading('Mendaftar...');
-  const profile = {
-    name, gender, age: parseInt(age), area, bio, role,
-    photo: regPhotoBase64 || '',
-    uid: currentUser.uid,
-    email: currentUser.email,
-    rating: 0,
-    ratingCount: 0,
-    premium: false,
-    pro: false,
-    isOnline: false,
-    createdAt: Date.now()
-  };
-
-  await set(ref(db, `users/${currentUser.uid}`), profile);
-  currentProfile = profile;
-  hideLoading();
-  showToast('Berhasil mendaftar!');
-  initApp();
-};
-
-// ===== INIT APP =====
-function initApp() {
-  showScreen('appScreen');
-  updateDateTime();
-  setInterval(updateDateTime, 30000);
-  buildCategoryGrid();
-  updateProfileUI();
-  updateNav();
-  listenOnlineHelpers();
-  listenChatList();
-  if (currentProfile.role === 'helper') {
-    listenIncomingOrders();
-    updateDashboard();
-  }
-  loadHistory();
 }
 
-function updateNav() {
-  const isHelper = currentProfile.role === 'helper';
-  document.getElementById('navHelper').style.display = isHelper ? 'flex' : 'none';
+// Listen incoming orders (for helper)
+window.listenIncomingOrders = function(uid) {
+  const ordersRef = ref(db, `orders`);
+  onValue(ordersRef, (snap) => {
+    const data = snap.val() || {};
+    const incoming = Object.entries(data).filter(([id, o]) => o.helperId === uid && o.status === 'pending');
+    renderIncomingOrders(incoming, data);
+    updateOrderBadge(incoming.length);
+    if (incoming.length > 0) showOrderNotif(incoming[0][1]);
+  });
 }
 
-function updateDateTime() {
-  const now = new Date();
-  const h = now.getHours();
-  const greeting = h < 11 ? 'Selamat Pagi' : h < 15 ? 'Selamat Siang' : h < 18 ? 'Selamat Sore' : 'Selamat Malam';
-  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const dtStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} • ${String(h).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-  document.getElementById('homeGreeting').textContent = greeting + ' 👋';
-  document.getElementById('homeName').textContent = currentProfile?.name || '';
-  document.getElementById('homeDatetime').textContent = dtStr;
-  document.getElementById('dashGreeting').textContent = greeting;
-  document.getElementById('dashName').textContent = currentProfile?.name || '';
-  document.getElementById('dashDatetime').textContent = dtStr;
+// Listen chat conversations
+window.listenChats = function(uid) {
+  const chatsRef = ref(db, `chats`);
+  onValue(chatsRef, (snap) => {
+    const data = snap.val() || {};
+    const myChats = Object.entries(data).filter(([chatId]) => chatId.includes(uid));
+    renderChatList(myChats, uid);
+  });
 }
 
-// ===== CATEGORIES =====
-const categories = [
-  {icon:'🏍️',label:'Ojek',color:'#FF6B35'},
-  {icon:'💕',label:'Kencan',color:'#EF476F'},
-  {icon:'👗',label:'Ke Undangan',color:'#7B2FBE'},
-  {icon:'🎮',label:'Mabar',color:'#118AB2'},
-  {icon:'🎣',label:'Mancing',color:'#06D6A0'},
-  {icon:'📦',label:'Ambil Barang',color:'#F59E0B'},
-  {icon:'🎫',label:'Ambil Antrian',color:'#8B5CF6'},
-  {icon:'🌿',label:'Potong Rumput',color:'#059669'},
-  {icon:'🧹',label:'Bersih Halaman',color:'#10B981'},
-  {icon:'🚿',label:'Bersih WC',color:'#3B82F6'},
-  {icon:'🛒',label:'Belanja Pasar',color:'#F97316'},
-  {icon:'🐀',label:'Basmi Tikus',color:'#6B7280'},
-  {icon:'🏚️',label:'Benerin Genteng',color:'#92400E'},
-  {icon:'⛽',label:'Kehabisan Bensin',color:'#DC2626'},
-  {icon:'🚗',label:'Kendaraan Mogok',color:'#7C3AED'},
-  {icon:'🪑',label:'Gotong Kursi',color:'#0891B2'},
-  {icon:'💪',label:'Kuli Panggul',color:'#065F46'},
-  {icon:'🐄',label:'Bantu Lahiran Sapi',color:'#92400E'},
-  {icon:'👷',label:'Bantu Kerjaan',color:'#1D4ED8'},
-  {icon:'🆘',label:'Bantuan Lainnya',color:'#EF4444'}
+// Listen messages in a chat
+window.listenMessages = function(chatId) {
+  const msgsRef = ref(db, `chats/${chatId}`);
+  onChildAdded(msgsRef, (snap) => {
+    const msg = snap.val();
+    if (!msg || !msg.text) return;
+    appendMessage(msg);
+  });
+}
+
+// History listener
+window.listenHistory = function(uid, role) {
+  const ordersRef = ref(db, `orders`);
+  onValue(ordersRef, (snap) => {
+    const data = snap.val() || {};
+    const mine = Object.entries(data).filter(([id, o]) => {
+      return role === 'helper' ? o.helperId === uid : o.userId === uid;
+    });
+    window._myHistory = mine;
+    filterHistory('semua', document.querySelector('.tab-pill.active'));
+  });
+}
+</script>
+
+<script>
+// ========== GLOBALS ==========
+window._currentUser = null;
+window._userProfile = null;
+window._selectedRole = 'user';
+window._editRole = 'user';
+window._avatarBase64 = null;
+window._editAvatarBase64 = null;
+window._ktpBase64 = null;
+window._currentChatId = null;
+window._currentChatUser = null;
+window._selectedRating = 0;
+window._currentOrderId = null;
+window._rejectOrderId = null;
+window._currentHistFilter = 'semua';
+window._myHistory = [];
+window._orderTargetHelper = null;
+window._messageListenerActive = false;
+
+const CATEGORIES = [
+  {icon:'🛵',name:'Ojek'},{icon:'💑',name:'Kencan'},{icon:'👘',name:'Ke Undangan'},
+  {icon:'🎮',name:'Mabar'},{icon:'🎣',name:'Mancing'},{icon:'📦',name:'Ambil Barang'},
+  {icon:'🔢',name:'Ambil Antrian'},{icon:'🌿',name:'Potong Rumput'},{icon:'🏡',name:'Bersihkan Halaman'},
+  {icon:'🚽',name:'Bersihkan WC'},{icon:'🛒',name:'Belanja Pasar'},{icon:'🐀',name:'Basmi Tikus'},
+  {icon:'🏠',name:'Benerin Genteng'},{icon:'⛽',name:'Kehabisan Bensin'},{icon:'🚗',name:'Kendaraan Mogok'},
+  {icon:'🪑',name:'Gotong Kursi'},{icon:'💪',name:'Kuli Panggul'},{icon:'🐄',name:'Bantu Lahiran Sapi'},
+  {icon:'👷',name:'Bantu Kerjaan'},{icon:'🆘',name:'Bantuan Lainnya'}
 ];
 
-function buildCategoryGrid() {
-  const grid = document.getElementById('catGrid');
-  grid.innerHTML = categories.map((c,i) => `
-    <div class="cat-item" onclick="selectCategory('${c.label}')">
-      <div class="cat-icon" style="background:${c.color}22">${c.icon}</div>
-      <p>${c.label}</p>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${id}`).classList.add('active');
+}
+
+function enterApp() {
+  showPage('app');
+  const p = window._userProfile;
+  updateClock();
+  setInterval(updateClock, 1000);
+  renderCategories();
+  updateProfileUI();
+  setupNav();
+  window.listenHelpersOnline();
+  if (p.role === 'helper') {
+    window.listenIncomingOrders(window._currentUser.uid);
+    checkHelperOnlineStatus();
+  }
+  window.listenChats(window._currentUser.uid);
+  window.listenHistory(window._currentUser.uid, p.role);
+}
+
+function setupNav() {
+  const p = window._userProfile;
+  const navHelper = document.getElementById('nav-helper');
+  if (p.role === 'helper') {
+    navHelper.style.display = 'flex';
+  } else {
+    navHelper.style.display = 'none';
+  }
+}
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours();
+  let greet = h < 10 ? 'Selamat Pagi' : h < 15 ? 'Selamat Siang' : h < 18 ? 'Selamat Sore' : 'Selamat Malam';
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+  const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const timeStr = `${String(h).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const name = window._userProfile ? window._userProfile.name.split(' ')[0] : '';
+  
+  const hgEl = document.getElementById('homeGreeting');
+  const hdEl = document.getElementById('homeDatetime');
+  const dgEl = document.getElementById('dashGreeting');
+  const ddEl = document.getElementById('dashDatetime');
+  
+  if(hgEl) hgEl.textContent = `${greet}, ${name}! 👋`;
+  if(hdEl) hdEl.textContent = `${dateStr} • ${timeStr}`;
+  if(dgEl) dgEl.textContent = `${greet}, ${name}! 👋`;
+  if(ddEl) ddEl.textContent = `${dateStr} • ${timeStr}`;
+}
+
+function renderCategories() {
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = CATEGORIES.map(c => `
+    <div class="category-item" onclick="openCategorySelect('${c.name}')">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-name">${c.name}</div>
     </div>
   `).join('');
+  
+  // Order category select
+  const sel = document.getElementById('orderCategory');
+  sel.innerHTML = CATEGORIES.map(c => `<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
 }
 
-window.selectCategory = (cat) => {
-  // If no helper selected, scroll to helper list
-  showToast(`Pilih helper dulu untuk "${cat}"`, 'info');
-};
-
-// ===== ONLINE HELPERS (realtime, semua user, filter client-side) =====
-function listenOnlineHelpers() {
-  // Gunakan ref biasa ke seluruh users — filter isOnline di client
-  // Ini lebih reliable daripada query orderByChild karena tidak butuh index
-  const usersRef = ref(db, 'users');
-  onlineHelpersListener = onValue(usersRef, (snap) => {
-    const list = document.getElementById('helperList');
-    const helpers = [];
-    snap.forEach(c => {
-      const d = c.val();
-      // Tampilkan semua user yang isOnline === true (helper maupun user)
-      if (d.isOnline === true) {
-        helpers.push({ ...d, uid: c.key });
-      }
-    });
-
-    if (helpers.length === 0) {
-      list.innerHTML = `<div class="empty-state"><span class="material-icons-round">group_off</span><h3>Belum ada helper online</h3><p>Helper akan muncul saat mereka aktif</p></div>`;
-      return;
-    }
-
-    list.innerHTML = helpers.map(h => {
-      const ratingVal = h.ratingCount > 0 ? (h.rating / h.ratingCount).toFixed(1) : 'Baru';
-      const ratingCount = h.ratingCount > 0 ? `(${h.ratingCount})` : '';
-      const isMe = currentUser && h.uid === currentUser.uid;
-      const avatarHtml = h.photo
-        ? `<img src="${h.photo}" alt="" style="width:100%;height:100%;object-fit:cover">`
-        : `<div style="width:100%;height:100%;background:var(--primary);display:flex;align-items:center;justify-content:center"><span style="color:white;font-size:22px;font-weight:800">${(h.name||'U')[0].toUpperCase()}</span></div>`;
-
-      return `
-        <div class="helper-card">
-          <div class="helper-avatar">${avatarHtml}</div>
-          <div class="helper-info">
-            <div class="helper-name-row">
-              <span class="helper-name">${h.name || 'User'}</span>
-              <span class="helper-role-badge ${h.role === 'helper' ? 'badge-helper' : 'badge-user'}">${h.role || 'user'}</span>
-              ${h.pro ? '<span class="helper-role-badge badge-pro">💎 Pro</span>' : h.premium ? '<span class="helper-role-badge badge-premium">★ Premium</span>' : ''}
-            </div>
-            <div class="helper-meta">${h.gender || ''} • ${h.age || ''}thn • ${h.area || ''}</div>
-            <div class="helper-bio">${h.bio || 'Siap membantu!'}</div>
-            <div class="helper-rating">
-              <span class="material-icons-round">star</span>
-              ${ratingVal}
-              <span style="font-size:10px;color:var(--text-muted);font-weight:400">${ratingCount}</span>
-            </div>
-          </div>
-          <div class="helper-actions">
-            <div class="online-indicator">
-              <div style="width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite"></div>
-              Online
-            </div>
-            ${!isMe
-              ? `<button class="btn btn-sm btn-primary" onclick="openOrderModal('${h.uid}')">Order</button>`
-              : `<span style="font-size:10px;color:var(--text-muted);font-weight:600">Kamu</span>`
-            }
-          </div>
-        </div>
-      `;
-    }).join('');
-  }, (error) => {
-    console.error('Error listening users:', error);
-    document.getElementById('helperList').innerHTML = `<div class="empty-state"><span class="material-icons-round">wifi_off</span><h3>Gagal memuat</h3><p>Periksa koneksi internet</p></div>`;
-  });
+function openCategorySelect(preselect) {
+  const grid = document.getElementById('catModalGrid');
+  grid.innerHTML = CATEGORIES.map(c => `
+    <div class="category-item" onclick="selectCategoryFromModal('${c.name}')">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-name">${c.name}</div>
+    </div>
+  `).join('');
+  openModal('modalCategorySelect');
 }
 
-// ===== ORDER MODAL =====
-window.openOrderModal = (helperUid) => {
-  currentOrderTarget = helperUid;
-  get(ref(db, `users/${helperUid}`)).then(snap => {
-    const h = snap.val();
-    document.getElementById('orderHelperName').textContent = `Helper: ${h.name}`;
-    document.getElementById('orderCategory').innerHTML = categories.map(c=>`<option value="${c.label}">${c.icon} ${c.label}</option>`).join('');
-    document.getElementById('orderDesc').value = '';
-    document.getElementById('orderPrice').value = '';
-    document.getElementById('orderModalOverlay').classList.add('open');
-  });
-};
-
-window.closeOrderModal = () => {
-  document.getElementById('orderModalOverlay').classList.remove('open');
-};
-
-window.submitOrder = async () => {
-  const cat = document.getElementById('orderCategory').value;
-  const desc = document.getElementById('orderDesc').value.trim();
-  const price = parseInt(document.getElementById('orderPrice').value);
-
-  if (!desc || !price) return showToast('Lengkapi detail order', 'error');
-
-  // Check quota
-  const allowed = await checkOrderQuota();
-  if (!allowed) return;
-
-  showLoading('Mengirim order...');
-  const orderRef = push(ref(db, 'orders'));
-  const orderId = orderRef.key;
-
-  const order = {
-    id: orderId,
-    userId: currentUser.uid,
-    helperId: currentOrderTarget,
-    category: cat,
-    description: desc,
-    price,
-    status: 'pending',
-    createdAt: Date.now()
-  };
-
-  await set(orderRef, order);
-  // Add to helper's incoming
-  await set(ref(db, `helperOrders/${currentOrderTarget}/${orderId}`), order);
-
-  hideLoading();
-  closeOrderModal();
-  showToast('Order berhasil dikirim! 🎉');
-};
-
-async function checkOrderQuota() {
-  // Check if user has premium/pro
-  const snap = await get(ref(db, `users/${currentUser.uid}`));
-  const p = snap.val();
-  if (p.pro) return true;
-
-  // Count orders
-  const ordersSnap = await get(query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid)));
-  let count = 0;
-  ordersSnap.forEach(() => count++);
-
-  const limit = p.premium ? 10 : 5;
-  if (count >= limit) {
-    showToast(`Kamu sudah mencapai batas ${limit} order. Upgrade Pro untuk unlimited!`, 'error');
-    return false;
-  }
-  return true;
+function selectCategoryFromModal(cat) {
+  document.getElementById('orderCategory').value = cat;
+  closeModal('modalCategorySelect');
 }
 
-// ===== HELPER TOGGLE ONLINE =====
-window.toggleHelperOnline = async (isOnline) => {
-  if (!currentProfile.premium && !currentProfile.pro) {
-    document.getElementById('helperOnlineToggle').checked = false;
-    showToast('Upgrade Premium dulu untuk bisa online sebagai helper', 'error');
+function renderHelperCards(data, keys) {
+  const list = document.getElementById('helpersList');
+  if (keys.length === 0) {
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-user-slash"></i><p>Tidak ada helper online saat ini</p></div>`;
     return;
   }
-  await update(ref(db, `users/${currentUser.uid}`), { isOnline });
-  currentProfile.isOnline = isOnline;
-  document.getElementById('helperOnlineBadge').style.display = isOnline ? 'inline-flex' : 'none';
-  document.getElementById('helperToggleStatus').textContent = isOnline ? '🟢 Kamu sedang online' : 'Kamu sedang offline';
-  showToast(isOnline ? '✅ Kamu sekarang online sebagai helper!' : 'Kamu sudah offline');
-};
-
-// ===== INCOMING ORDERS (HELPER) =====
-function listenIncomingOrders() {
-  if (!currentUser) return;
-  const helperOrderRef = ref(db, `helperOrders/${currentUser.uid}`);
-  incomingOrdersListener = onValue(helperOrderRef, async (snap) => {
-    const container = document.getElementById('helperOrderList');
-    const orders = [];
-    snap.forEach(c => {
-      const o = c.val();
-      if (o.status === 'pending') orders.push(o);
-    });
-
-    if (orders.length === 0) {
-      container.innerHTML = `<div class="empty-state"><span class="material-icons-round">inbox</span><h3>Belum ada order masuk</h3><p>Order akan muncul saat kamu online</p></div>`;
-      return;
-    }
-
-    // Show notification popup for newest
-    const newest = orders[orders.length - 1];
-    showOrderNotif(newest);
-
-    // Render cards
-    const userSnaps = {};
-    for (const o of orders) {
-      if (!userSnaps[o.userId]) {
-        const s = await get(ref(db, `users/${o.userId}`));
-        userSnaps[o.userId] = s.val();
-      }
-    }
-
-    container.innerHTML = orders.reverse().map(o => {
-      const u = userSnaps[o.userId] || {};
-      return `
-        <div class="order-card">
-          <div class="order-card-header">
-            <span class="order-cat-tag">${o.category}</span>
-            <span class="order-status status-pending">Pending</span>
-          </div>
-          <div class="order-card-body">
-            <div class="order-user">
-              <div class="order-user-avatar">
-                ${u.photo?`<img src="${u.photo}" alt="">`:`<div style="width:100%;height:100%;background:var(--bg);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:var(--text-muted)">person</span></div>`}
-              </div>
-              <div>
-                <div class="order-user-name">${u.name||'User'}</div>
-                <div class="order-user-meta">${u.area||''} • ${u.gender||''}</div>
-              </div>
-            </div>
-            <div class="order-desc">${o.description}</div>
-            <div class="order-price">Rp ${o.price?.toLocaleString('id-ID')}</div>
-            <div class="order-actions">
-              <button class="btn btn-sm btn-success" onclick="acceptOrder('${o.id}','${o.userId}')">✓ Terima</button>
-              <button class="btn btn-sm btn-danger" onclick="openRejectModal('${o.id}')">✗ Tolak</button>
-              <button class="btn btn-sm btn-outline" onclick="openChatWith('${o.userId}')">💬 Chat</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    // Update badge
-    const badge = document.getElementById('chatBadge');
-    badge.style.display = orders.length > 0 ? 'flex' : 'none';
-    badge.textContent = orders.length;
+  list.innerHTML = '';
+  keys.forEach(uid => {
+    const h = data[uid];
+    const initials = (h.name||'H').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'helper-card';
+    const avgRating = h.ratingCount > 0 ? (h.ratingTotal / h.ratingCount).toFixed(1) : '5.0';
+    card.innerHTML = `
+      <div class="helper-avatar">
+        ${h.photo ? `<img src="${h.photo}" alt="">` : initials}
+      </div>
+      <div class="helper-info">
+        <div class="name">${h.name||'Helper'}</div>
+        <div class="role-badge"><i class="fas fa-hard-hat"></i> Helper</div>
+        <div class="helper-rating">★ ${avgRating}</div>
+        <div class="meta">${h.gender||''} • ${h.age||''}th • ${h.location||''}</div>
+        <div class="bio">${h.bio||'Siap membantu!'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <div class="online-indicator"></div>
+        <button class="btn-order" onclick="openOrderModal('${uid}','${(h.name||'Helper').replace(/'/g,"\\'")}')">Order</button>
+      </div>
+    `;
+    list.appendChild(card);
   });
+}
+
+function openOrderModal(helperId, helperName) {
+  if (!window._userProfile) return;
+  window._orderTargetHelper = { uid: helperId, name: helperName };
+  document.getElementById('orderToName').textContent = helperName;
+  document.getElementById('modalOrder').style.display = 'flex';
+}
+
+async function submitOrder() {
+  const helper = window._orderTargetHelper;
+  if (!helper) return;
+  const cat = document.getElementById('orderCategory').value;
+  const desc = document.getElementById('orderDesc').value.trim();
+  const amount = document.getElementById('orderAmount').value;
+  if (!desc || !amount) { showToast('Lengkapi form order'); return; }
+  
+  const u = window._userProfile;
+  const uid = window._currentUser.uid;
+  const { ref, push, set, db, serverTimestamp } = window._fb;
+  
+  const orderRef = push(ref(db, 'orders'));
+  await set(orderRef, {
+    userId: uid,
+    userName: u.name,
+    userPhoto: u.photo || null,
+    helperId: helper.uid,
+    helperName: helper.name,
+    category: cat,
+    desc: desc,
+    amount: parseInt(amount),
+    status: 'pending',
+    createdAt: Date.now()
+  });
+  
+  document.getElementById('modalOrder').style.display = 'none';
+  document.getElementById('orderDesc').value = '';
+  document.getElementById('orderAmount').value = '';
+  showToast('✅ Order terkirim!');
+}
+
+function renderIncomingOrders(incoming, allOrders) {
+  const list = document.getElementById('incomingOrderList');
+  if (incoming.length === 0) {
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada order masuk</p></div>`;
+    return;
+  }
+  list.innerHTML = '';
+  incoming.forEach(([id, o]) => {
+    const initials = (o.userName||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'order-card';
+    const amt = new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(o.amount||0);
+    const time = new Date(o.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    card.innerHTML = `
+      <div class="order-header">
+        <div class="order-user-avatar">
+          ${o.userPhoto ? `<img src="${o.userPhoto}" alt="">` : initials}
+        </div>
+        <div class="order-meta">
+          <div class="user-name">${o.userName||'User'}</div>
+          <div class="order-time">${time}</div>
+        </div>
+      </div>
+      <div class="order-body">
+        <div class="order-category">📌 ${o.category}</div>
+        <div class="order-desc">${o.desc}</div>
+        <div class="order-amount">${amt}</div>
+      </div>
+      <div class="order-actions">
+        <button class="btn-accept" onclick="acceptOrder('${id}')">✅ Terima</button>
+        <button class="btn-reject" onclick="openRejectModal('${id}')">❌ Tolak</button>
+        <button class="btn-chat-sm" onclick="openChatWithUser('${o.userId}','${(o.userName||'User').replace(/'/g,"\\'")}')">💬</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+async function acceptOrder(orderId) {
+  const { ref, update, db } = window._fb;
+  await update(ref(db, `orders/${orderId}`), { status: 'proses', acceptedAt: Date.now() });
+  showToast('✅ Order diterima!');
+}
+
+function openRejectModal(orderId) {
+  window._rejectOrderId = orderId;
+  document.getElementById('rejectReason').value = '';
+  openModal('modalRejectOverlay');
+}
+
+async function submitReject() {
+  const { ref, update, db } = window._fb;
+  const reason = document.getElementById('rejectReason').value.trim();
+  if (!reason) { showToast('Tulis alasan penolakan'); return; }
+  await update(ref(db, `orders/${window._rejectOrderId}`), { status: 'ditolak', rejectReason: reason, rejectedAt: Date.now() });
+  closeModal('modalRejectOverlay');
+  showToast('Order ditolak');
+}
+
+function updateOrderBadge(count) {
+  const badge = document.getElementById('orderBadge');
+  if (count > 0) { badge.style.display = 'flex'; badge.textContent = count; }
+  else badge.style.display = 'none';
 }
 
 function showOrderNotif(order) {
-  document.getElementById('orderNotifBody').textContent = `${order.category} - Rp ${order.price?.toLocaleString('id-ID')}`;
-  document.getElementById('orderNotifPopup').classList.add('show');
-  setTimeout(() => document.getElementById('orderNotifPopup').classList.remove('show'), 8000);
+  const notif = document.getElementById('notifCard');
+  const title = document.getElementById('notifTitle');
+  const sub = document.getElementById('notifSub');
+  title.textContent = '🛵 Order Masuk!';
+  sub.textContent = `${order.userName} butuh bantuan: ${order.category}`;
+  notif.classList.add('show');
+  setTimeout(() => notif.classList.remove('show'), 8000);
 }
 
-window.closeOrderNotif = () => document.getElementById('orderNotifPopup').classList.remove('show');
-window.viewNewOrder = () => { closeOrderNotif(); switchPage('Helper'); };
-
-window.acceptOrder = async (orderId, userId) => {
-  // Check helper quota
-  const snap = await get(ref(db, `users/${currentUser.uid}`));
-  const p = snap.val();
-  if (!p.pro) {
-    const ordersSnap = await get(query(ref(db, 'orders'), orderByChild('helperId'), equalTo(currentUser.uid)));
-    let count = 0;
-    ordersSnap.forEach(c => { if(c.val().status !== 'pending') count++; });
-    const limit = p.premium ? 5 : 0;
-    if (count >= limit) {
-      showToast(`Upgrade Pro untuk terima order tanpa batas!`, 'error');
-      return;
-    }
-  }
-
-  showLoading('Menerima order...');
-  await update(ref(db, `orders/${orderId}`), { status: 'process' });
-  await update(ref(db, `helperOrders/${currentUser.uid}/${orderId}`), { status: 'process' });
-  // Add to user's orders
-  await update(ref(db, `userOrders/${userId}/${orderId}`), { status: 'process', helperId: currentUser.uid });
-  hideLoading();
-  showToast('Order diterima! ✅');
-  loadHistory();
-};
-
-window.openRejectModal = (orderId) => {
-  pendingRejectOrderId = orderId;
-  document.getElementById('rejectReason').value = '';
-  document.getElementById('rejectModalOverlay').classList.add('open');
-};
-
-window.closeRejectModal = () => document.getElementById('rejectModalOverlay').classList.remove('open');
-
-window.confirmRejectOrder = async () => {
-  const reason = document.getElementById('rejectReason').value.trim();
-  if (!reason) return showToast('Tulis alasan penolakan', 'error');
-  showLoading('Menolak order...');
-  await update(ref(db, `orders/${pendingRejectOrderId}`), { status: 'rejected', rejectReason: reason });
-  await update(ref(db, `helperOrders/${currentUser.uid}/${pendingRejectOrderId}`), { status: 'rejected' });
-  hideLoading();
-  closeRejectModal();
-  showToast('Order ditolak');
-  loadHistory();
-};
-
-window.markOrderDone = async (orderId, userId) => {
-  showLoading('Menyelesaikan order...');
-  await update(ref(db, `orders/${orderId}`), { status: 'done' });
-  await update(ref(db, `helperOrders/${currentUser.uid}/${orderId}`), { status: 'done' });
-  hideLoading();
-  showToast('Order selesai! 🎉');
-  // Trigger rating for user
-  pendingRatingOrderId = orderId;
-  openRatingModal(orderId);
-  loadHistory();
-};
-
-// ===== RATING =====
-window.openRatingModal = async (orderId) => {
-  pendingRatingOrderId = orderId;
-  const snap = await get(ref(db, `orders/${orderId}`));
-  const o = snap.val();
-  if (!o) return;
-  const helperSnap = await get(ref(db, `users/${o.helperId}`));
-  const h = helperSnap.val();
-  document.getElementById('ratingHelperName').textContent = `Beri rating untuk ${h?.name||'Helper'}`;
-  currentRating = 0;
-  updateStars(0);
-  document.getElementById('ratingModalOverlay').classList.add('open');
-};
-
-window.setRating = (n) => { currentRating = n; updateStars(n); };
-window.closeRatingModal = () => document.getElementById('ratingModalOverlay').classList.remove('open');
-
-function updateStars(n) {
-  document.querySelectorAll('#starRating .star').forEach((s,i) => s.classList.toggle('active', i<n));
+function viewOrder() {
+  closeNotif();
+  switchTab('helper', document.getElementById('nav-helper'));
 }
 
-window.submitRating = async () => {
-  if (!currentRating) return showToast('Pilih bintang rating', 'error');
-  const snap = await get(ref(db, `orders/${pendingRatingOrderId}`));
-  const o = snap.val();
-  const helperSnap = await get(ref(db, `users/${o.helperId}`));
-  const h = helperSnap.val();
-  const newRating = (h.rating || 0) + currentRating;
-  const newCount = (h.ratingCount || 0) + 1;
-  await update(ref(db, `users/${o.helperId}`), { rating: newRating, ratingCount: newCount });
-  closeRatingModal();
-  showToast(`Rating ${currentRating}⭐ berhasil dikirim!`);
-};
+function closeNotif() {
+  document.getElementById('notifCard').classList.remove('show');
+}
 
-// ===== CHAT =====
-function listenChatList() {
-  if (!currentUser) return;
-  const chatListRef = ref(db, `chatList/${currentUser.uid}`);
-  chatListListener = onValue(chatListRef, async (snap) => {
-    const container = document.getElementById('chatList');
-    if (!snap.exists()) {
-      container.innerHTML = `<div class="empty-state" style="margin-top:40px"><span class="material-icons-round">forum</span><h3>Belum ada pesan</h3><p>Mulai chat dengan helper atau user</p></div>`;
-      return;
-    }
-
-    const chats = [];
-    const promises = [];
-    snap.forEach(c => {
-      const d = c.val();
-      promises.push(get(ref(db, `users/${d.withUid}`)).then(s => {
-        chats.push({ ...d, chatId: c.key, user: s.val() });
-      }));
+async function toggleHelperOnline(checked) {
+  const uid = window._currentUser.uid;
+  const p = window._userProfile;
+  const { ref, set, remove, db } = window._fb;
+  
+  if (checked) {
+    await set(ref(db, `online_helpers/${uid}`), {
+      name: p.name, photo: p.photo||null,
+      gender: p.gender, age: p.age, location: p.location, bio: p.bio,
+      ratingTotal: p.ratingTotal||0, ratingCount: p.ratingCount||0,
+      uid: uid
     });
-    await Promise.all(promises);
-    chats.sort((a,b) => (b.lastTime||0)-(a.lastTime||0));
-
-    let unread = 0;
-    container.innerHTML = chats.map(c => {
-      if (c.unread) unread++;
-      return `
-        <div class="chat-item" onclick="openChatWith('${c.withUid}')">
-          <div class="chat-avatar">
-            ${c.user?.photo?`<img src="${c.user.photo}" alt="">`:`<div style="width:100%;height:100%;background:var(--bg);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="color:var(--text-muted)">person</span></div>`}
-          </div>
-          <div style="flex:1;min-width:0">
-            <div class="chat-name">${c.user?.name||'User'}</div>
-            <div class="chat-preview">${c.lastMsg||'Mulai percakapan'}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-            <div class="chat-time">${c.lastTime?formatTime(c.lastTime):''}</div>
-            ${c.unread?`<div class="chat-unread">!</div>`:''}
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    const badge = document.getElementById('chatBadge');
-    badge.style.display = unread > 0 ? 'flex' : 'none';
-    badge.textContent = unread;
-  });
-}
-
-window.openChatWith = async (otherUid) => {
-  currentChatTarget = otherUid;
-  // Create chat ID (sorted UIDs)
-  const ids = [currentUser.uid, otherUid].sort();
-  currentChatId = ids.join('_');
-
-  const snap = await get(ref(db, `users/${otherUid}`));
-  const other = snap.val();
-  document.getElementById('chatRoomName').textContent = other?.name || 'User';
-  document.getElementById('chatRoomAvatar').src = other?.photo || '';
-  document.getElementById('chatRoomStatus').textContent = other?.isOnline ? '🟢 Online' : 'Offline';
-  document.getElementById('chatMsgInput').value = '';
-  document.getElementById('chatRoomMessages').innerHTML = '';
-
-  document.getElementById('chatRoom').classList.add('open');
-
-  // Listen messages
-  if (chatListener) chatListener(); // unsubscribe
-  chatListener = onValue(ref(db, `chats/${currentChatId}`), (snap) => {
-    const container = document.getElementById('chatRoomMessages');
-    const msgs = [];
-    snap.forEach(c => msgs.push(c.val()));
-    msgs.sort((a,b) => a.time-b.time);
-    container.innerHTML = msgs.map(m => `
-      <div class="msg ${m.senderId===currentUser.uid?'sent':'received'}">
-        ${m.text}
-        <div class="msg-time">${formatTime(m.time)}</div>
-      </div>
-    `).join('');
-    container.scrollTop = container.scrollHeight;
-  });
-
-  // Update chat list
-  await update(ref(db, `chatList/${currentUser.uid}/${currentChatId}`), {
-    withUid: otherUid, unread: false
-  });
-};
-
-window.closeChatRoom = () => {
-  document.getElementById('chatRoom').classList.remove('open');
-  if (chatListener) { chatListener(); chatListener = null; }
-  currentChatTarget = null;
-  currentChatId = null;
-};
-
-window.handleChatKey = (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
-};
-
-window.sendChatMessage = async () => {
-  const input = document.getElementById('chatMsgInput');
-  const text = input.value.trim();
-  if (!text || !currentChatId) return;
-  input.value = '';
-
-  const msgRef = push(ref(db, `chats/${currentChatId}`));
-  const msg = { senderId: currentUser.uid, text, time: Date.now() };
-  await set(msgRef, msg);
-
-  // Update chat list for both users
-  const chatMeta = { withUid: currentChatTarget, lastMsg: text, lastTime: Date.now(), unread: false };
-  const otherMeta = { withUid: currentUser.uid, lastMsg: text, lastTime: Date.now(), unread: true };
-  await update(ref(db, `chatList/${currentUser.uid}/${currentChatId}`), chatMeta);
-  await update(ref(db, `chatList/${currentChatTarget}/${currentChatId}`), otherMeta);
-};
-
-// ===== HISTORY =====
-async function loadHistory() {
-  const snap = await get(query(ref(db, 'orders'), orderByChild('userId'), equalTo(currentUser.uid)));
-  const helperSnap = await get(query(ref(db, 'orders'), orderByChild('helperId'), equalTo(currentUser.uid)));
-
-  const orders = [];
-  snap.forEach(c => orders.push(c.val()));
-  helperSnap.forEach(c => {
-    if (!orders.find(o => o.id === c.val().id)) orders.push(c.val());
-  });
-  orders.sort((a,b) => b.createdAt-a.createdAt);
-
-  window._allOrders = orders;
-  renderHistory(currentHistoryTab);
-
-  // Update dashboard stats for helper
-  if (currentProfile.role === 'helper') {
-    let totalIncome = 0, todayIncome = 0, total = 0, done = 0, rejected = 0;
-    const today = new Date(); today.setHours(0,0,0,0);
-    orders.filter(o=>o.helperId===currentUser.uid).forEach(o => {
-      if (o.status === 'done') {
-        done++;
-        totalIncome += o.price || 0;
-        if (o.createdAt >= today.getTime()) todayIncome += o.price || 0;
-      }
-      if (o.status === 'rejected') rejected++;
-      total++;
-    });
-    document.getElementById('statTotal').textContent = `Rp${totalIncome.toLocaleString('id-ID')}`;
-    document.getElementById('statToday').textContent = `Rp${todayIncome.toLocaleString('id-ID')}`;
-    document.getElementById('statOrders').textContent = total;
-    document.getElementById('statDone').textContent = `${done}✓ ${rejected}✗`;
+    document.getElementById('helperOnlineBar').classList.add('show');
+    document.getElementById('onlineToggleSub').textContent = '🟢 Kamu sedang online';
+  } else {
+    await remove(ref(db, `online_helpers/${uid}`));
+    document.getElementById('helperOnlineBar').classList.remove('show');
+    document.getElementById('onlineToggleSub').textContent = 'Aktifkan untuk menerima order';
   }
 }
 
-function renderHistory(tab) {
-  const orders = window._allOrders || [];
-  const filtered = tab === 'semua' ? orders : orders.filter(o => o.status === tab);
-  const container = document.getElementById('historyList');
+async function checkHelperOnlineStatus() {
+  const uid = window._currentUser.uid;
+  const { ref, get, db } = window._fb;
+  const p = window._userProfile;
+  
+  const toggle = document.getElementById('helperOnlineToggle');
+  const lockMsg = document.getElementById('premiumLockMsg');
+  
+  if (!p.premium && !p.pro) {
+    toggle.disabled = true;
+    lockMsg.style.display = 'block';
+  } else {
+    toggle.disabled = false;
+    lockMsg.style.display = 'none';
+    const snap = await get(ref(db, `online_helpers/${uid}`));
+    if (snap.exists()) {
+      toggle.checked = true;
+      document.getElementById('helperOnlineBar').classList.add('show');
+      document.getElementById('onlineToggleSub').textContent = '🟢 Kamu sedang online';
+    }
+  }
+  
+  // Stats
+  await loadHelperStats();
+}
 
-  if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state" style="margin-top:40px"><span class="material-icons-round">receipt_long</span><h3>Belum ada riwayat</h3><p>Riwayat order akan tampil di sini</p></div>`;
+async function loadHelperStats() {
+  const uid = window._currentUser.uid;
+  const p = window._userProfile;
+  const { ref, get, db } = window._fb;
+  
+  const snap = await get(ref(db, 'orders'));
+  const data = snap.val() || {};
+  const mine = Object.values(data).filter(o => o.helperId === uid);
+  const done = mine.filter(o => o.status === 'selesai');
+  const rejected = mine.filter(o => o.status === 'ditolak');
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const todayEarnings = done.filter(o => o.completedAt > todayStart.getTime()).reduce((s,o) => s + (o.amount||0), 0);
+  const totalEarnings = done.reduce((s,o) => s + (o.amount||0), 0);
+  
+  document.getElementById('statTotal').textContent = 'Rp' + totalEarnings.toLocaleString('id-ID');
+  document.getElementById('statToday').textContent = 'Rp' + todayEarnings.toLocaleString('id-ID');
+  document.getElementById('statOrders').textContent = mine.length;
+  document.getElementById('statDone').textContent = `${done.length}/${rejected.length}`;
+  
+  // Dash avatar
+  const da = document.getElementById('dashAvatar');
+  if (p.photo) { da.innerHTML = `<img src="${p.photo}" alt="">`; }
+  else { da.textContent = (p.name||'H')[0].toUpperCase(); }
+}
+
+// ========== CHAT ==========
+function renderChatList(myChats, myUid) {
+  const list = document.getElementById('chatList');
+  if (myChats.length === 0) {
+    list.innerHTML = `<div class="empty-state" style="padding:60px 20px"><i class="fas fa-comment-dots"></i><p>Belum ada percakapan</p></div>`;
     return;
   }
-
-  container.innerHTML = filtered.map(o => {
-    const isHelper = o.helperId === currentUser.uid;
-    const statusClass = {pending:'status-pending',process:'status-process',done:'status-done',rejected:'status-rejected'}[o.status]||'';
-    const statusLabel = {pending:'Menunggu',process:'Proses',done:'Selesai',rejected:'Ditolak'}[o.status]||o.status;
-    return `
-      <div class="order-card" style="margin:0 16px 10px">
-        <div class="order-card-header">
-          <span class="order-cat-tag">${o.category}</span>
-          <span class="order-status ${statusClass}">${statusLabel}</span>
-        </div>
-        <div class="order-card-body">
-          <div class="order-desc">${o.description}</div>
-          <div class="order-price">Rp ${o.price?.toLocaleString('id-ID')}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">${formatDate(o.createdAt)}</div>
-          ${o.status==='rejected'&&o.rejectReason?`<div class="alert alert-warning" style="margin-bottom:8px"><span class="material-icons-round">info</span><span>Alasan: ${o.rejectReason}</span></div>`:''}
-          <div class="order-actions">
-            ${isHelper && o.status==='process'?`<button class="btn btn-sm btn-success" onclick="markOrderDone('${o.id}','${o.userId}')">✓ Selesai</button>`:''}
-            ${!isHelper && o.status==='done'?`<button class="btn btn-sm btn-primary" onclick="openRatingModal('${o.id}')">⭐ Beri Rating</button>`:''}
-            <button class="btn btn-sm btn-outline" onclick="openChatWith('${isHelper?o.userId:o.helperId}')">💬 Chat</button>
-          </div>
-        </div>
+  list.innerHTML = '';
+  const seenUsers = new Set();
+  
+  myChats.forEach(([chatId, messages]) => {
+    const uids = chatId.split('_');
+    const otherUid = uids.find(u => u !== myUid);
+    if (!otherUid || seenUsers.has(otherUid)) return;
+    seenUsers.add(otherUid);
+    
+    const msgArr = Object.values(messages || {});
+    const last = msgArr[msgArr.length - 1] || {};
+    const unread = msgArr.filter(m => m.senderId !== myUid && !m.read).length;
+    
+    const item = document.createElement('div');
+    item.className = 'chat-item';
+    item.onclick = () => openChatWithUser(otherUid, last.senderName || 'Pengguna');
+    item.innerHTML = `
+      <div class="chat-avatar">${(last.senderName||'?')[0].toUpperCase()}</div>
+      <div class="chat-info">
+        <div class="chat-name">${last.senderName||'Pengguna'}</div>
+        <div class="chat-preview">${last.text||'...'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="chat-time">${last.timestamp ? new Date(last.timestamp).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) : ''}</div>
+        ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
       </div>
     `;
-  }).join('');
+    list.appendChild(item);
+  });
 }
 
-window.switchHistoryTab = (tab, el) => {
-  currentHistoryTab = tab;
-  document.querySelectorAll('#historyTabs .tab-item').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderHistory(tab);
-};
-
-// ===== PROFILE =====
-function updateProfileUI() {
-  const p = currentProfile;
-  if (!p) return;
-  document.getElementById('profileName').textContent = p.name;
-  document.getElementById('profileRole').textContent = p.role === 'helper' ? '🔧 Helper' : '👤 User';
-  const av = document.getElementById('profileAvatar');
-  if (p.photo) av.src = p.photo;
-  else av.src = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='20' fill='%23FF6B35'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='18' font-family='sans-serif'>${(p.name||'U')[0].toUpperCase()}</text></svg>`;
+function openChatWithUser(otherUid, otherName) {
+  if (!window._currentUser) return;
+  const myUid = window._currentUser.uid;
+  const chatId = [myUid, otherUid].sort().join('_');
+  window._currentChatId = chatId;
+  window._currentChatUser = { uid: otherUid, name: otherName };
   
-  const dashAv = document.getElementById('dashAvatar');
-  if (p.photo) dashAv.src = p.photo;
-
-  const badges = document.getElementById('profileBadges');
-  badges.innerHTML = '';
-  if (p.pro) badges.innerHTML += `<span class="helper-role-badge badge-pro">💎 Pro</span>`;
-  else if (p.premium) badges.innerHTML += `<span class="helper-role-badge badge-premium">⭐ Premium</span>`;
-
-  if (p.role === 'helper') {
-    const toggle = document.getElementById('helperOnlineToggle');
-    toggle.checked = p.isOnline || false;
-    document.getElementById('helperToggleStatus').textContent = p.isOnline ? '🟢 Kamu sedang online' : 'Kamu sedang offline';
-    document.getElementById('helperOnlineBadge').style.display = p.isOnline ? 'inline-flex' : 'none';
-    if (!p.premium && !p.pro) {
-      document.getElementById('helperToggleWrap').classList.add('locked');
-    }
+  document.getElementById('chatWinName').textContent = otherName;
+  document.getElementById('chatWinStatus').textContent = 'Online';
+  document.getElementById('chatWinAvatar').textContent = otherName[0].toUpperCase();
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('chat-window').classList.add('open');
+  
+  if (!window._messageListenerActive) {
+    window._messageListenerActive = true;
+    window.listenMessages(chatId);
+  } else {
+    window._messageListenerActive = false;
+    setTimeout(() => {
+      window._messageListenerActive = true;
+      window.listenMessages(chatId);
+    }, 100);
   }
 }
 
-// ===== PREMIUM =====
-window.openPremiumModal = () => {
-  if (currentProfile.premium || currentProfile.pro) {
-    showToast('Kamu sudah Premium/Pro!', 'info');
-    return;
-  }
-  document.getElementById('premiumPhone').value = '';
-  document.getElementById('ktpPreview').style.display = 'none';
-  document.getElementById('ktpPlaceholder').style.display = 'block';
-  ktpBase64 = null;
-  document.getElementById('premiumModalOverlay').classList.add('open');
-};
-window.closePremiumModal = () => document.getElementById('premiumModalOverlay').classList.remove('open');
+function appendMessage(msg) {
+  const myUid = window._currentUser?.uid;
+  const container = document.getElementById('chatMessages');
+  const isSent = msg.senderId === myUid;
+  const div = document.createElement('div');
+  div.className = `msg-bubble ${isSent ? 'sent' : 'received'}`;
+  const t = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) : '';
+  div.innerHTML = `${msg.text}<div class="msg-time">${t}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
 
-window.previewKTP = (input) => {
-  const file = input.files[0];
-  if (!file) return;
-  compressImage(file, 400, 300, 0.6, (b64) => {
-    ktpBase64 = b64;
-    document.getElementById('ktpPreview').src = b64;
-    document.getElementById('ktpPreview').style.display = 'block';
-    document.getElementById('ktpPlaceholder').style.display = 'none';
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !window._currentChatId) return;
+  
+  const { ref, push, set, db, serverTimestamp } = window._fb;
+  const myProfile = window._userProfile;
+  
+  await push(ref(db, `chats/${window._currentChatId}`), {
+    text,
+    senderId: window._currentUser.uid,
+    senderName: myProfile.name,
+    timestamp: Date.now(),
+    read: false
   });
-};
+  input.value = '';
+}
 
-window.submitPremium = async () => {
-  const phone = document.getElementById('premiumPhone').value.trim();
-  if (!phone || !ktpBase64) return showToast('Lengkapi nomor HP dan foto KTP', 'error');
-  showLoading('Mengajukan premium...');
-  await update(ref(db, `users/${currentUser.uid}`), { premium: true, premiumPhone: phone, ktpPhoto: ktpBase64 });
-  currentProfile.premium = true;
-  closePremiumModal();
-  updateProfileUI();
-  if (currentProfile.role === 'helper') {
-    document.getElementById('helperToggleWrap').classList.remove('locked');
-  }
-  hideLoading();
-  showToast('Berhasil upgrade Premium! ⭐');
-};
+function closeChatWindow() {
+  document.getElementById('chat-window').classList.remove('open');
+  window._messageListenerActive = false;
+}
 
-// ===== PRO =====
-window.openProModal = () => {
-  if (!currentProfile.premium) {
-    showToast('Upgrade Premium dulu sebelum Pro', 'error');
+// ========== HISTORY ==========
+function filterHistory(filter, el) {
+  window._currentHistFilter = filter;
+  document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  
+  const all = window._myHistory || [];
+  let filtered = filter === 'semua' ? all : all.filter(([id,o]) => o.status === filter);
+  renderHistory(filtered);
+}
+
+function renderHistory(items) {
+  const list = document.getElementById('historyList');
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-clipboard"></i><p>Tidak ada riwayat</p></div>`;
     return;
   }
-  if (currentProfile.pro) {
-    showToast('Kamu sudah Pro!', 'info');
-    return;
+  const role = window._userProfile?.role;
+  list.innerHTML = '';
+  items.reverse().forEach(([id, o]) => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    const statusClass = o.status === 'selesai' ? 'selesai' : o.status === 'ditolak' ? 'ditolak' : 'proses';
+    const statusLabel = o.status === 'selesai' ? '✅ Selesai' : o.status === 'ditolak' ? '❌ Ditolak' : '⏳ Proses';
+    const amt = new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(o.amount||0);
+    const d = new Date(o.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    
+    let extra = '';
+    if (role === 'helper' && o.status === 'proses') {
+      extra = `<button class="btn-complete" onclick="completeOrder('${id}')">✅ Selesai</button>`;
+    }
+    if (role === 'user' && o.status === 'selesai' && !o.rated) {
+      extra = `<button class="btn-rate" onclick="openRatingModal('${id}')">⭐ Beri Rating</button>`;
+    }
+    if (o.status === 'ditolak' && o.rejectReason) {
+      extra += `<div style="font-size:12px;color:var(--danger);margin-top:8px">Alasan: ${o.rejectReason}</div>`;
+    }
+    
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">${o.category}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${d}</div>
+        </div>
+        <div class="status-badge ${statusClass}">${statusLabel}</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted)">${o.desc}</div>
+      <div style="font-size:16px;font-weight:800;color:var(--primary);margin-top:6px">${amt}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
+        ${role === 'helper' ? '👤 ' + (o.userName||'User') : '🔧 ' + (o.helperName||'Helper')}
+      </div>
+      ${extra}
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function completeOrder(orderId) {
+  const { ref, update, db } = window._fb;
+  await update(ref(db, `orders/${orderId}`), { status: 'selesai', completedAt: Date.now() });
+  showToast('✅ Order selesai!');
+}
+
+function openRatingModal(orderId) {
+  window._currentOrderId = orderId;
+  window._selectedRating = 0;
+  document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active'));
+  openModal('modalRating');
+}
+
+function setRating(n) {
+  window._selectedRating = n;
+  document.querySelectorAll('.star-btn').forEach((s,i) => {
+    s.classList.toggle('active', i < n);
+  });
+}
+
+async function submitRating() {
+  if (!window._selectedRating) { showToast('Pilih bintang dulu'); return; }
+  const orderId = window._currentOrderId;
+  const { ref, update, get, db } = window._fb;
+  
+  const snap = await get(ref(db, `orders/${orderId}`));
+  const order = snap.val();
+  if (!order) return;
+  
+  // Update order
+  await update(ref(db, `orders/${orderId}`), { rated: true, rating: window._selectedRating });
+  
+  // Update helper stats
+  const helperSnap = await get(ref(db, `users/${order.helperId}`));
+  const helper = helperSnap.val();
+  if (helper) {
+    await update(ref(db, `users/${order.helperId}`), {
+      ratingTotal: (helper.ratingTotal||0) + window._selectedRating,
+      ratingCount: (helper.ratingCount||0) + 1
+    });
   }
-  document.getElementById('proEmail').value = currentUser.email || '';
-  document.getElementById('proModalOverlay').classList.add('open');
-};
-window.closeProModal = () => document.getElementById('proModalOverlay').classList.remove('open');
+  
+  closeModal('modalRating');
+  showToast('⭐ Rating terkirim!');
+}
 
-window.submitPro = async () => {
-  const email = document.getElementById('proEmail').value.trim();
-  if (!email) return showToast('Masukkan email konfirmasi', 'error');
-  showLoading('Mengajukan Pro...');
-  await update(ref(db, `users/${currentUser.uid}`), { pro: true, proEmail: email });
-  currentProfile.pro = true;
-  closeProModal();
-  updateProfileUI();
-  hideLoading();
-  showToast('Berhasil upgrade Pro! 💎');
-};
-
-// ===== EDIT PROFILE =====
-window.openEditProfile = () => {
-  const p = currentProfile;
-  document.getElementById('editName').value = p.name || '';
-  document.getElementById('editArea').value = p.area || '';
-  document.getElementById('editGender').value = p.gender || 'Laki-laki';
-  document.getElementById('editBio').value = p.bio || '';
-  editPhotoBase64 = null;
+// ========== PROFILE ==========
+function updateProfileUI() {
+  const p = window._userProfile;
+  if (!p) return;
+  
+  const initials = (p.name||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  const profileAvatar = document.getElementById('profileAvatarDisplay');
+  
   if (p.photo) {
-    document.getElementById('editPhotoPreview').innerHTML = `<img src="${p.photo}" alt="">`;
+    profileAvatar.innerHTML = `<img src="${p.photo}" alt="">`;
   } else {
-    document.getElementById('editPhotoPreview').innerHTML = `<span class="material-icons-round">add_a_photo</span>`;
+    profileAvatar.textContent = initials;
   }
-  selectEditRole(p.role || 'user');
-  document.getElementById('editProfileOverlay').classList.add('open');
-};
+  
+  document.getElementById('profileName').textContent = p.name||'Pengguna';
+  document.getElementById('profileRole').textContent = p.role === 'helper' ? '🔧 Helper' : '👤 User';
+  
+  const premBadge = document.getElementById('premiumBadgeDisplay');
+  if (p.pro) {
+    premBadge.style.display = 'inline-flex';
+    premBadge.innerHTML = '<i class="fas fa-gem"></i> Pro';
+    premBadge.style.color = '#6366F1';
+  } else if (p.premium) {
+    premBadge.style.display = 'inline-flex';
+  }
+  
+  // Delete account modal
+  document.getElementById('deleteAccName').textContent = p.name||'-';
+  document.getElementById('deleteAccEmail').textContent = window._currentUser?.email||'-';
+  document.getElementById('deleteAccAvatar').textContent = initials;
+}
 
-window.selectEditRole = (role) => {
-  document.getElementById('editRoleUser').classList.toggle('selected', role==='user');
-  document.getElementById('editRoleHelper').classList.toggle('selected', role==='helper');
-};
+// ========== REGISTER ==========
+function selectRole(role) {
+  window._selectedRole = role;
+  document.getElementById('roleUser').classList.toggle('active', role === 'user');
+  document.getElementById('roleHelper').classList.toggle('active', role === 'helper');
+}
 
-window.previewEditPhoto = (input) => {
-  const file = input.files[0];
+async function handleAvatarUpload(e) {
+  const file = e.target.files[0];
   if (!file) return;
-  compressImage(file, 200, 200, 0.6, (b64) => {
-    editPhotoBase64 = b64;
-    document.getElementById('editPhotoPreview').innerHTML = `<img src="${b64}" alt="">`;
-  });
-};
+  const b64 = await compressImage(file, 400, 0.7);
+  window._avatarBase64 = b64;
+  const img = document.getElementById('avatarPreview');
+  img.src = b64; img.style.display = 'block';
+  document.getElementById('camIcon').style.display = 'none';
+}
 
-window.closeEditProfile = () => document.getElementById('editProfileOverlay').classList.remove('open');
+async function submitRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const gender = document.getElementById('regGender').value;
+  const age = document.getElementById('regAge').value;
+  const location = document.getElementById('regLocation').value.trim();
+  const bio = document.getElementById('regBio').value.trim();
+  
+  if (!name || !gender || !age || !location) { showToast('Lengkapi semua data'); return; }
+  
+  const uid = window._currentUser.uid;
+  const { ref, set, db } = window._fb;
+  
+  const profile = {
+    name, gender, age: parseInt(age), location, bio,
+    role: window._selectedRole,
+    photo: window._avatarBase64 || null,
+    premium: false, pro: false,
+    ratingTotal: 0, ratingCount: 0,
+    createdAt: Date.now(),
+    email: window._currentUser.email
+  };
+  
+  await set(ref(db, `users/${uid}`), profile);
+  window._userProfile = profile;
+  enterApp();
+  showToast('✅ Pendaftaran berhasil!');
+}
 
-window.saveEditProfile = async () => {
-  const name = document.getElementById('editName').value.trim();
-  const area = document.getElementById('editArea').value.trim();
-  const gender = document.getElementById('editGender').value;
-  const bio = document.getElementById('editBio').value.trim();
-  const role = document.getElementById('editRoleHelper').classList.contains('selected') ? 'helper' : 'user';
-  if (!name) return showToast('Nama tidak boleh kosong', 'error');
+// ========== EDIT PROFILE ==========
+function openEditProfileModal() {
+  const p = window._userProfile;
+  document.getElementById('editName').value = p.name||'';
+  document.getElementById('editLocation').value = p.location||'';
+  document.getElementById('editGender').value = p.gender||'Laki-laki';
+  document.getElementById('editBio').value = p.bio||'';
+  selectEditRole(p.role||'user');
+  if (p.photo) {
+    const img = document.getElementById('editAvatarPreview');
+    img.src = p.photo; img.style.display = 'block';
+    document.getElementById('editCamIcon').style.display = 'none';
+  }
+  document.getElementById('modalEditProfile').style.display = 'flex';
+}
 
-  showLoading('Menyimpan...');
-  const updates = { name, area, gender, bio, role };
-  if (editPhotoBase64) updates.photo = editPhotoBase64;
-  await update(ref(db, `users/${currentUser.uid}`), updates);
-  Object.assign(currentProfile, updates);
+function closeEditProfile() {
+  document.getElementById('modalEditProfile').style.display = 'none';
+}
+
+function selectEditRole(role) {
+  window._editRole = role;
+  document.getElementById('editRoleUser').classList.toggle('active', role === 'user');
+  document.getElementById('editRoleHelper').classList.toggle('active', role === 'helper');
+}
+
+async function handleEditAvatar(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const b64 = await compressImage(file, 400, 0.7);
+  window._editAvatarBase64 = b64;
+  const img = document.getElementById('editAvatarPreview');
+  img.src = b64; img.style.display = 'block';
+  document.getElementById('editCamIcon').style.display = 'none';
+}
+
+async function saveEditProfile() {
+  const { ref, update, db } = window._fb;
+  const uid = window._currentUser.uid;
+  const updates = {
+    name: document.getElementById('editName').value.trim(),
+    location: document.getElementById('editLocation').value.trim(),
+    gender: document.getElementById('editGender').value,
+    bio: document.getElementById('editBio').value.trim(),
+    role: window._editRole
+  };
+  if (window._editAvatarBase64) updates.photo = window._editAvatarBase64;
+  
+  await update(ref(db, `users/${uid}`), updates);
+  Object.assign(window._userProfile, updates);
   closeEditProfile();
   updateProfileUI();
-  updateNav();
-  if (role === 'helper') {
-    document.getElementById('navHelper').style.display = 'flex';
-    listenIncomingOrders();
-  }
-  hideLoading();
-  showToast('Profil berhasil diperbarui! ✅');
-};
-
-// ===== DARK MODE =====
-window.toggleDarkMode = (on) => {
-  document.documentElement.setAttribute('data-theme', on ? 'dark' : '');
-  localStorage.setItem('darkMode', on ? '1' : '');
-};
-if (localStorage.getItem('darkMode') === '1') {
-  document.documentElement.setAttribute('data-theme', 'dark');
-  setTimeout(() => { const t = document.getElementById('darkModeToggle'); if(t) t.checked = true; }, 1000);
+  setupNav();
+  showToast('✅ Profil diperbarui!');
 }
 
-// ===== INFO MODALS =====
-const infoContent = {
-  penting: {
-    title: '⚠️ Perhatian Penting',
-    body: `<b>Keamanan & Privasi Kamu</b><br><br>
-    🔒 Jaga identitas dan privasi kamu terhadap orang asing.<br>
-    💰 Jangan transfer uang di luar aplikasi sebelum pekerjaan selesai.<br>
-    📍 Berikan lokasi hanya kepada helper yang sudah kamu percaya.<br>
-    🚨 Jika merasa tidak aman, segera akhiri order dan laporkan.<br>
-    📱 BBQ tidak bertanggung jawab atas transaksi di luar platform.<br>
-    👨‍👩‍👧 Orang tua harap awasi penggunaan aplikasi oleh anak-anak.<br>
-    ⛔ Dilarang menggunakan aplikasi untuk kegiatan melanggar hukum.`
-  },
-  tentang: {
-    title: 'ℹ️ Tentang BBQ',
-    body: `<b>BBQ - Butuh Bantuanku</b><br><br>
-    Versi: 1.0.0<br>
-    Platform: PWA Android<br><br>
-    BBQ adalah platform lokal yang menghubungkan masyarakat dengan helper terdekat untuk berbagai kebutuhan sehari-hari.<br><br>
-    Dari ojek, belanja, bersih-bersih, hingga bantuan darurat — semua ada di BBQ!<br><br>
-    📧 Kontak: support@bbq.app<br>
-    🌐 Web: bbq.app`
-  },
-  laporan: {
-    title: '🚩 Laporkan',
-    body: 'Alami masalah atau melihat perilaku yang tidak pantas?',
-    extra: true
+// ========== PREMIUM/PRO ==========
+async function handleKTPUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const b64 = await compressImage(file, 800, 0.75);
+  window._ktpBase64 = b64;
+  const img = document.getElementById('ktpPreview');
+  img.src = b64; img.style.display = 'block';
+  document.getElementById('ktpPlaceholder').style.display = 'none';
+}
+
+async function submitPremium() {
+  const p = window._userProfile;
+  if (p.premium || p.pro) { showToast('Kamu sudah Premium/Pro'); return; }
+  const phone = document.getElementById('premiumPhone').value.trim();
+  if (!phone) { showToast('Masukkan nomor HP'); return; }
+  if (!window._ktpBase64) { showToast('Upload foto KTP'); return; }
+  
+  const { ref, update, set, db } = window._fb;
+  const uid = window._currentUser.uid;
+  
+  await set(ref(db, `premium_requests/${uid}`), {
+    phone, ktp: window._ktpBase64, uid,
+    name: p.name, submittedAt: Date.now()
+  });
+  await update(ref(db, `users/${uid}`), { premium: true });
+  window._userProfile.premium = true;
+  
+  document.getElementById('btnSubmitPremium').disabled = true;
+  document.getElementById('btnSubmitPremium').textContent = '✅ Sudah Premium';
+  checkHelperOnlineStatus();
+  updateProfileUI();
+  closeModal('modalPremium');
+  showToast('🎉 Selamat! Kamu kini Premium!');
+}
+
+async function submitPro() {
+  const p = window._userProfile;
+  if (!p.premium) { showToast('Upgrade Premium dulu'); closeModal('modalPro'); return; }
+  if (p.pro) { showToast('Kamu sudah Pro'); return; }
+  const email = document.getElementById('proEmail').value.trim();
+  if (!email) { showToast('Masukkan email'); return; }
+  
+  const { ref, update, set, db } = window._fb;
+  const uid = window._currentUser.uid;
+  
+  await set(ref(db, `pro_requests/${uid}`), { email, uid, name: p.name, submittedAt: Date.now() });
+  await update(ref(db, `users/${uid}`), { pro: true });
+  window._userProfile.pro = true;
+  
+  document.getElementById('btnSubmitPro').disabled = true;
+  updateProfileUI();
+  closeModal('modalPro');
+  showToast('💎 Selamat! Kamu kini Pro!');
+}
+
+// ========== MISC ==========
+async function submitReport() {
+  const { ref, push, set, db } = window._fb;
+  const type = document.getElementById('reportType').value;
+  const desc = document.getElementById('reportDesc').value.trim();
+  if (!desc) { showToast('Tulis deskripsi'); return; }
+  
+  await push(ref(db, 'reports'), {
+    type, desc, uid: window._currentUser.uid,
+    name: window._userProfile.name,
+    createdAt: Date.now()
+  });
+  closeModal('modalReport');
+  showToast('✅ Laporan terkirim');
+}
+
+async function deleteAccount() {
+  const { ref, remove, db, deleteUser } = window._fb;
+  const uid = window._currentUser.uid;
+  try {
+    await remove(ref(db, `users/${uid}`));
+    await remove(ref(db, `online_helpers/${uid}`));
+    await deleteUser(window._currentUser);
+    showToast('Akun dihapus');
+  } catch(e) {
+    showToast('Error: ' + e.message);
   }
-};
+}
 
-window.showInfoModal = (type) => {
-  const c = infoContent[type];
-  document.getElementById('infoModalTitle').textContent = c.title;
-  document.getElementById('infoModalBody').innerHTML = c.body;
-  const extra = document.getElementById('infoModalExtra');
-  if (type === 'laporan') {
-    extra.innerHTML = `<textarea class="form-control" id="reportText" placeholder="Tulis laporan kamu..." rows="4"></textarea>
-    <button class="btn btn-danger" onclick="sendReport()" style="margin-top:10px">Kirim Laporan</button>`;
-  } else {
-    extra.innerHTML = '';
-  }
-  document.getElementById('infoModalOverlay').classList.add('open');
-};
-window.closeInfoModal = () => document.getElementById('infoModalOverlay').classList.remove('open');
-
-window.sendReport = async () => {
-  const text = document.getElementById('reportText').value.trim();
-  if (!text) return showToast('Tulis laporan dulu', 'error');
-  showLoading('Mengirim laporan...');
-  await push(ref(db, 'reports'), { uid: currentUser.uid, text, createdAt: Date.now() });
-  hideLoading();
-  closeInfoModal();
-  showToast('Laporan berhasil dikirim. Terima kasih!');
-};
-
-// ===== DELETE ACCOUNT =====
-window.confirmDeleteAccount = () => {
-  document.getElementById('deleteAccountInfo').innerHTML = `
-    <b>Akun Google:</b><br>${currentUser.email}<br><br>
-    Semua data akan dihapus permanen dan tidak bisa dikembalikan!
-  `;
-  document.getElementById('deleteModalOverlay').classList.add('open');
-};
-window.closeDeleteModal = () => document.getElementById('deleteModalOverlay').classList.remove('open');
-window.executeDeleteAccount = async () => {
-  showLoading('Menghapus akun...');
-  await remove(ref(db, `users/${currentUser.uid}`));
-  await deleteUser(auth.currentUser);
-  hideLoading();
-  showScreen('loginScreen');
-};
-
-// ===== SIGN OUT =====
-window.signOutUser = async () => {
-  if (currentProfile?.isOnline) {
-    await update(ref(db, `users/${currentUser.uid}`), { isOnline: false });
-  }
+async function logoutUser() {
+  const { signOut, auth, ref, remove, db } = window._fb;
+  const uid = window._currentUser?.uid;
+  if (uid) await remove(ref(db, `online_helpers/${uid}`)).catch(()=>{});
   await signOut(auth);
-};
-
-// ===== DASHBOARD =====
-function updateDashboard() {
-  // Stats updated in loadHistory
+  showToast('Sampai jumpa!');
 }
 
-// ===== NAVIGATION =====
-window.switchPage = (page) => {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+function toggleDarkMode() {
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', isDark ? '' : 'dark');
+  document.getElementById('darkModeLabel').textContent = isDark ? 'Mode Gelap' : 'Mode Terang';
+  document.getElementById('darkModeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+  localStorage.setItem('theme', isDark ? '' : 'dark');
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`page${page}`).classList.add('active');
-  document.getElementById(`nav${page}`).classList.add('active');
-  if (page === 'History') loadHistory();
-  if (page === 'Profile') updateProfileUI();
+  el.classList.add('active');
+  if (tab === 'history') filterHistory(window._currentHistFilter, null);
+}
+
+function openModal(id) {
+  document.getElementById('overlayBg').classList.add('open');
+  document.getElementById(id).classList.add('open');
+  if (id === 'modalEditProfile' || id === 'modalOrder') {
+    document.getElementById('overlayBg').classList.remove('open');
+    openEditProfileModal();
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  const anyOpen = document.querySelectorAll('.modal-overlay.open:not(#overlayBg)').length > 0;
+  if (!anyOpen) document.getElementById('overlayBg').classList.remove('open');
+}
+
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Image compress
+function compressImage(file, maxSize, quality) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
+        else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Login
+async function loginGoogle() {
+  try {
+    const { auth, provider } = window._fb;
+    await window._fb.auth.signInWithPopup ? 
+      await window._fb.auth.signInWithPopup(provider) :
+      (async () => {
+        const { signInWithPopup } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+        await signInWithPopup(auth, provider);
+      })();
+  } catch(e) {
+    showToast('Login gagal: ' + e.message);
+  }
+}
+
+// Fix openModal for edit profile
+const origOpenModal = window.openModal || function(){};
+window.openModal = function(id) {
+  if (id === 'modalEditProfile') {
+    openEditProfileModal();
+    return;
+  }
+  if (id === 'modalOrder') return;
+  document.getElementById('overlayBg').classList.add('open');
+  document.getElementById(id).classList.add('open');
 };
 
-// ===== HELPERS =====
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+// Load theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) document.body.setAttribute('data-theme', savedTheme);
+</script>
 
-function showLoading(text = 'Memuat...') {
-  document.getElementById('loadingText').textContent = text;
-  document.getElementById('loadingOverlay').classList.add('show');
-}
-function hideLoading() {
-  document.getElementById('loadingOverlay').classList.remove('show');
-}
-
-function showToast(msg, type = 'success') {
-  const toast = document.getElementById('toast');
-  const icon = document.getElementById('toastIcon');
-  document.getElementById('toastMsg').textContent = msg;
-  icon.textContent = type === 'error' ? 'error' : type === 'info' ? 'info' : 'check_circle';
-  toast.style.background = type === 'error' ? 'var(--danger)' : type === 'info' ? 'var(--info)' : 'var(--secondary)';
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-window.showToast = showToast;
-
-function compressImage(file, maxW, maxH, quality, cb) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      let w = img.width, h = img.height;
-      const ratio = Math.min(maxW/w, maxH/h, 1);
-      w = Math.floor(w * ratio); h = Math.floor(h * ratio);
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      cb(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function formatTime(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  const now = new Date();
-  if (d.toDateString() === now.toDateString()) {
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+<!-- Firebase Auth signInWithPopup fix -->
+<script type="module">
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+window.loginGoogle = async function() {
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) {
+    document.getElementById('toast').textContent = 'Login gagal. Coba lagi.';
+    document.getElementById('toast').classList.add('show');
+    setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
   }
-  return `${d.getDate()}/${d.getMonth()+1}`;
 }
-
-function formatDate(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-
-// ===== SPLASH =====
-setTimeout(() => {
-  document.getElementById('splashScreen').style.display = 'none';
-}, 2200);
-
 </script>
 
 </body>
